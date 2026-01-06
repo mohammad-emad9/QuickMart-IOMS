@@ -1,0 +1,217 @@
+/* ===========================================
+   QuickMart IOMS - Reports Page Styles
+=========================================== */
+
+/* Gradient Cards */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #0083B0 0%, #00B4DB 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+}
+
+/* Report Cards */
+.report-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.report-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.report-card .card-body {
+    padding: 1.5rem;
+}
+
+.report-card .card-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.report-card .card-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.report-card .card-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1.5rem;
+}
+
+.bg-gradient-warning .card-icon {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+/* Page Title */
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+/* Card Styles */
+.card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-header h5 {
+    color: #f8fafc;
+}
+
+/* Table Styles */
+.table {
+    color: #cbd5e1;
+}
+
+.table thead th {
+    background: rgba(30, 41, 59, 0.9);
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.table tbody td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+
+/* Progress Bars */
+.progress {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.progress-bar {
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+/* Category Bar Items */
+.category-bar-item {
+    padding: 0.5rem 0;
+}
+
+.category-bar-item span.fw-semibold {
+    color: #f8fafc;
+}
+
+/* Trend Bars */
+.trend-bar {
+    border-radius: 4px 4px 0 0;
+    transition: height 0.5s ease;
+    min-height: 5px;
+}
+
+.trend-bar:hover {
+    opacity: 0.8;
+}
+
+/* Badge Styles */
+.bg-primary-soft {
+    background: rgba(99, 102, 241, 0.2);
+}
+
+.badge {
+    font-weight: 500;
+}
+
+/* Button Styles */
+.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #cbd5e1;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+    .page-title {
+        font-size: 1.25rem;
+    }
+
+    .report-card .card-value {
+        font-size: 1.5rem;
+    }
+
+    .report-card .card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+
+    .navbar,
+    .btn,
+    .toast-container {
+        display: none !important;
+    }
+
+    .main-content {
+        padding: 0 !important;
+    }
+
+    .card {
+        break-inside: avoid;
+        background: #fff !important;
+        color: #333 !important;
+    }
+
+    .report-card {
+        background: #f8f9fa !important;
+        color: #333 !important;
+        box-shadow: none !important;
+    }
+
+    .report-card .card-value,
+    .report-card .card-label,
+    .report-card .card-icon {
+        color: #333 !important;
+    }
+}

@@ -1,0 +1,11 @@
+# Deny direct access to database folder
+# Prevent accessing SQL files directly
+
+<Files "*">
+    Require all denied
+</Files>
+
+# Block all file types
+<FilesMatch "\.sql$">
+    Require all denied
+</FilesMatch>

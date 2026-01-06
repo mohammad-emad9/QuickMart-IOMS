@@ -1,0 +1,365 @@
+/* ===========================================
+   QuickMart IOMS - Create Order Page Styles
+=========================================== */
+
+/* ===========================================
+   Order Card
+=========================================== */
+.order-card {
+    max-width: 1000px;
+    margin: 0 auto;
+    border-radius: 16px;
+}
+
+/* ===========================================
+   Section Headers
+=========================================== */
+.section-header {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #475569;
+    letter-spacing: 0.5px;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #1e293b;
+}
+
+.section-header i {
+    color: var(--primary-color, #6366f1);
+}
+
+/* ===========================================
+   Order Type Selection
+=========================================== */
+.order-type-container {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.order-type-btn {
+    padding: 1rem 1.5rem;
+    border-radius: 8px !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.order-type-btn small {
+    font-size: 0.7rem;
+    font-weight: 400;
+}
+
+.btn-check:checked+.order-type-btn.btn-outline-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #10b981;
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-check:checked+.order-type-btn.btn-outline-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-color: #3b82f6;
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-check:checked+.order-type-btn small {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* ===========================================
+   Product Search
+=========================================== */
+.product-search-container {
+    position: relative;
+}
+
+.product-search-container .input-group {
+    border: 2px solid #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.product-search-container .input-group-text {
+    border: none;
+}
+
+.product-search-container .form-control {
+    border: none;
+    padding: 0.75rem;
+}
+
+.product-search-container .form-control:focus {
+    box-shadow: none;
+}
+
+.product-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+}
+
+.product-suggestions.show {
+    display: block;
+}
+
+.suggestion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background: #f8fafc;
+}
+
+.suggestion-item .product-name {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.suggestion-item .product-meta {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.suggestion-item .product-price {
+    font-weight: 700;
+    color: #059669;
+}
+
+/* ===========================================
+   Order Table
+=========================================== */
+.order-table {
+    margin-bottom: 0;
+}
+
+.order-table thead th {
+    background: #f8fafc;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #475569;
+    padding: 0.75rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.order-table tbody td {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+.order-table .product-cell {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.order-table .available-cell {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.order-table .price-cell {
+    font-weight: 600;
+    color: #059669;
+}
+
+.order-table .qty-input {
+    width: 70px;
+    text-align: center;
+    font-weight: 600;
+    direction: ltr !important;
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    font-feature-settings: "lnum" 1;
+}
+
+/* Force English numerals on all number inputs */
+input[type="number"],
+input[type="date"],
+input[type="time"] {
+    direction: ltr !important;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    font-feature-settings: "lnum" 1;
+}
+
+.order-table .total-cell {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.remove-btn {
+    color: #dc2626;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.85rem;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+    color: #991b1b;
+    text-decoration: none;
+}
+
+.empty-order-message {
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.add-product-link {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.add-product-link:hover {
+    background: #e0f2fe !important;
+}
+
+/* ===========================================
+   Order Summary
+=========================================== */
+.summary-totals {
+    border: 1px solid #e2e8f0;
+}
+
+.grand-total-display {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #059669;
+}
+
+/* ===========================================
+   Priority Buttons
+=========================================== */
+.btn-check:checked+.btn-outline-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-color: #ef4444;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* ===========================================
+   Success Modal
+=========================================== */
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: #dcfce7;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.success-icon i {
+    font-size: 3rem;
+}
+
+/* ===========================================
+   Toast Notifications
+=========================================== */
+.toast {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.toast-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.toast-info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+/* ===========================================
+   Responsive Design
+=========================================== */
+@media (max-width: 767.98px) {
+    .order-card .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .order-type-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .order-type-btn small {
+        display: none;
+    }
+
+    .order-table {
+        font-size: 0.85rem;
+    }
+
+    .order-table .qty-input {
+        width: 60px;
+    }
+
+    .grand-total-display {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .section-header {
+        font-size: 0.8rem;
+    }
+
+    .btn-group[role="group"] {
+        flex-direction: column;
+    }
+
+    .btn-group .btn {
+        border-radius: 8px !important;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* ===========================================
+   Print Styles
+=========================================== */
+@media print {
+
+    .navbar,
+    .product-search-container,
+    .add-product-link,
+    .modal,
+    button {
+        display: none !important;
+    }
+
+    .order-card {
+        box-shadow: none !important;
+    }
+}

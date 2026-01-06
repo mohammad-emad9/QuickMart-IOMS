@@ -1,0 +1,553 @@
+/* ===========================================
+   QuickMart IOMS - Dashboard Styles
+   Modern Dark Theme with Purple Accents
+=========================================== */
+
+/* ===========================================
+   CSS Variables
+=========================================== */
+:root {
+    /* Primary Colors */
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-light: #818cf8;
+
+    /* Status Colors */
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --info-color: #3b82f6;
+
+    /* Background Colors */
+    --bg-body: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-dark: #1e293b;
+    --bg-darker: #0f172a;
+
+    /* Text Colors */
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-base: 0.3s ease;
+}
+
+/* ===========================================
+   Base Styles
+=========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-body);
+    color: var(--text-primary);
+    min-height: 100vh;
+}
+
+/* ===========================================
+   Navigation Bar
+=========================================== */
+.navbar {
+    padding: 0.75rem 0;
+    background: linear-gradient(135deg, var(--bg-darker), var(--bg-dark)) !important;
+}
+
+.navbar-brand {
+    font-size: 1.25rem;
+}
+
+.brand-icon {
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary-light), #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+    padding: 0.75rem 1rem !important;
+    font-weight: 500;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    transition: all var(--transition-fast);
+}
+
+.nav-link:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+    color: white !important;
+    background: rgba(99, 102, 241, 0.3);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+}
+
+.dropdown-menu-dark {
+    background: var(--bg-dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ===========================================
+   Main Content
+=========================================== */
+.main-content {
+    padding-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.header-date {
+    font-size: 0.85rem;
+}
+
+/* ===========================================
+   KPI Cards
+=========================================== */
+.kpi-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+    overflow: hidden;
+    position: relative;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-color);
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.kpi-card .card-body {
+    padding: 1.5rem;
+}
+
+.kpi-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.kpi-trend {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+/* Soft Background Colors for Icons */
+.bg-primary-soft {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.bg-success-soft {
+    background: rgba(16, 185, 129, 0.15);
+}
+
+.bg-warning-soft {
+    background: rgba(245, 158, 11, 0.15);
+}
+
+.bg-danger-soft {
+    background: rgba(239, 68, 68, 0.15);
+}
+
+.bg-info-soft {
+    background: rgba(59, 130, 246, 0.15);
+}
+
+/* Danger KPI Card (Low Stock) */
+.kpi-danger {
+    background: linear-gradient(135deg, #fff5f5 0%, #fee2e2 100%);
+}
+
+.kpi-danger::before {
+    background: var(--danger-color);
+}
+
+.kpi-danger .kpi-value {
+    color: var(--danger-color);
+}
+
+/* ===========================================
+   Quick Action Buttons
+=========================================== */
+.quick-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    background: var(--bg-card);
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all var(--transition-base);
+}
+
+.quick-action-btn:hover {
+    border-style: solid;
+    border-color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.05);
+    transform: translateY(-3px);
+    color: var(--primary-color);
+}
+
+.action-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    transition: all var(--transition-base);
+}
+
+.quick-action-btn:hover .action-icon {
+    transform: scale(1.1);
+}
+
+.quick-action-btn span {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* ===========================================
+   Low Stock Alerts
+=========================================== */
+.low-stock-list {
+    padding: 0.5rem;
+}
+
+.low-stock-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    margin: 0.5rem;
+    background: #fff5f5;
+    border-left: 4px solid var(--danger-color);
+    border-radius: 8px;
+    transition: all var(--transition-fast);
+}
+
+.low-stock-item:hover {
+    background: #fee2e2;
+    transform: translateX(5px);
+}
+
+.low-stock-item .product-info h6 {
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.low-stock-item .product-info small {
+    color: var(--text-muted);
+}
+
+.stock-count {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    color: var(--danger-color);
+    font-size: 0.9rem;
+}
+
+.stock-count i {
+    margin-right: 0.5rem;
+}
+
+/* ===========================================
+   Recent Orders Table
+=========================================== */
+.table {
+    font-size: 0.9rem;
+}
+
+.table thead th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 2px solid #e2e8f0;
+    padding: 1rem 1.5rem;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.table tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.table tbody tr:hover {
+    background: rgba(99, 102, 241, 0.03);
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--warning-color);
+}
+
+.status-confirmed {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--info-color);
+}
+
+.status-completed {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success-color);
+}
+
+.status-cancelled {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--danger-color);
+}
+
+.btn-view {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+}
+
+/* ===========================================
+   Cards - General
+=========================================== */
+.card {
+    border: none;
+    border-radius: 16px;
+    background: var(--bg-card);
+}
+
+.card-header {
+    background: transparent;
+    border-bottom: none;
+    padding: 1.25rem 1.5rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* ===========================================
+   Utility Classes
+=========================================== */
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.text-info {
+    color: var(--info-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+/* ===========================================
+   Responsive Design
+=========================================== */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: var(--bg-dark);
+        padding: 1rem;
+        margin-top: 0.5rem;
+        border-radius: 12px;
+    }
+
+    .nav-item {
+        margin: 0.25rem 0;
+    }
+
+    .header-date {
+        display: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .kpi-value {
+        font-size: 1.5rem;
+    }
+
+    .quick-action-btn {
+        padding: 1rem;
+    }
+
+    .action-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.25rem;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 0.75rem 1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .container-fluid {
+        padding: 0 1rem !important;
+    }
+
+    .kpi-card .card-body {
+        padding: 1rem;
+    }
+
+    .low-stock-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* ===========================================
+   Animations
+=========================================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kpi-card,
+.quick-action-btn,
+.low-stock-item {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.kpi-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.kpi-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.kpi-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.kpi-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+/* ===========================================
+   Scrollbar Styling
+=========================================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
