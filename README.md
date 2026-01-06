@@ -416,8 +416,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 **Your Name**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+- GitHub: [@mohammad-emad9](https://github.com/mohammad-emad9)
+- LinkedIn: [‪Mohammad Emad‬‏](www.linkedin.com/in/‪mohammad-emad‬‏-61532b160)
 
 ---
 
