@@ -322,7 +322,6 @@ document.addEventListener("DOMContentLoaded", function () {
         loadUserInfo();
         loadDashboardStats();
         loadLowStockAlerts();
-        loadRecentOrders();
     }
 
     // Start loading dashboard data

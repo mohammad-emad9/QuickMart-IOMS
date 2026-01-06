@@ -303,6 +303,46 @@ require_once __DIR__ . '/../auth_check.php';
 
                 </div>
             </div>
+
+            <!-- Recent Orders Section -->
+            <section class="card shadow-sm border-0 mt-4">
+                <div class="card-header bg-transparent border-0 pt-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-clock me-2 text-primary"></i>Recent Orders
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-success" id="filterSellBtn">
+                            <i class="fas fa-arrow-down me-1"></i>Sell
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-info" id="filterPurchaseBtn">
+                            <i class="fas fa-arrow-up me-1"></i>Purchase
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary active" id="filterAllBtn">
+                            All
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Staff</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentOrdersTable">
+                                <!-- Orders will be loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 

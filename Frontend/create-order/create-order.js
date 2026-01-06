@@ -706,3 +706,187 @@ function addSelectedProducts() {
 
     showToast(`Added ${products.length} product(s) to order`, "success");
 }
+
+// ===========================================
+// Recent Orders Section
+// ===========================================
+let allOrdersCache = [];
+let currentFilter = 'all';
+
+// Load recent orders on page load
+document.addEventListener("DOMContentLoaded", function () {
+    loadRecentOrders();
+    setupOrderFilters();
+});
+
+// Setup filter buttons
+function setupOrderFilters() {
+    const filterAllBtn = document.getElementById("filterAllBtn");
+    const filterSellBtn = document.getElementById("filterSellBtn");
+    const filterPurchaseBtn = document.getElementById("filterPurchaseBtn");
+
+    if (filterAllBtn) {
+        filterAllBtn.addEventListener("click", () => filterOrders('all'));
+    }
+    if (filterSellBtn) {
+        filterSellBtn.addEventListener("click", () => filterOrders('Sell'));
+    }
+    if (filterPurchaseBtn) {
+        filterPurchaseBtn.addEventListener("click", () => filterOrders('Purchase'));
+    }
+}
+
+// Load Recent Orders from Database
+async function loadRecentOrders() {
+    const ordersTable = document.getElementById("recentOrdersTable");
+    if (!ordersTable) return;
+
+    // Show loading state
+    ordersTable.innerHTML = `
+        <tr>
+            <td colspan="7" class="text-center py-4 text-muted">
+                <i class="fas fa-spinner fa-spin me-2"></i>Loading orders...
+            </td>
+        </tr>
+    `;
+
+    try {
+        const response = await fetch('/QuickMart code/backend/api/orders/list.php');
+        const data = await response.json();
+
+        if (data.success && data.data.orders && data.data.orders.length > 0) {
+            allOrdersCache = data.data.orders;
+            renderOrdersTable(allOrdersCache);
+        } else {
+            ordersTable.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-muted">
+                        <i class="fas fa-inbox me-2"></i>No orders yet. Create your first order above!
+                    </td>
+                </tr>
+            `;
+        }
+    } catch (error) {
+        console.error('Error loading recent orders:', error);
+        ordersTable.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-4 text-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Error loading orders
+                </td>
+            </tr>
+        `;
+    }
+}
+
+// Render orders table
+function renderOrdersTable(orders) {
+    const ordersTable = document.getElementById("recentOrdersTable");
+    if (!ordersTable) return;
+
+    if (orders.length === 0) {
+        ordersTable.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-4 text-muted">
+                    <i class="fas fa-inbox me-2"></i>No orders found for this filter.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    ordersTable.innerHTML = orders.map(order => `
+        <tr>
+            <td><strong>${order.Order_ID}</strong></td>
+            <td>
+                <small class="text-muted">
+                    <i class="fas fa-user-tie me-1"></i>${order.Staff_Name || 'Unknown'}
+                </small>
+            </td>
+            <td>${order.Party_Name || '-'}</td>
+            <td class="fw-bold">$${parseFloat(order.Total_Amount || 0).toFixed(2)}</td>
+            <td>
+                <span class="badge ${order.Order_Type === 'Sell' ? 'bg-success' : 'bg-info'}">
+                    <i class="fas ${order.Order_Type === 'Sell' ? 'fa-arrow-down' : 'fa-arrow-up'} me-1"></i>
+                    ${order.Order_Type}
+                </span>
+            </td>
+            <td class="text-muted">${formatOrderDate(order.Order_Date)}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="viewOrderDetails('${order.Order_ID}')">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Filter orders
+function filterOrders(type) {
+    currentFilter = type;
+
+    // Update active button
+    document.querySelectorAll('#filterAllBtn, #filterSellBtn, #filterPurchaseBtn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    if (type === 'all') {
+        document.getElementById('filterAllBtn')?.classList.add('active');
+        renderOrdersTable(allOrdersCache);
+    } else if (type === 'Sell') {
+        document.getElementById('filterSellBtn')?.classList.add('active');
+        const filtered = allOrdersCache.filter(o => o.Order_Type === 'Sell');
+        renderOrdersTable(filtered);
+    } else if (type === 'Purchase') {
+        document.getElementById('filterPurchaseBtn')?.classList.add('active');
+        const filtered = allOrdersCache.filter(o => o.Order_Type === 'Purchase');
+        renderOrdersTable(filtered);
+    }
+}
+
+// Format date helper
+function formatOrderDate(dateStr) {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+    });
+}
+
+// View Order Details
+async function viewOrderDetails(orderId) {
+    try {
+        const response = await fetch(`/QuickMart code/backend/api/orders/get.php?id=${orderId}`);
+        const data = await response.json();
+
+        if (data.success && data.data) {
+            const order = data.data.order;
+            const details = data.data.details;
+
+            // Create and show a simple alert with order details
+            let itemsList = details.map(item =>
+                `• ${item.Product_Name || item.Product_ID}: ${item.Ordered_Qty} x $${parseFloat(item.Sold_Price).toFixed(2)} = $${parseFloat(item.Line_Total).toFixed(2)}`
+            ).join('\n');
+
+            const orderInfo = `
+Order ID: ${order.Order_ID}
+Type: ${order.Order_Type}
+Customer/Supplier: ${order.Party_Name}
+Staff: ${order.Staff_Name || order.Staff_ID}
+Date: ${formatOrderDate(order.Order_Date)}
+
+Items:
+${itemsList}
+
+Total: $${parseFloat(data.data.total_amount).toFixed(2)}
+            `;
+
+            alert(orderInfo);
+        }
+    } catch (error) {
+        console.error('Error loading order details:', error);
+        showToast('Error loading order details', 'error');
+    }
+}
+

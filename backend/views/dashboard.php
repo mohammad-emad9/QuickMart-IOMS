@@ -56,7 +56,7 @@ require_once __DIR__ . '/../auth_check.php';
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="create-order.php">
+                        <a class="nav-link" href="orders.php">
                             <i class="fas fa-file-invoice me-1"></i> Orders
                         </a>
                     </li>
@@ -255,38 +255,7 @@ require_once __DIR__ . '/../auth_check.php';
                 </div>
             </section>
 
-            <!-- Recent Orders Section -->
-            <section class="card shadow-sm border-0">
-                <div class="card-header bg-transparent border-0 pt-4 d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0">
-                        <i class="fas fa-clock me-2 text-primary"></i>Recent Orders
-                    </h5>
-                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-                        data-bs-target="#allOrdersModal">
-                        View All Orders <i class="fas fa-arrow-right ms-1"></i>
-                    </button>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Staff</th>
-                                    <th>Customer</th>
-                                    <th>Amount</th>
-                                    <th>Type</th>
-                                    <th>Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recentOrdersTable">
-                                <!-- Orders will be loaded dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+
         </div>
     </main>
 

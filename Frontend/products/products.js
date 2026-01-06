@@ -63,7 +63,8 @@ async function loadProductsFromDatabase() {
                 category: p.Category || 'General',
                 quantity: parseInt(p.Quantity) || 0,
                 price: parseFloat(p.Price) || 0,
-                status: p.Status
+                status: p.Status,
+                threshold: parseInt(p.Threshold) || 20
             }));
 
             // Populate category filter
@@ -207,9 +208,9 @@ function filterProducts() {
         // Stock filter
         let matchesStock = true;
         if (stockValue === "low") {
-            matchesStock = product.quantity <= LOW_STOCK_THRESHOLD;
+            matchesStock = product.quantity <= product.threshold;
         } else if (stockValue === "normal") {
-            matchesStock = product.quantity > LOW_STOCK_THRESHOLD;
+            matchesStock = product.quantity > product.threshold;
         }
 
         return matchesSearch && matchesCategory && matchesStock;
@@ -280,7 +281,7 @@ function renderProducts(productList) {
                 </span>
             </td>
             <td class="text-center">
-                <span class="quantity-display ${product.quantity <= LOW_STOCK_THRESHOLD ? 'quantity-low' : 'quantity-normal'}">
+                <span class="quantity-display ${product.quantity <= product.threshold ? 'quantity-low' : 'quantity-normal'}">
                     ${product.quantity}
                 </span>
             </td>
@@ -358,6 +359,7 @@ function openAddModal() {
     // Reset form
     document.getElementById("productForm").reset();
     document.getElementById("productId").value = "";
+    // Leave lowStockThreshold empty - placeholder shows default hint, actual default (20) applied on submit
     document.getElementById("modalTitle").innerHTML = '<i class="fas fa-plus-circle me-2"></i>Add New Product';
 
     // Show modal
@@ -380,6 +382,7 @@ function editProduct(productId) {
     document.getElementById("productCategory").value = product.category;
     document.getElementById("productPrice").value = product.price;
     document.getElementById("productQuantity").value = product.quantity;
+    document.getElementById("lowStockThreshold").value = product.threshold || 20;
     document.getElementById("modalTitle").innerHTML = '<i class="fas fa-edit me-2"></i>Edit Product';
 
     // Show modal
@@ -394,8 +397,16 @@ async function handleProductSubmit(event) {
         name: document.getElementById("productName").value.trim(),
         category: document.getElementById("productCategory").value,
         price: parseFloat(document.getElementById("productPrice").value),
-        quantity: parseInt(document.getElementById("productQuantity").value)
+        quantity: parseInt(document.getElementById("productQuantity").value),
+        threshold: parseInt(document.getElementById("lowStockThreshold").value) || 20
     };
+
+    // Debug: Log threshold being sent
+    console.log('=== Threshold Debug ===');
+    console.log('Input value:', document.getElementById("lowStockThreshold").value);
+    console.log('Parsed value:', parseInt(document.getElementById("lowStockThreshold").value));
+    console.log('Final threshold:', formData.threshold);
+    console.log('Full formData:', JSON.stringify(formData));
 
     const submitBtn = document.querySelector('#productForm button[type="submit"]');
     const originalText = submitBtn.innerHTML;

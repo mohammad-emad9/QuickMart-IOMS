@@ -57,7 +57,7 @@ require_once __DIR__ . '/../auth_check.php';
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="create-order.php">
+                        <a class="nav-link" href="orders.php">
                             <i class="fas fa-file-invoice me-1"></i> Orders
                         </a>
                     </li>
@@ -248,10 +248,21 @@ require_once __DIR__ . '/../auth_check.php';
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="productQuantity" class="form-label fw-semibold">Quantity in Stock</label>
-                            <input type="number" class="form-control" id="productQuantity" placeholder="0" min="0"
-                                required>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="productQuantity" class="form-label fw-semibold">Quantity in Stock</label>
+                                <input type="number" class="form-control" id="productQuantity" placeholder="0" min="0"
+                                    required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="lowStockThreshold" class="form-label fw-semibold">
+                                    Low Stock Threshold
+                                    <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip"
+                                        title="Alert will show when quantity falls below this value"></i>
+                                </label>
+                                <input type="number" class="form-control" id="lowStockThreshold" placeholder="20"
+                                    min="0">
+                            </div>
                         </div>
 
                         <div class="mb-3">
