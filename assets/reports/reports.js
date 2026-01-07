@@ -162,15 +162,16 @@ function renderRecentOrders(orders) {
 }
 
 // ===========================================
-// Render Monthly Trend Chart (Simple)
+// Render Monthly Trend Chart (Enhanced)
 // ===========================================
 function renderMonthlyTrend(trend) {
     const container = document.getElementById('monthlyTrendChart');
 
     if (!trend || trend.length === 0) {
         container.innerHTML = `
-            <div class="text-center py-4 text-muted">
-                <i class="fas fa-inbox me-2"></i>Not enough data for trend analysis
+            <div class="text-center py-5 text-muted">
+                <i class="fas fa-chart-bar fa-3x mb-3 opacity-50"></i>
+                <p class="mb-0">Not enough data for trend analysis</p>
             </div>
         `;
         return;
@@ -178,32 +179,116 @@ function renderMonthlyTrend(trend) {
 
     // Find max for scaling
     const maxValue = Math.max(...trend.map(t => Math.max(parseFloat(t.sales) || 0, parseFloat(t.purchases) || 0)));
+    const chartHeight = 280;
+    const barMaxHeight = 220;
+
+    // Generate Y-axis labels
+    const yAxisSteps = 5;
+    const stepValue = maxValue / yAxisSteps;
+    let yAxisLabels = '';
+    for (let i = yAxisSteps; i >= 0; i--) {
+        const value = stepValue * i;
+        const formattedValue = value >= 1000 ? `$${(value / 1000).toFixed(1)}k` : `$${Math.round(value)}`;
+        yAxisLabels += `<div class="y-axis-label">${formattedValue}</div>`;
+    }
+
+    // Generate grid lines
+    let gridLines = '';
+    for (let i = 0; i <= yAxisSteps; i++) {
+        gridLines += `<div class="grid-line" style="bottom: ${(i / yAxisSteps) * barMaxHeight}px;"></div>`;
+    }
 
     container.innerHTML = `
-        <div class="d-flex align-items-end justify-content-around" style="height: 200px;">
-            ${trend.map(month => {
-        const salesHeight = maxValue > 0 ? (parseFloat(month.sales || 0) / maxValue) * 150 : 0;
-        const purchasesHeight = maxValue > 0 ? (parseFloat(month.purchases || 0) / maxValue) * 150 : 0;
+        <div class="enhanced-chart-container">
+            <!-- Y-Axis -->
+            <div class="y-axis">
+                ${yAxisLabels}
+            </div>
+            
+            <!-- Chart Area -->
+            <div class="chart-area">
+                <!-- Grid Lines -->
+                <div class="grid-lines">
+                    ${gridLines}
+                </div>
+                
+                <!-- Bars Container -->
+                <div class="bars-container">
+                    ${trend.map((month, index) => {
+        const salesValue = parseFloat(month.sales || 0);
+        const purchasesValue = parseFloat(month.purchases || 0);
+        const salesHeight = maxValue > 0 ? (salesValue / maxValue) * barMaxHeight : 0;
+        const purchasesHeight = maxValue > 0 ? (purchasesValue / maxValue) * barMaxHeight : 0;
         const monthName = new Date(month.month + '-01').toLocaleDateString('en-US', { month: 'short' });
+        const yearNum = new Date(month.month + '-01').getFullYear();
 
         return `
-                    <div class="text-center flex-fill px-2">
-                        <div class="d-flex align-items-end justify-content-center gap-1" style="height: 160px;">
-                            <div class="trend-bar bg-success" style="width: 20px; height: ${salesHeight}px;" 
-                                 title="Sales: $${formatCurrency(month.sales)}"></div>
-                            <div class="trend-bar bg-info" style="width: 20px; height: ${purchasesHeight}px;"
-                                 title="Purchases: $${formatCurrency(month.purchases)}"></div>
-                        </div>
-                        <small class="text-muted d-block mt-2">${monthName}</small>
-                    </div>
-                `;
+                            <div class="bar-group" style="animation-delay: ${index * 0.1}s">
+                                <!-- Sales Bar -->
+                                <div class="bar-wrapper">
+                                    <div class="bar-value sales-value" style="bottom: ${salesHeight + 8}px;">
+                                        $${salesValue >= 1000 ? (salesValue / 1000).toFixed(1) + 'k' : formatCurrency(salesValue)}
+                                    </div>
+                                    <div class="trend-bar-enhanced sales-bar" 
+                                         style="height: ${salesHeight}px;"
+                                         data-value="${salesValue}"
+                                         data-type="Sales">
+                                        <div class="bar-glow"></div>
+                                    </div>
+                                    <div class="bar-tooltip">
+                                        <strong>Sales</strong><br>
+                                        $${formatCurrency(salesValue)}
+                                    </div>
+                                </div>
+                                
+                                <!-- Purchases Bar -->
+                                <div class="bar-wrapper">
+                                    <div class="bar-value purchases-value" style="bottom: ${purchasesHeight + 8}px;">
+                                        $${purchasesValue >= 1000 ? (purchasesValue / 1000).toFixed(1) + 'k' : formatCurrency(purchasesValue)}
+                                    </div>
+                                    <div class="trend-bar-enhanced purchases-bar" 
+                                         style="height: ${purchasesHeight}px;"
+                                         data-value="${purchasesValue}"
+                                         data-type="Purchases">
+                                        <div class="bar-glow"></div>
+                                    </div>
+                                    <div class="bar-tooltip">
+                                        <strong>Purchases</strong><br>
+                                        $${formatCurrency(purchasesValue)}
+                                    </div>
+                                </div>
+                                
+                                <!-- Month Label -->
+                                <div class="month-label">
+                                    <span class="month-name">${monthName}</span>
+                                    <span class="year-num">${yearNum}</span>
+                                </div>
+                            </div>
+                        `;
     }).join('')}
+                </div>
+            </div>
         </div>
-        <div class="d-flex justify-content-center gap-4 mt-3">
-            <span><span class="badge bg-success">&nbsp;</span> Sales</span>
-            <span><span class="badge bg-info">&nbsp;</span> Purchases</span>
+        
+        <!-- Legend -->
+        <div class="chart-legend">
+            <div class="legend-item">
+                <span class="legend-color sales-legend"></span>
+                <span class="legend-text">Sales Revenue</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color purchases-legend"></span>
+                <span class="legend-text">Purchase Costs</span>
+            </div>
         </div>
     `;
+
+    // Add animation class after a small delay
+    setTimeout(() => {
+        container.querySelectorAll('.trend-bar-enhanced').forEach(bar => {
+            bar.classList.add('animated');
+        });
+    }, 100);
 }
 
 // ===========================================

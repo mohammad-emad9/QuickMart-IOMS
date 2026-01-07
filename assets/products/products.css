@@ -294,8 +294,105 @@
 }
 
 /* ===========================================
-   Row Selection
+   Row Selection & Checkboxes - Cross Browser
 =========================================== */
+/* Base checkbox styling for all browsers including Chrome */
+.products-table .form-check-input,
+.products-table input[type="checkbox"],
+.product-checkbox,
+#selectAllProducts {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* STRONG VISIBLE BORDER - Indigo/Purple */
+    border: 2px solid #6366f1 !important;
+    border-radius: 4px !important;
+    background-color: #ffffff !important;
+    /* Override all browser defaults */
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    transition: all 0.15s ease-in-out !important;
+    /* Remove Bootstrap SVG background */
+    background-image: none !important;
+}
+
+/* Hover state */
+.products-table .form-check-input:hover,
+.product-checkbox:hover,
+#selectAllProducts:hover {
+    border-color: #6366f1;
+    background-color: #f8fafc;
+}
+
+/* Checked state */
+.products-table .form-check-input:checked,
+.product-checkbox:checked,
+#selectAllProducts:checked {
+    background-color: #6366f1;
+    border-color: #6366f1;
+}
+
+/* Checkmark icon */
+.products-table .form-check-input:checked::after,
+.product-checkbox:checked::after,
+#selectAllProducts:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 5px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Indeterminate state (for select all) */
+#selectAllProducts:indeterminate {
+    background-color: #6366f1;
+    border-color: #6366f1;
+}
+
+#selectAllProducts:indeterminate::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 3px;
+    width: 8px;
+    height: 2px;
+    background-color: white;
+    border: none;
+    transform: none;
+}
+
+/* Focus state */
+.products-table .form-check-input:focus,
+.product-checkbox:focus,
+#selectAllProducts:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    border-color: #6366f1;
+}
+
+/* Checkbox cell padding */
+.products-table thead th:first-child,
+.products-table tbody td:first-child {
+    width: 50px;
+    max-width: 50px;
+    text-align: center;
+}
+
+/* Row selection highlight */
 .row-checkbox {
     width: 18px;
     height: 18px;

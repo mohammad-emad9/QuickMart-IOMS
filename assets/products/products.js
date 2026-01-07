@@ -42,7 +42,7 @@ async function loadProductsFromDatabase() {
     if (tableBody) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center py-5">
+                <td colspan="8" class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
@@ -78,7 +78,7 @@ async function loadProductsFromDatabase() {
             if (tableBody) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="text-center py-5 text-muted">
+                        <td colspan="8" class="text-center py-5 text-muted">
                             <i class="fas fa-inbox fa-3x mb-3"></i>
                             <h5>No products found</h5>
                             <p>Click "Add Product" to add your first product.</p>
@@ -92,7 +92,7 @@ async function loadProductsFromDatabase() {
         if (tableBody) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="7" class="text-center py-5 text-danger">
+                    <td colspan="8" class="text-center py-5 text-danger">
                         <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
                         <h5>Error loading products</h5>
                         <p>Please check your database connection.</p>
@@ -179,6 +179,18 @@ function setupEventListeners() {
         exportBtn.addEventListener("click", exportToCSV);
     }
 
+    // Delete Selected button
+    const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
+    if (deleteSelectedBtn) {
+        deleteSelectedBtn.addEventListener("click", deleteSelectedProducts);
+    }
+
+    // Select All checkbox
+    const selectAllCheckbox = document.getElementById("selectAllProducts");
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener("change", toggleSelectAll);
+    }
+
     // Logout button - uses handleLogout from common.js
     // Note: common.js auto-sets up logout handler on DOMContentLoaded
 }
@@ -254,7 +266,7 @@ function renderProducts(productList) {
     if (productList.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="7">
+                <td colspan="8">
                     <div class="empty-state">
                         <i class="fas fa-box-open"></i>
                         <h5>No Products Found</h5>
@@ -268,7 +280,10 @@ function renderProducts(productList) {
 
     tableBody.innerHTML = productList.map(product => `
         <tr data-id="${product.id}">
-            <td class="ps-4">
+            <td class="ps-3">
+                <input type="checkbox" class="form-check-input product-checkbox" data-id="${product.id}">
+            </td>
+            <td>
                 <span class="product-id">${product.id}</span>
             </td>
             <td>
@@ -303,6 +318,9 @@ function renderProducts(productList) {
             </td>
         </tr>
     `).join('');
+
+    // Setup checkbox event listeners after rendering
+    setupCheckboxListeners();
 }
 
 // ===========================================
@@ -539,6 +557,149 @@ function exportToCSV() {
     link.click();
 
     showToast("Products exported to CSV!", "success");
+}
+
+// ===========================================
+// Checkbox Selection Functions
+// ===========================================
+let selectedProducts = new Set();
+
+function setupCheckboxListeners() {
+    // Clear previous selections when products are re-rendered
+    selectedProducts.clear();
+
+    // Reset select all checkbox
+    const selectAllCheckbox = document.getElementById('selectAllProducts');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+    }
+
+    // Update the delete button to show correct count
+    updateDeleteSelectedButton();
+
+    // Listen to individual checkbox changes
+    document.querySelectorAll('.product-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const productId = this.dataset.id;
+            if (this.checked) {
+                selectedProducts.add(productId);
+            } else {
+                selectedProducts.delete(productId);
+            }
+            updateDeleteSelectedButton();
+            updateSelectAllCheckbox();
+        });
+    });
+}
+
+function toggleSelectAll() {
+    const selectAllCheckbox = document.getElementById('selectAllProducts');
+    const checkboxes = document.querySelectorAll('.product-checkbox');
+
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked;
+        const productId = checkbox.dataset.id;
+        if (selectAllCheckbox.checked) {
+            selectedProducts.add(productId);
+        } else {
+            selectedProducts.delete(productId);
+        }
+    });
+
+    updateDeleteSelectedButton();
+}
+
+function updateSelectAllCheckbox() {
+    const selectAllCheckbox = document.getElementById('selectAllProducts');
+    const checkboxes = document.querySelectorAll('.product-checkbox');
+    const checkedCount = document.querySelectorAll('.product-checkbox:checked').length;
+
+    if (checkboxes.length === 0) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+    } else if (checkedCount === 0) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+    } else if (checkedCount === checkboxes.length) {
+        selectAllCheckbox.checked = true;
+        selectAllCheckbox.indeterminate = false;
+    } else {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = true;
+    }
+}
+
+function updateDeleteSelectedButton() {
+    const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
+    const count = selectedProducts.size;
+
+    if (deleteSelectedBtn) {
+        deleteSelectedBtn.disabled = count === 0;
+        if (count > 0) {
+            deleteSelectedBtn.innerHTML = `<i class="fas fa-trash-alt me-1"></i> Delete Selected (${count})`;
+        } else {
+            deleteSelectedBtn.innerHTML = `<i class="fas fa-trash-alt me-1"></i> Delete Selected`;
+        }
+    }
+}
+
+async function deleteSelectedProducts() {
+    const count = selectedProducts.size;
+    if (count === 0) return;
+
+    // Show confirmation
+    if (!confirm(`Are you sure you want to delete ${count} selected product(s)? This action cannot be undone.`)) {
+        return;
+    }
+
+    const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
+    const originalText = deleteSelectedBtn.innerHTML;
+    deleteSelectedBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Deleting...';
+    deleteSelectedBtn.disabled = true;
+
+    let successCount = 0;
+    let failCount = 0;
+
+    // Delete each selected product
+    for (const productId of selectedProducts) {
+        try {
+            const response = await fetch('/QuickMart code/backend/api/products/delete.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ product_id: productId })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                successCount++;
+            } else {
+                failCount++;
+            }
+        } catch (error) {
+            console.error(`Error deleting product ${productId}:`, error);
+            failCount++;
+        }
+    }
+
+    // Clear selections
+    selectedProducts.clear();
+    const selectAllCheckbox = document.getElementById('selectAllProducts');
+    if (selectAllCheckbox) selectAllCheckbox.checked = false;
+
+    // Show result
+    if (successCount > 0) {
+        showToast(`Successfully deleted ${successCount} product(s)${failCount > 0 ? `, ${failCount} failed` : ''}`, 'success');
+    } else {
+        showToast('Failed to delete products', 'error');
+    }
+
+    // Reload products
+    loadProductsFromDatabase();
+
+    // Reset button
+    deleteSelectedBtn.innerHTML = originalText;
+    updateDeleteSelectedButton();
 }
 
 // Note: showToast(), handleLogout(), and debounce() are now in common.js

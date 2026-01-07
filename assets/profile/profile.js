@@ -154,7 +154,7 @@ async function handleEditProfile(e) {
     submitBtn.disabled = true;
 
     try {
-        const response = await fetch('/QuickMart code/backend/api/staff/update.php', {
+        const response = await fetch('/QuickMart code/backend/api/staff/update-profile.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)

@@ -53,6 +53,86 @@
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
+/* ===========================================
+   Cross-Browser Checkbox Styles (Chrome Fix)
+=========================================== */
+input[type="checkbox"].form-check-input,
+input[type="checkbox"].product-checkbox,
+.form-check-input[type="checkbox"],
+.product-checkbox,
+#selectAllProducts {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* Strong visible border */
+    border: 2px solid #6366f1 !important;
+    border-radius: 4px !important;
+    background-color: #ffffff !important;
+    /* Override Bootstrap */
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    transition: all 0.15s ease-in-out !important;
+    /* Remove Bootstrap background-image */
+    background-image: none !important;
+}
+
+/* Hover state */
+input[type="checkbox"].form-check-input:hover,
+input[type="checkbox"].product-checkbox:hover,
+.product-checkbox:hover,
+#selectAllProducts:hover {
+    border-color: #4f46e5 !important;
+    background-color: #eef2ff !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* Checked state - MUST have colored background */
+input[type="checkbox"].form-check-input:checked,
+input[type="checkbox"].product-checkbox:checked,
+.product-checkbox:checked,
+#selectAllProducts:checked {
+    background-color: #6366f1 !important;
+    border-color: #6366f1 !important;
+    background-image: none !important;
+}
+
+/* Custom checkmark using CSS pseudo-element */
+input[type="checkbox"].form-check-input:checked::before,
+input[type="checkbox"].product-checkbox:checked::before,
+.product-checkbox:checked::before,
+#selectAllProducts:checked::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 1px !important;
+    left: 5px !important;
+    width: 5px !important;
+    height: 10px !important;
+    border: solid white !important;
+    border-width: 0 2px 2px 0 !important;
+    transform: rotate(45deg) !important;
+    display: block !important;
+}
+
+/* Focus state */
+input[type="checkbox"].form-check-input:focus,
+input[type="checkbox"].product-checkbox:focus,
+.product-checkbox:focus,
+#selectAllProducts:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3) !important;
+    border-color: #6366f1 !important;
+}
+
 .form-label {
     font-size: 0.85rem;
     color: #475569;
@@ -250,6 +330,7 @@ input[type="tel"] {
    Common Print Styles
 =========================================== */
 @media print {
+
     .navbar,
     .toast-container,
     .modal,
