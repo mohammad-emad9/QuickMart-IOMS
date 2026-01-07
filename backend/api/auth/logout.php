@@ -5,7 +5,7 @@
  */
 
 // Only need config for session (not full bootstrap)
-require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../../core/config.php';
 
 // Destroy session
 $_SESSION = [];

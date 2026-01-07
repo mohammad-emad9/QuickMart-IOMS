@@ -5,5 +5,5 @@
  */
 
 // Redirect to login page
-header('Location: Frontend/login-signup/login.html');
+header('Location: assets/login-signup/login.html');
 exit;

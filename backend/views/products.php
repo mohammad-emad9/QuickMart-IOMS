@@ -1,6 +1,6 @@
 <?php
 // Authentication Guard - Redirect to login if not authenticated
-require_once __DIR__ . '/../auth_check.php';
+require_once __DIR__ . '/../core/auth_check.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,11 +18,11 @@ require_once __DIR__ . '/../auth_check.php';
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <!-- Dashboard Styles (shared) -->
-    <link rel="stylesheet" href="../../Frontend/dashboard/dashboard.css">
+    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css">
     <!-- Products Page Styles -->
-    <link rel="stylesheet" href="../../Frontend/products/products.css">
+    <link rel="stylesheet" href="../../assets/products/products.css">
     <!-- Common Shared Styles -->
-    <link rel="stylesheet" href="../../Frontend/common.css">
+    <link rel="stylesheet" href="../../assets/common.css">
 </head>
 
 <body>
@@ -338,9 +338,9 @@ require_once __DIR__ . '/../auth_check.php';
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Common Shared Scripts -->
-    <script src="../../Frontend/common.js"></script>
+    <script src="../../assets/common.js"></script>
     <!-- Products Page Logic -->
-    <script src="../../Frontend/products/products.js"></script>
+    <script src="../../assets/products/products.js"></script>
 </body>
 
 </html>

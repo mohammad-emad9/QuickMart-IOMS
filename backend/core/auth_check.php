@@ -14,7 +14,8 @@ if (session_status() === PHP_SESSION_NONE) {
  * Check if user is authenticated
  * @return bool True if authenticated, false otherwise
  */
-function isAuthenticated() {
+function isAuthenticated()
+{
     return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
 }
 
@@ -22,7 +23,8 @@ function isAuthenticated() {
  * Get current user's ID
  * @return string|null User ID or null if not logged in
  */
-function getCurrentUserId() {
+function getCurrentUserId()
+{
     return $_SESSION['user_id'] ?? null;
 }
 
@@ -30,7 +32,8 @@ function getCurrentUserId() {
  * Get current user's name
  * @return string User name or 'Guest'
  */
-function getCurrentUserName() {
+function getCurrentUserName()
+{
     return $_SESSION['user_name'] ?? 'Guest';
 }
 
@@ -38,7 +41,8 @@ function getCurrentUserName() {
  * Get current user's role
  * @return string User role or 'Staff'
  */
-function getCurrentUserRole() {
+function getCurrentUserRole()
+{
     return $_SESSION['user_role'] ?? 'Staff';
 }
 
@@ -46,7 +50,8 @@ function getCurrentUserRole() {
  * Check if current user is an Admin
  * @return bool True if admin
  */
-function isAdmin() {
+function isAdmin()
+{
     return getCurrentUserRole() === 'Admin';
 }
 
@@ -54,14 +59,15 @@ function isAdmin() {
  * Require authentication - redirect to login if not authenticated
  * Call this at the top of every protected page
  */
-function requireAuth() {
+function requireAuth()
+{
     if (!isAuthenticated()) {
         // Clear any stale session data
         session_unset();
         session_destroy();
-        
+
         // Redirect to login page
-        header('Location: /QuickMart code/Frontend/login-signup/login.html');
+        header('Location: /QuickMart code/assets/login-signup/login.html');
         exit;
     }
 }
@@ -69,7 +75,8 @@ function requireAuth() {
 /**
  * Require Admin role - show 403 error if not admin
  */
-function requireAdmin() {
+function requireAdmin()
+{
     requireAuth();
     if (!isAdmin()) {
         http_response_code(403);

@@ -545,7 +545,7 @@ function showOrderReview() {
     if (!staffId) {
         showToast("Session expired. Please login again.", "error");
         setTimeout(() => {
-            window.location.href = "/QuickMart code/Frontend/login-signup/login.html";
+            window.location.href = "/QuickMart code/assets/login-signup/login.html";
         }, 2000);
         return;
     }

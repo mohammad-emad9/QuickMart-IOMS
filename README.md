@@ -122,10 +122,11 @@
 
 ```
 QuickMart code/
-├── 📁 Frontend/                    # Client-side files
+├── 📁 assets/                      # Client-side files (CSS, JS, Images)
 │   ├── 📁 login-signup/            # Authentication pages
-│   ├── 📁 dashboard/               # Main dashboard (CSS, JS)
+│   ├── 📁 dashboard/               # Dashboard styles & scripts
 │   ├── 📁 products/                # Product management
+│   ├── 📁 orders/                  # Orders page
 │   ├── 📁 create-order/            # Order creation
 │   ├── 📁 order-details/           # Order viewing
 │   ├── 📁 reports/                 # Business reports
@@ -146,24 +147,26 @@ QuickMart code/
 │   ├── 📁 views/                   # PHP view templates
 │   │   ├── 📄 dashboard.php
 │   │   ├── 📄 products.php
+│   │   ├── 📄 orders.php
 │   │   ├── 📄 create-order.php
 │   │   ├── 📄 order-details.php
 │   │   ├── 📄 reports.php
 │   │   ├── 📄 staff.php
 │   │   └── 📄 profile.php
 │   │
-│   ├── 📄 config.php               # App configuration
-│   ├── 📄 db.php                   # Database connection
-│   ├── 📄 auth_check.php           # Auth middleware
-│   ├── 📄 helpers.php              # Utility functions
+│   ├── 📁 core/                    # Core system files
+│   │   ├── 📄 config.php           # App configuration
+│   │   ├── 📄 db.php               # Database connection
+│   │   ├── 📄 auth_check.php       # Auth middleware
+│   │   └── 📄 helpers.php          # Utility functions
+│   │
 │   └── 📄 .htaccess                # Security rules
 │
 ├── 📁 database/                    # Database files
 │   ├── 📄 schema.sql               # Table definitions
-│   ├── 📄 data.sql                 # Sample data
-│   └── 📄 .htaccess                # Directory protection
+│   └── 📄 data.sql                 # Sample data
 │
-├── 📁 Screenshot/                  # Application screenshots
+├── 📁 screenshots/                 # Project screenshots & evidence
 ├── 📄 index.php                    # Entry point
 └── 📄 README.md                    # This file
 ```
@@ -199,7 +202,7 @@ mv QuickMart-IOMS /opt/lampp/htdocs/QuickMart\ code
 
 #### 3️⃣ Configure Database Connection
 
-Edit `backend/db.php` with your database credentials:
+Edit `backend/core/db.php` with your database credentials:
 
 ```php
 $host = 'localhost';

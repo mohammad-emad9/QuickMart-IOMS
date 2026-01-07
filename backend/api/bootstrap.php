@@ -10,9 +10,9 @@ if (basename($_SERVER['PHP_SELF']) === 'bootstrap.php') {
 }
 
 // Core includes
-require_once __DIR__ . '/../config.php';
-require_once __DIR__ . '/../db.php';
-require_once __DIR__ . '/../helpers.php';
+require_once __DIR__ . '/../core/config.php';
+require_once __DIR__ . '/../core/db.php';
+require_once __DIR__ . '/../core/helpers.php';
 
 // API Headers
 header('Content-Type: application/json; charset=UTF-8');

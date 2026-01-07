@@ -1,7 +1,7 @@
 <?php
 // Authentication Guard - Redirect to login if not authenticated
 // Admin Only - This page requires Admin role
-require_once __DIR__ . '/../auth_check.php';
+require_once __DIR__ . '/../core/auth_check.php';
 requireAdmin(); // Only admins can access this page
 ?>
 <!DOCTYPE html>
@@ -20,9 +20,9 @@ requireAdmin(); // Only admins can access this page
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <!-- Dashboard Styles -->
-    <link rel="stylesheet" href="../../Frontend/dashboard/dashboard.css">
+    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css">
     <!-- Common Shared Styles -->
-    <link rel="stylesheet" href="../../Frontend/common.css">
+    <link rel="stylesheet" href="../../assets/common.css">
     <style>
         .staff-card {
             background: linear-gradient(145deg, #3d3d46, #545151);
@@ -284,8 +284,8 @@ requireAdmin(); // Only admins can access this page
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Common Shared Scripts -->
-    <script src="../../Frontend/common.js"></script>
-    <script src="../../Frontend/staff/staff.js"></script>
+    <script src="../../assets/common.js"></script>
+    <script src="../../assets/staff/staff.js"></script>
 </body>
 
 </html>

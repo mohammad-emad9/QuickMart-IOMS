@@ -14,7 +14,7 @@
 function checkSession() {
     const isLoggedIn = sessionStorage.getItem("isLoggedIn");
     if (isLoggedIn !== "true") {
-        window.location.href = "/QuickMart code/Frontend/login-signup/login.html";
+        window.location.href = "/QuickMart code/assets/login-signup/login.html";
         return false;
     }
     return true;
@@ -54,7 +54,7 @@ function loadUserInfo() {
  */
 function performLogout() {
     sessionStorage.clear();
-    window.location.href = "/QuickMart code/Frontend/login-signup/login.html";
+    window.location.href = "/QuickMart code/assets/login-signup/login.html";
 }
 
 /**
