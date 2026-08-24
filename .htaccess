@@ -1,0 +1,8 @@
+# QuickMart local XAMPP runtime configuration.
+# Keep production deployments configured through their server environment.
+<IfModule env_module>
+    SetEnv QUICKMART_DB_HOST "127.0.0.1"
+    SetEnv QUICKMART_DB_NAME "quickmart_db"
+    SetEnv QUICKMART_DB_USER "root"
+    SetEnv QUICKMART_DB_PASSWORD ""
+</IfModule>

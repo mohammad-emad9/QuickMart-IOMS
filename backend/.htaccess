@@ -1,0 +1,12 @@
+# Protect sensitive configuration files only
+<FilesMatch "^(config|db|helpers|auth_check|bootstrap)\.php$">
+    Require all denied
+</FilesMatch>
+
+# Prevent viewing of directory listing
+Options -Indexes
+
+# Protect .htaccess
+<Files ".htaccess">
+    Require all denied
+</Files>

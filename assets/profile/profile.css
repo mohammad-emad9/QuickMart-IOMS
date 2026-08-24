@@ -1,0 +1,133 @@
+/* ===========================================
+   QuickMart IOMS - Profile Page Styles
+=========================================== */
+
+/* ===========================================
+   Profile Card
+=========================================== */
+.profile-card {
+    border-radius: 16px;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+.profile-avatar i {
+    font-size: 4rem;
+    color: white;
+}
+
+.profile-info {
+    margin-top: 1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-item i {
+    width: 30px;
+    font-size: 1rem;
+}
+
+.info-item span {
+    font-size: 0.95rem;
+    color: #475569;
+}
+
+/* ===========================================
+   Stats Cards
+=========================================== */
+.stat-card {
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon i {
+    font-size: 1.25rem;
+}
+
+.bg-primary-soft {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.bg-success-soft {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.bg-info-soft {
+    background: rgba(14, 165, 233, 0.1);
+}
+
+/* ===========================================
+   Form Styling
+=========================================== */
+.card {
+    border-radius: 12px;
+}
+
+.card-header {
+    border-bottom: none;
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    border: 1px solid #e2e8f0;
+}
+
+.form-control:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Force English numerals */
+input[type="number"],
+input[type="tel"],
+input[type="date"] {
+    direction: ltr !important;
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+
+/* ===========================================
+   Responsive
+=========================================== */
+@media (max-width: 991.98px) {
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+    }
+
+    .profile-avatar i {
+        font-size: 3rem;
+    }
+}

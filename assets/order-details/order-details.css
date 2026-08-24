@@ -1,0 +1,331 @@
+/* ===========================================
+   QuickMart IOMS - Order Details Page Styles
+=========================================== */
+
+/* ===========================================
+   Invoice Box
+=========================================== */
+.invoice-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* ===========================================
+   Invoice Header
+=========================================== */
+.invoice-header {
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.invoice-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* ===========================================
+   Section Labels
+=========================================== */
+.section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+/* ===========================================
+   Order Type Badge
+=========================================== */
+.order-type-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.order-type-sell {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.order-type-purchase {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+/* ===========================================
+   Status Badges
+=========================================== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-completed {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.status-confirmed {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.status-cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* ===========================================
+   Invoice Table
+=========================================== */
+.invoice-table {
+    margin-bottom: 0;
+}
+
+.invoice-table thead th {
+    background: #f8fafc;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #475569;
+    padding: 0.75rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.invoice-table tbody td {
+    padding: 0.85rem 0.75rem;
+    vertical-align: middle;
+}
+
+.invoice-table .product-name {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.invoice-table .qty-cell {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.invoice-table .price-cell {
+    color: #475569;
+}
+
+.invoice-table .total-cell {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Stock After Column */
+.stock-after-col {
+    background: #f8fafc !important;
+    border-left: 2px solid #e2e8f0 !important;
+}
+
+.invoice-table tbody .stock-after-col {
+    background: #f8fafc;
+    border-left: 2px solid #e2e8f0;
+}
+
+.stock-impact-neg {
+    color: #dc2626;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.stock-impact-pos {
+    color: #16a34a;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.stock-current {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+/* ===========================================
+   Notes Box
+=========================================== */
+.notes-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+/* ===========================================
+   Summary Box
+=========================================== */
+.summary-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.25rem;
+}
+
+.grand-total {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color, #6366f1);
+}
+
+/* ===========================================
+   Back Link
+=========================================== */
+.back-link {
+    transition: all 0.2s ease;
+}
+
+.back-link:hover {
+    color: var(--primary-color, #6366f1) !important;
+}
+
+/* ===========================================
+   Print Footer (Only visible on print)
+=========================================== */
+.print-footer {
+    display: none;
+}
+
+/* ===========================================
+   Toast Notifications
+=========================================== */
+.toast {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.toast-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.toast-info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+/* ===========================================
+   Responsive Design
+=========================================== */
+@media (max-width: 767.98px) {
+    .invoice-box {
+        padding: 1.25rem;
+    }
+
+    .invoice-title {
+        font-size: 1.1rem;
+    }
+
+    .invoice-table {
+        font-size: 0.85rem;
+    }
+
+    .grand-total {
+        font-size: 1.25rem;
+    }
+}
+
+/* ===========================================
+   Print Styles
+=========================================== */
+@media print {
+
+    /* Hide navigation and action buttons */
+    .no-print,
+    .navbar,
+    .toast-container,
+    .modal {
+        display: none !important;
+    }
+
+    /* Full width for print */
+    .main-content {
+        padding: 0 !important;
+    }
+
+    .container-fluid {
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* Clean invoice styling for print */
+    .invoice-box {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* White background */
+    body {
+        background: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Show print footer */
+    .print-footer {
+        display: block !important;
+        margin-top: 2rem;
+    }
+
+    /* Ensure table colors print */
+    .invoice-table thead th {
+        background: #f1f5f9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .stock-after-col {
+        background: #f8fafc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .status-badge,
+    .order-type-badge {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Prevent page breaks inside elements */
+    .invoice-header,
+    .invoice-table,
+    .summary-box {
+        page-break-inside: avoid;
+    }
+}

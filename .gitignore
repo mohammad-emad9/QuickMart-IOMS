@@ -1,0 +1,29 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs, caches, backups, and generated files
+*.log
+*.tmp
+*.temp
+*.bak
+*.backup
+cache/
+tmp/
+temp/
+logs/
+backups/
+
+# Local development and editor files
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+.DS_Store
+
+# Dependency/build output if introduced later
+vendor/
+node_modules/
+dist/
+build/
