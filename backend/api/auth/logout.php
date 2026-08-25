@@ -1,12 +1,9 @@
 <?php
-/**
- * QuickMart IOMS - Logout API
- * POST: Destroy user session
+/*
+ * POST: Terminate user session and clear authentication cookies.
  */
 
-// Only need config for session (not full bootstrap)
-require_once __DIR__ . '/../../core/config.php';
-require_once __DIR__ . '/../../core/helpers.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     errorResponse('Method not allowed', 405);
@@ -17,7 +14,6 @@ if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
     requireCsrfToken();
 }
 
-// Destroy session
 $_SESSION = [];
 
 if (ini_get("session.use_cookies")) {

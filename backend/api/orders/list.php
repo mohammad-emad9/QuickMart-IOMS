@@ -1,13 +1,11 @@
 <?php
-/**
- * QuickMart IOMS - List Orders API
- * GET: Retrieve all orders with optional filters
+/*
+ * GET: List orders with optional filters.
  */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../../application/orders/order-service.php';
 
-// Only accept GET requests
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     errorResponse('Method not allowed', 405);
 }
@@ -25,7 +23,6 @@ try {
     $dateFrom = null;
     $dateTo = null;
 
-    // Filter by order type
     if (isset($_GET['type']) && $_GET['type'] !== '') {
         $orderType = $_GET['type'];
     }
@@ -36,7 +33,6 @@ try {
         $requestedStaffId = validateIdentifier($_GET['staff_id'], 'staff_id');
     }
 
-    // Filter by date range
     if (isset($_GET['date_from']) && $_GET['date_from'] !== '') {
         $dateFrom = $_GET['date_from'];
     }

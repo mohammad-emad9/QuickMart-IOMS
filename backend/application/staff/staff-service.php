@@ -1,7 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Staff Service
- * Staff application operations
+/*
+ * Staff service operations.
  */
 
 require_once __DIR__ . '/../../infrastructure/database/staff-repository.php';

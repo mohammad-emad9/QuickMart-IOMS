@@ -1,4 +1,4 @@
-/* QuickMart Operations Ledger - Profile and Account Settings */
+/* Profile and account settings styles. */
 
 .profile-page {
     min-height: calc(100vh - 72px);
@@ -773,15 +773,5 @@
     .profile-form__actions .profile-button,
     .profile-logout__actions .profile-button {
         flex: 1 1 10rem;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .profile-page *,
-    .profile-modal * {
-        scroll-behavior: auto !important;
-        transition-duration: 0.01ms !important;
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
     }
 }

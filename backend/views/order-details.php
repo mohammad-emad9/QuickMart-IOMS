@@ -1,21 +1,16 @@
 <?php
-// Authentication Guard - Redirect to login if not authenticated
 require_once __DIR__ . '/../core/auth_check.php';
+$pageTitle = 'QuickMart IOMS - Order Details';
+$pageDescription = 'QuickMart IOMS - Order Details';
+$pageViewport = 'width=device-width, initial-scale=1.0';
+$pageStylesheets = [
+    '../../dist/css/dashboard.min.css?v=ui10',
+    '../../dist/css/order-details.min.css?v=print01',
+    '../../dist/css/common.min.css?v=ui12',
+];
+$pageScript = '../../dist/js/order-details.min.js';
 ?>
-<!DOCTYPE html>
-<html lang="en" dir="rtl">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="QuickMart IOMS - Order Details">
-    <title>QuickMart IOMS - Order Details</title>
-    <link rel="icon" type="image/png" href="../../assets/icons/icon-512.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css?v=ui10">
-    <link rel="stylesheet" href="../../assets/order-details/order-details.css?v=print01">
-    <link rel="stylesheet" href="../../assets/common.css?v=ui12">
-</head>
+<?php require __DIR__ . '/partials/authenticated-head.php'; ?>
 
 <body class="order-details-page">
     <?php require __DIR__ . '/partials/shell-nav.php'; ?>
@@ -74,12 +69,9 @@ require_once __DIR__ . '/../core/auth_check.php';
 
     <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
 
-    <!-- Logout Confirmation Modal -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content logout-modal"><div class="modal-body text-center"><span class="logout-modal__icon" aria-hidden="true"><svg class="qm-icon" viewBox="0 0 24 24"><path d="M10 4H5v16h5M14 8l4 4-4 4M18 12H8" /></svg></span><h2 id="logoutModalLabel">Sign out?</h2><p>Your current workspace session will end.</p><div class="logout-modal__actions"><button type="button" class="qm-button qm-button--quiet" data-bs-dismiss="modal">Cancel</button><button type="button" class="qm-button qm-button--danger" id="confirmLogoutBtn"><svg class="qm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5v16h5M14 8l4 4-4 4M18 12H8" /></svg><span>Sign out</span></button></div></div></div></div></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../../assets/common.js"></script>
-    <script src="../../assets/order-details/order-details.js"></script>
+<?php require __DIR__ . '/partials/authenticated-script-loader.php'; ?>
 </body>
 
 </html>

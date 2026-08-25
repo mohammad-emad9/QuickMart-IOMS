@@ -1,23 +1,19 @@
 <?php
-/**
- * QuickMart IOMS - Update Product API
- * POST/PUT: Update existing product
+/*
+ * POST/PUT: Update product fields (Admin only).
  */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../../application/products/product-service.php';
 
-// Accept POST or PUT
 if (!in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PUT'])) {
     errorResponse('Method not allowed', 405);
 }
 
 requireApiRole('Admin');
 
-// Get input data
 $input = getJsonInput();
 
-// Validate required field
 if (!isset($input['product_id']) || empty($input['product_id'])) {
     errorResponse('Product ID is required');
 }

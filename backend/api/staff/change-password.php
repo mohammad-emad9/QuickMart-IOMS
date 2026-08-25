@@ -1,13 +1,11 @@
 <?php
-/**
- * QuickMart IOMS - Change Password API
- * POST: Change user password
+/*
+ * POST: Change password for the authenticated staff member.
  */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../../application/staff/staff-service.php';
 
-// Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     errorResponse('Method not allowed', 405);
 }
@@ -15,11 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // The authenticated session is the only source of ownership.
 $staffId = requireApiAuth();
 
-// Get input
 $input = getJsonInput();
 validateAllowedInputFields($input, ['current_password', 'new_password']);
 
-// Validate required fields
 if (!array_key_exists('current_password', $input)
     || !array_key_exists('new_password', $input)) {
     errorResponse('Missing required password fields.', 422);

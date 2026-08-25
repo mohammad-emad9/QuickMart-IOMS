@@ -1,7 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Product Service
- * Product application operations
+/*
+ * Product service operations.
  */
 
 require_once __DIR__ . '/../../infrastructure/database/product-repository.php';

@@ -1,13 +1,11 @@
 <?php
-/**
- * QuickMart IOMS - Update Own Profile API
- * POST: Update current user's own profile (for Profile page)
+/*
+ * POST: Update profile for the authenticated staff member.
  */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../../application/staff/staff-service.php';
 
-// Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     errorResponse('Method not allowed', 405);
 }
@@ -15,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // The authenticated session is the only source of ownership.
 $staffId = requireApiAuth();
 
-// Get input data
 $input = getJsonInput();
 validateAllowedInputFields($input, ['full_name', 'email', 'phone_number']);
 

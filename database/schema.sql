@@ -1,17 +1,15 @@
--- =============================================
--- QuickMart IOMS Database Creation Script
--- =============================================
--- 1. Create the Database
+-- QuickMart database schema and constraints.
 CREATE DATABASE IF NOT EXISTS quickmart_db;
 USE quickmart_db;
--- Drop existing tables (in reverse order of dependencies)
+
 DROP TABLE IF EXISTS Order_Details;
 DROP TABLE IF EXISTS Orders;
 DROP TABLE IF EXISTS Products;
 DROP TABLE IF EXISTS Login_Rate_Limits;
 DROP TABLE IF EXISTS Password_Reset_Tokens;
 DROP TABLE IF EXISTS Staff;
--- 2. Staff Table
+
+-- Staff Table
 CREATE TABLE Staff (
     Staff_ID VARCHAR(20) PRIMARY KEY,
     Full_Name VARCHAR(100) NOT NULL,
@@ -25,7 +23,8 @@ CREATE TABLE Staff (
     CONSTRAINT chk_staff_role CHECK (BINARY Role IN ('Admin', 'Manager', 'Staff')),
     CONSTRAINT chk_staff_auth_revision CHECK (Auth_Revision >= 1)
 );
--- 3. Persistent login-attempt buckets. Only one-way rate keys are stored;
+
+-- Persistent login-attempt buckets. Only one-way rate keys are stored;
 -- raw identifiers, client addresses, and passwords are never persisted.
 CREATE TABLE Login_Rate_Limits (
     Rate_Key CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -36,7 +35,8 @@ CREATE TABLE Login_Rate_Limits (
     CONSTRAINT chk_login_rate_limits_attempt_count CHECK (Attempt_Count >= 0),
     KEY idx_login_rate_limits_window (Window_Started_At)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
--- 4. Password Reset Tokens Table
+
+-- Password Reset Tokens Table
 -- Store only a case-sensitive SHA-256 hexadecimal token hash. Raw reset tokens
 -- must remain in the future application flow and must never be persisted here.
 CREATE TABLE Password_Reset_Tokens (
@@ -56,7 +56,8 @@ CREATE TABLE Password_Reset_Tokens (
     CONSTRAINT fk_password_reset_tokens_staff
         FOREIGN KEY (Staff_ID) REFERENCES Staff(Staff_ID) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
--- 4. Products Table
+
+-- Products Table
 CREATE TABLE Products (
     Product_ID VARCHAR(20) PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
@@ -70,7 +71,8 @@ CREATE TABLE Products (
     CONSTRAINT chk_products_status CHECK (Status IN ('Normal', 'Low Stock', 'Out of Stock')),
     CONSTRAINT chk_products_threshold_nonnegative CHECK (Threshold >= 0)
 );
--- 5. Orders Table
+
+-- Orders Table
 CREATE TABLE Orders (
     Order_ID VARCHAR(20) PRIMARY KEY,
     Staff_ID VARCHAR(20) NOT NULL,
@@ -80,7 +82,8 @@ CREATE TABLE Orders (
     CONSTRAINT chk_orders_order_type CHECK (Order_Type IN ('Sell', 'Purchase')),
     FOREIGN KEY (Staff_ID) REFERENCES Staff(Staff_ID) ON DELETE RESTRICT
 );
--- 6. Order Details Table
+
+-- Order Details Table
 CREATE TABLE Order_Details (
     Detail_ID INT AUTO_INCREMENT PRIMARY KEY,
     Order_ID VARCHAR(20) NOT NULL,
@@ -93,7 +96,8 @@ CREATE TABLE Order_Details (
     CONSTRAINT fk_order_details_product
         FOREIGN KEY (Product_ID) REFERENCES Products(Product_ID) ON DELETE RESTRICT
 );
--- Create indexes for better performance
+
+-- Secondary indexes
 CREATE INDEX idx_products_category ON Products(Category);
 CREATE INDEX idx_products_status ON Products(Status);
 CREATE INDEX idx_orders_date ON Orders(Order_Date);

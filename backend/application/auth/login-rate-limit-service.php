@@ -1,10 +1,9 @@
 <?php
-/**
- * QuickMart IOMS - Persistent login attempt limiter.
+/*
+ * Database-backed login rate limiter.
  *
- * The key is a one-way digest of the normalized identifier and the direct
- * client address. Forwarded headers are intentionally ignored unless a
- * deployment-specific trusted-proxy boundary rewrites REMOTE_ADDR safely.
+ * The rate key is a one-way digest of the normalized identifier and direct
+ * client IP. Forwarded headers are ignored to prevent spoofing.
  */
 
 require_once __DIR__ . '/../shared/transaction-retry.php';

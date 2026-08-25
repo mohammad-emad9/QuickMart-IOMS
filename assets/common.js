@@ -1,11 +1,6 @@
 /**
- * QuickMart IOMS - Common JavaScript Utilities
- * Shared functions used across all pages
+ * Shared frontend utilities and navigation helpers.
  */
-
-// ===========================================
-// Session Management
-// ===========================================
 
 // All pages that load this file are two directory levels below the project
 // root. Relative URLs therefore work under any configured subdirectory.
@@ -43,6 +38,20 @@ function applyRoleBasedUi(userRole) {
 
 let csrfToken = null;
 let sessionProbePromise = null;
+let serverSessionUser = null;
+let sessionProbeState = 'idle';
+
+function getServerSessionUser() {
+    return serverSessionUser ? { ...serverSessionUser } : null;
+}
+
+function getServerSessionRole() {
+    return serverSessionUser?.role || '';
+}
+
+function getSessionProbeState() {
+    return sessionProbeState;
+}
 
 async function getCsrfToken() {
     if (csrfToken) {
@@ -93,6 +102,11 @@ async function checkSession(options = {}) {
     const shouldRedirect = options.redirect !== false;
 
     if (!sessionProbePromise) {
+        serverSessionUser = null;
+        sessionProbeState = 'loading';
+        applyRoleBasedUi(null);
+        loadUserInfo();
+
         sessionProbePromise = fetch(apiPath("auth/session.php"), {
             method: "GET",
             credentials: "same-origin",
@@ -110,30 +124,44 @@ async function checkSession(options = {}) {
             const validUser = data?.success === true
                 && data?.data?.authenticated === true
                 && user
-                && typeof user.staff_id === "string"
-                && typeof user.full_name === "string"
-                && typeof user.email === "string"
-                && typeof user.role === "string";
+                && typeof user.staff_id === "string" && user.staff_id.trim() !== ""
+                && typeof user.full_name === "string" && user.full_name.trim() !== ""
+                && typeof user.email === "string" && user.email.trim() !== ""
+                && ['Admin', 'Manager', 'Staff'].includes(user.role);
 
             if (response.ok && validUser) {
+                serverSessionUser = Object.freeze({
+                    staff_id: user.staff_id,
+                    full_name: user.full_name,
+                    email: user.email,
+                    role: user.role
+                });
                 sessionStorage.setItem("isLoggedIn", "true");
-                sessionStorage.setItem("staffId", user.staff_id);
-                sessionStorage.setItem("userName", user.full_name);
-                sessionStorage.setItem("userEmail", user.email);
-                sessionStorage.setItem("userRole", user.role);
+                sessionStorage.setItem("staffId", serverSessionUser.staff_id);
+                sessionStorage.setItem("userName", serverSessionUser.full_name);
+                sessionStorage.setItem("userEmail", serverSessionUser.email);
+                sessionStorage.setItem("userRole", serverSessionUser.role);
+                sessionProbeState = 'authenticated';
                 applyRoleBasedUi(user.role);
+                loadUserInfo();
                 return true;
             }
 
             if (response.status === 401) {
+                sessionProbeState = 'unauthorized';
                 clearSessionHint();
                 if (shouldRedirect) {
                     window.location.assign(loginPath());
                 }
+            } else {
+                sessionProbeState = 'unavailable';
             }
 
             return false;
-        }).catch(() => false).finally(() => {
+        }).catch(() => {
+            sessionProbeState = 'unavailable';
+            return false;
+        }).finally(() => {
             sessionProbePromise = null;
         });
     }
@@ -142,11 +170,13 @@ async function checkSession(options = {}) {
 }
 
 /**
- * Load user information from session storage and update navbar
+ * Load the latest server-validated user information and update the navbar.
+ * Cached sessionStorage values are intentionally ignored here.
  */
 function loadUserInfo() {
-    const userName = sessionStorage.getItem("userName") || sessionStorage.getItem("userEmail")?.split("@")[0] || "Admin";
-    const userRole = sessionStorage.getItem("userRole") || "Staff";
+    const user = getServerSessionUser();
+    const userName = user?.full_name || 'Checking session…';
+    const userRole = user?.role || 'Verifying account';
 
     const userNameElement = document.getElementById("userName");
     const welcomeMessage = document.getElementById("welcomeMessage");
@@ -161,24 +191,21 @@ function loadUserInfo() {
     }
 
     if (welcomeMessage) {
-        welcomeMessage.textContent = `Welcome back, ${userName}! Here's what's happening today.`;
+        welcomeMessage.textContent = user
+            ? `Welcome back, ${userName}! Here's what's happening today.`
+            : 'Verifying your workspace session…';
     }
 
-    // Show/Hide Manage Staff button based on role (Admin only)
     const manageStaffAction = document.getElementById("manageStaffAction");
-    if (manageStaffAction && userRole !== 'Admin') {
-        manageStaffAction.style.display = 'none';
+    if (manageStaffAction) {
+        manageStaffAction.style.display = user?.role === 'Admin' ? '' : 'none';
     }
 
-    applyRoleBasedUi(userRole);
+    applyRoleBasedUi(user?.role || null);
 }
 
-// ===========================================
-// Logout Handler
-// ===========================================
-
 /**
- * Handle logout - clears session and redirects to login
+ * Clear session and redirect to login.
  */
 async function performLogout() {
     try {
@@ -192,19 +219,17 @@ async function performLogout() {
 }
 
 /**
- * Show logout confirmation modal (or fallback to confirm if modal doesn't exist)
- * @param {Event} e - Click event
+ * Show logout confirmation modal or native confirmation.
+ * @param {Event} [e] - Click event
  */
 function handleLogout(e) {
     if (e) e.preventDefault();
 
     const logoutModal = document.getElementById("logoutModal");
     if (logoutModal && typeof bootstrap !== 'undefined') {
-        // Show the beautiful modal
         const modal = new bootstrap.Modal(logoutModal);
         modal.show();
     } else {
-        // Fallback to browser confirm
         if (confirm("Are you sure you want to logout?")) {
             performLogout();
         }
@@ -212,7 +237,7 @@ function handleLogout(e) {
 }
 
 /**
- * Setup logout button and confirmation event listeners
+ * Set up logout button and confirmation listeners.
  */
 function setupLogoutHandler() {
     const logoutBtn = document.getElementById("logoutBtn");
@@ -220,16 +245,11 @@ function setupLogoutHandler() {
         logoutBtn.addEventListener("click", handleLogout);
     }
 
-    // Setup confirm logout button in modal
     const confirmLogoutBtn = document.getElementById("confirmLogoutBtn");
     if (confirmLogoutBtn) {
         confirmLogoutBtn.addEventListener("click", performLogout);
     }
 }
-
-// ===========================================
-// Toast Notification System
-// ===========================================
 
 const sharedIconPaths = Object.freeze({
     success: [
@@ -314,13 +334,8 @@ function showToast(message, type = "success") {
     const toast = new bootstrap.Toast(toastEl, { autohide: true, delay: 3000 });
     toast.show();
 
-    // Remove toast element after hidden
     toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
 }
-
-// ===========================================
-// Operations Ledger shell
-// ===========================================
 
 function getCurrentViewKey() {
     const fileName = window.location.pathname.split('/').pop().toLowerCase();
@@ -453,10 +468,6 @@ function setupShellContextbar() {
     main.insertBefore(contextbar, main.firstChild);
 }
 
-// ===========================================
-// Utility Functions
-// ===========================================
-
 /**
  * Debounce function to limit rapid function calls
  * @param {Function} func - Function to debounce
@@ -500,17 +511,13 @@ function capitalizeFirst(str) {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
-// ===========================================
-// Auto-initialize common features on DOM ready
-// ===========================================
 document.addEventListener("DOMContentLoaded", function () {
     setupShellContextbar();
     setupShellNavigation();
-    applyRoleBasedUi(sessionStorage.getItem("userRole") || "Staff");
-    if (!document.getElementById("loginForm")
-        && sessionStorage.getItem("isLoggedIn") !== "true") {
+    const isLoginPage = Boolean(document.getElementById("loginForm"));
+    if (!isLoginPage) {
+        applyRoleBasedUi(null);
         checkSession();
     }
-    // Setup logout handler on all pages
     setupLogoutHandler();
 });

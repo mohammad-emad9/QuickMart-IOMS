@@ -1,14 +1,19 @@
 /**
- * QuickMart IOMS - Order Details
- * Loads and renders one backend-authoritative order.
+ * Order details and invoice rendering.
  */
 
 let orderDetailsRequestVersion = 0;
 let orderDetailsRequestInFlight = false;
 
-document.addEventListener('DOMContentLoaded', function () {
-    loadUserInfo();
+document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('printDetailsBtn')?.addEventListener('click', () => window.print());
+
+    const authenticated = await checkSession();
+    if (!authenticated) {
+        return;
+    }
+
+    loadUserInfo();
     loadOrderDetails();
 });
 

@@ -1,7 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Database Connection
- * PDO-based connection to MySQL
+/*
+ * Database connection.
  */
 
 // Database configuration must be supplied by the process environment.
@@ -14,7 +13,6 @@ if ($host === null || $dbname === null || $username === null || $password === nu
     configurationError();
 }
 
-// PDO options for better error handling and security
 $options = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

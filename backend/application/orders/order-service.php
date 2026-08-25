@@ -1,7 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Order Service
- * Order application operations
+/*
+ * Order service operations.
  */
 
 require_once __DIR__ . '/../../infrastructure/database/order-repository.php';

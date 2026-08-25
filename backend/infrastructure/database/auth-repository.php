@@ -1,7 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Authentication Repository
- * Authentication persistence operations
+/*
+ * Authentication repository operations.
  */
 
 /**

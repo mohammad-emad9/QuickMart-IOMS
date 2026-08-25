@@ -1,13 +1,10 @@
 <?php
-/**
- * QuickMart IOMS - Forgot Password API
- * POST: Disabled until an approved delivery adapter is configured.
+/*
+ * POST: Password reset endpoint (disabled pending approved delivery provider).
  */
 
-require_once __DIR__ . '/../../core/config.php';
-require_once __DIR__ . '/../../core/helpers.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
-// Only accept POST requests
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     errorResponse('Method not allowed', 405);
 }

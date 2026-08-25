@@ -1,6 +1,5 @@
 /**
- * QuickMart Operations Ledger - Public sign-in behavior.
- * Keeps authentication, session, and redirect behavior backend-authoritative.
+ * Public sign-in behavior and authentication feedback.
  */
 
 (function () {

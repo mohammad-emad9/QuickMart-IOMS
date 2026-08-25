@@ -1,13 +1,11 @@
 <?php
-/**
- * QuickMart IOMS - Create Order API
- * POST: Create new order with details
+/*
+ * POST: Create a new order with line items.
  */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../../application/orders/order-service.php';
 
-// Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     errorResponse('Method not allowed', 405);
 }
@@ -18,10 +16,8 @@ if (!isOrderManagementRole($role)) {
     errorResponse('Access denied.', 403);
 }
 
-// Get input data
 $input = getJsonInput();
 
-// Validate required fields
 validateRequired($input, ['order_type', 'items']);
 
 $orderType = $input['order_type'];
@@ -39,12 +35,10 @@ if (array_key_exists('party_name', $input) && $input['party_name'] !== null) {
 }
 $items = $input['items'];
 
-// Validate order type
 if (!in_array($orderType, ['Sell', 'Purchase'], true)) {
     errorResponse('Order type must be "Sell" or "Purchase"', 422);
 }
 
-// Validate items
 if (!is_array($items) || empty($items)) {
     errorResponse('At least one item is required');
 }

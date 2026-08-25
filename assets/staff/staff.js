@@ -1,6 +1,5 @@
 /**
- * QuickMart Operations Ledger - Staff Management
- * Admin staff directory, details, update, and delete flows.
+ * Admin staff management: directory, creation, edit, and deletion.
  */
 
 (function () {
@@ -207,7 +206,8 @@
     }
 
     function isClientAdmin() {
-        return sessionStorage.getItem("userRole") === "Admin";
+        return typeof getServerSessionRole === 'function'
+            && getServerSessionRole() === "Admin";
     }
 
     function showStaffLoading() {
@@ -368,6 +368,16 @@
     async function loadStaffList() {
         if (state.listLoading) {
             return;
+        }
+
+        if (typeof getServerSessionUser === 'function' && !getServerSessionUser()) {
+            const authenticated = await checkSession();
+            if (!authenticated) {
+                if (getSessionProbeState() === 'unavailable') {
+                    showStaffError("Your session could not be verified. Please retry.");
+                }
+                return;
+            }
         }
 
         if (!isClientAdmin()) {
@@ -934,7 +944,7 @@
         });
     }
 
-    function initializeStaffPage() {
+    async function initializeStaffPage() {
         const createForm = byId("createStaffForm");
         const addStaffButton = byId("addStaffBtn");
         const editForm = byId("editStaffForm");
@@ -990,6 +1000,15 @@
 
         setupModalFocusRestoration();
 
+        const authenticated = await checkSession();
+        if (!authenticated) {
+            if (getSessionProbeState() === 'unavailable') {
+                showStaffError("Your session could not be verified. Please retry.");
+            }
+            return;
+        }
+
+        loadUserInfo();
         if (!isClientAdmin()) {
             showStaffAccessDenied("This workspace is only available to administrators.");
             return;

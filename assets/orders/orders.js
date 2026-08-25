@@ -1,6 +1,5 @@
 /**
- * QuickMart IOMS - Orders Page
- * Order list filters and the supported order creation flow.
+ * Order list filtering and order details modal presentation.
  */
 
 let availableProducts = [];
@@ -28,11 +27,17 @@ const orderIconPaths = Object.freeze({
     search: ['M11 17.5a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13Z', 'm16 16 4 4']
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    loadUserInfo();
+document.addEventListener('DOMContentLoaded', async function () {
     setupOrderPageEvents();
     setupOrderModalAccessibility();
     updateOrderTypeLabel();
+
+    const authenticated = await checkSession();
+    if (!authenticated) {
+        return;
+    }
+
+    loadUserInfo();
     loadProductsFromDatabase();
     requestOrdersReload();
 });
@@ -249,7 +254,8 @@ function buildOrderListQuery() {
     if (dateFrom) params.set('date_from', dateFrom);
     if (dateTo) params.set('date_to', dateTo);
 
-    const isAdmin = sessionStorage.getItem('userRole') === 'Admin';
+    const isAdmin = typeof getServerSessionRole === 'function'
+        && getServerSessionRole() === 'Admin';
     const staffFilter = document.getElementById('staffFilter');
     if (isAdmin && staffFilter && staffFilter.value.trim()) params.set('staff_id', staffFilter.value.trim());
 
@@ -621,7 +627,8 @@ function showOrderReview() {
     const reviewType = document.getElementById('reviewOrderType');
     reviewType?.classList.toggle('order-type-sell', orderType === 'Sell');
     reviewType?.classList.toggle('order-type-purchase', orderType === 'Purchase');
-    setText('reviewStaffName', sessionStorage.getItem('userRole') || 'Authenticated staff');
+    setText('reviewStaffName', (typeof getServerSessionRole === 'function'
+        && getServerSessionRole()) || 'Authenticated staff');
     setText('reviewPartyTitle', orderType === 'Sell' ? 'Customer' : 'Supplier');
     setText('reviewPartyName', partyName);
     setText('reviewItemCount', orderItems.length);

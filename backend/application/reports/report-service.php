@@ -1,7 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Report Service
- * Read-only report application operations
+/*
+ * Report aggregation service.
  */
 
 require_once __DIR__ . '/../../infrastructure/database/report-repository.php';

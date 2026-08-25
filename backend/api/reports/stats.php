@@ -1,7 +1,6 @@
 <?php
-/**
- * Reports API Endpoint
- * Returns statistics for orders, products, and sales
+/*
+ * GET: Return summary statistics for orders, products, and sales (Admin only).
  */
 
 require_once __DIR__ . '/../bootstrap.php';

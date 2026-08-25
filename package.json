@@ -1,0 +1,15 @@
+{
+    "name": "quickmart-ioms-frontend-build",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Reproducible production CSS generation for QuickMart IOMS",
+    "scripts": {
+        "build:css": "node scripts/build-css.js",
+        "build:js": "node scripts/build-js.js",
+        "build": "npm run build:css && npm run build:js"
+    },
+    "devDependencies": {
+        "clean-css": "5.3.3",
+        "terser": "5.50.0"
+    }
+}

@@ -1,8 +1,5 @@
 /**
- * QuickMart IOMS - Products and Inventory page
- *
- * The page owns presentation state only. Product values, statuses, IDs, and
- * mutation authorization remain backend-authoritative through apiFetch().
+ * Products catalog management and stock updates.
  */
 
 let products = [];
@@ -37,9 +34,20 @@ const PRODUCT_ICON_PATHS = Object.freeze({
     spinner: ['M12 3a9 9 0 1 0 9 9']
 });
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     initializePage();
     setupEventListeners();
+
+    const authenticated = await checkSession();
+    if (!authenticated) {
+        if (getSessionProbeState() === 'unavailable') {
+            setUnavailableSummary();
+            setTableStateLabel('Session unavailable');
+        }
+        return;
+    }
+
+    setAccessNotice();
     loadProductsFromDatabase();
 });
 
@@ -65,11 +73,7 @@ function createSvgIcon(name, className = '') {
 }
 
 function getUserRole() {
-    try {
-        return sessionStorage.getItem('userRole') || 'Staff';
-    } catch (error) {
-        return 'Staff';
-    }
+    return typeof getServerSessionRole === 'function' ? getServerSessionRole() : '';
 }
 
 function canManageProducts() {

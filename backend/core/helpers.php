@@ -1,6 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Helper Functions
+/*
+ * Shared helper functions.
  */
 
 require_once __DIR__ . '/../infrastructure/database/auth-repository.php';
@@ -501,7 +501,7 @@ function validateMoneyValue($value, $fieldName = 'Price', $allowZero = false)
 }
 
 /**
- * Check if user is logged in
+ * Require authentication for legacy callers.
  */
 function requireAuth()
 {

@@ -1,4 +1,4 @@
-/* QuickMart Operations Ledger — UI-05 Create Order */
+/* Create-order workflow styles. */
 
 .create-order-page {
     --create-ink: var(--qm-ink-950, #091419);
@@ -1213,9 +1213,9 @@
     height: 15px;
 }
 
-.table-state-cell {
+.create-order-page .table-state-cell {
     min-height: 80px;
-    padding: 28px 16px !important;
+    padding: 28px 16px;
     color: var(--create-muted);
     text-align: center;
 }
@@ -1334,10 +1334,6 @@
 }
 
 .product-checkbox {
-    width: 22px !important;
-    height: 22px !important;
-    min-width: 22px !important;
-    min-height: 22px !important;
     accent-color: var(--create-teal);
 }
 
@@ -1835,105 +1831,105 @@
 }
 
 @media print {
-    html, body { width: 100% !important; min-width: 0 !important; background: #fff !important; }
+    html, body { width: 100%; min-width: 0; background: #fff; }
     body {
-        margin: 0 !important;
-        color: #000 !important;
-        font-family: Arial, "Noto Sans Arabic", sans-serif !important;
-        font-size: 9.5pt !important;
-        line-height: 1.35 !important;
+        margin: 0;
+        color: #000;
+        font-family: Arial, "Noto Sans Arabic", sans-serif;
+        font-size: 9.5pt;
+        line-height: 1.35;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
-    body > * { display: none !important; }
+    body > * { display: none; }
     body > #invoicePreviewModal {
-        display: block !important;
-        position: static !important;
-        width: 100% !important;
-        height: auto !important;
-        min-height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: visible !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        background: #fff !important;
+        display: block;
+        position: static;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+        visibility: visible;
+        opacity: 1;
+        background: #fff;
     }
     body > #invoicePreviewModal .modal-dialog {
-        display: block !important;
-        width: 100% !important;
-        max-width: none !important;
-        min-height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        transform: none !important;
+        display: block;
+        width: 100%;
+        max-width: none;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        transform: none;
     }
     body > #invoicePreviewModal .modal-content,
     body > #invoicePreviewModal .modal-body,
     body > #invoicePreviewModal .table-responsive,
     body > #invoicePreviewModal .review-items-frame {
-        display: block !important;
-        width: 100% !important;
-        max-width: none !important;
-        min-height: 0 !important;
-        max-height: none !important;
-        overflow: visible !important;
-        color: #000 !important;
-        background: #fff !important;
-        border: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
+        display: block;
+        width: 100%;
+        max-width: none;
+        min-height: 0;
+        max-height: none;
+        overflow: visible;
+        color: #000;
+        background: #fff;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
     }
-    body > #invoicePreviewModal .modal-content { padding: 0 !important; }
+    body > #invoicePreviewModal .modal-content { padding: 0; }
     body > #invoicePreviewModal .modal-header,
     body > #invoicePreviewModal .modal-footer,
     body > #invoicePreviewModal .review-status,
-    body > #invoicePreviewModal .review-authority-note { display: none !important; }
+    body > #invoicePreviewModal .review-authority-note { display: none; }
 
     body > #invoicePreviewModal .print-invoice-header {
-        display: grid !important;
+        display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
         align-items: end;
         gap: 12mm;
-        min-height: 0 !important;
-        padding: 0 0 5mm !important;
-        color: #000 !important;
-        background: #fff !important;
-        border-bottom: 1.4pt solid #000 !important;
+        min-height: 0;
+        padding: 0 0 5mm;
+        color: #000;
+        background: #fff;
+        border-bottom: 1.4pt solid #000;
         break-inside: avoid;
         page-break-inside: avoid;
     }
     body > #invoicePreviewModal .print-invoice-brand {
-        margin: 0 0 2mm !important;
-        color: #000 !important;
-        font-size: 14pt !important;
-        font-weight: 800 !important;
+        margin: 0 0 2mm;
+        color: #000;
+        font-size: 14pt;
+        font-weight: 800;
         letter-spacing: 0.02em;
     }
     body > #invoicePreviewModal .print-invoice-kicker {
-        margin: 0 0 1.5mm !important;
-        color: #555 !important;
-        font-size: 7.5pt !important;
-        font-weight: 700 !important;
+        margin: 0 0 1.5mm;
+        color: #555;
+        font-size: 7.5pt;
+        font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
     }
     body > #invoicePreviewModal .print-invoice-header h1 {
-        margin: 0 !important;
-        color: #000 !important;
-        font-size: 20pt !important;
-        font-weight: 700 !important;
-        line-height: 1.1 !important;
+        margin: 0;
+        color: #000;
+        font-size: 20pt;
+        font-weight: 700;
+        line-height: 1.1;
     }
     body > #invoicePreviewModal .print-invoice-summary {
-        display: grid !important;
-        gap: 2mm !important;
-        min-width: 48mm !important;
-        margin: 0 !important;
-        padding: 0 !important;
+        display: grid;
+        gap: 2mm;
+        min-width: 48mm;
+        margin: 0;
+        padding: 0;
     }
     body > #invoicePreviewModal .print-invoice-summary > div {
-        display: grid !important;
+        display: grid;
         grid-template-columns: auto minmax(24mm, auto);
         align-items: baseline;
         gap: 4mm;
@@ -1941,119 +1937,105 @@
         border-bottom: 0.6pt solid #aaa;
     }
     body > #invoicePreviewModal .print-invoice-summary dt {
-        color: #555 !important;
-        font-size: 7.5pt !important;
-        font-weight: 700 !important;
+        color: #555;
+        font-size: 7.5pt;
+        font-weight: 700;
     }
     body > #invoicePreviewModal .print-invoice-summary dd {
-        margin: 0 !important;
-        color: #000 !important;
-        font-size: 8.8pt !important;
-        font-weight: 700 !important;
-        text-align: end !important;
+        margin: 0;
+        color: #000;
+        font-size: 8.8pt;
+        font-weight: 700;
+        text-align: end;
         overflow-wrap: anywhere;
     }
 
-    body > #invoicePreviewModal .review-modal-body { padding: 5mm 0 0 !important; }
+    body > #invoicePreviewModal .review-modal-body { padding: 5mm 0 0; }
     body > #invoicePreviewModal .review-meta-grid {
-        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) !important;
-        gap: 0 !important;
-        margin: 0 0 6mm !important;
-        background: #fff !important;
-        border: 0.6pt solid #888 !important;
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+        gap: 0;
+        margin: 0 0 6mm;
+        background: #fff;
+        border: 0.6pt solid #888;
         break-inside: avoid;
         page-break-inside: avoid;
     }
     body > #invoicePreviewModal .review-meta-grid > div {
-        min-width: 0 !important;
-        padding: 3mm 4mm !important;
-        color: #000 !important;
-        background: #fff !important;
-        border: 0 !important;
-        border-inline-start: 0.6pt solid #aaa !important;
-        border-radius: 0 !important;
+        min-width: 0;
+        padding: 3mm 4mm;
+        color: #000;
+        background: #fff;
+        border: 0;
+        border-inline-start: 0.6pt solid #aaa;
+        border-radius: 0;
     }
-    body > #invoicePreviewModal .review-meta-grid > div:first-child { border-inline-start: 0 !important; }
-    body > #invoicePreviewModal .review-meta-grid span { color: #555 !important; font-size: 7.5pt !important; font-weight: 700 !important; }
-    body > #invoicePreviewModal .review-meta-grid strong { margin-top: 1.5mm !important; color: #000 !important; font-size: 9pt !important; }
+    body > #invoicePreviewModal .review-meta-grid > div:first-child { border-inline-start: 0; }
+    body > #invoicePreviewModal .review-meta-grid span { color: #555; font-size: 7.5pt; font-weight: 700; }
+    body > #invoicePreviewModal .review-meta-grid strong { margin-top: 1.5mm; color: #000; font-size: 9pt; }
     body > #invoicePreviewModal #prevDate,
     body > #invoicePreviewModal #prevOrderNumber,
-    body > #invoicePreviewModal #prevStaffId { direction: ltr !important; text-align: start !important; unicode-bidi: plaintext; }
+    body > #invoicePreviewModal #prevStaffId { direction: ltr; text-align: start; unicode-bidi: plaintext; }
     body > #invoicePreviewModal .review-items-heading {
-        display: flex !important;
-        align-items: end !important;
-        justify-content: space-between !important;
-        gap: 1rem !important;
-        margin: 0 0 3mm !important;
-        color: #000 !important;
-        font-size: 11pt !important;
-        font-weight: 700 !important;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin: 0 0 3mm;
+        color: #000;
+        font-size: 11pt;
+        font-weight: 700;
     }
-    body > #invoicePreviewModal .review-items-heading .muted-caption { color: #555 !important; font-size: 7.5pt !important; font-weight: 400 !important; }
+    body > #invoicePreviewModal .review-items-heading .muted-caption { color: #555; font-size: 7.5pt; font-weight: 400; }
     body > #invoicePreviewModal .review-items-table {
-        width: 100% !important;
-        min-width: 0 !important;
-        margin: 0 !important;
-        border-collapse: collapse !important;
-        border-spacing: 0 !important;
-        color: #000 !important;
-        background: #fff !important;
-        font-size: 8.7pt !important;
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        border-collapse: collapse;
+        border-spacing: 0;
+        color: #000;
+        background: #fff;
+        font-size: 8.7pt;
     }
-    body > #invoicePreviewModal .review-items-table thead { display: table-header-group !important; }
+    body > #invoicePreviewModal .review-items-table thead { display: table-header-group; }
     body > #invoicePreviewModal .review-items-table thead th {
-        padding: 2.6mm 3mm !important;
-        color: #000 !important;
-        background: #ededed !important;
-        border-top: 0.8pt solid #000 !important;
-        border-bottom: 0.8pt solid #000 !important;
-        font-size: 7.5pt !important;
-        font-weight: 700 !important;
-        letter-spacing: 0 !important;
-        text-transform: none !important;
+        padding: 2.6mm 3mm;
+        color: #000;
+        background: #ededed;
+        border-top: 0.8pt solid #000;
+        border-bottom: 0.8pt solid #000;
+        font-size: 7.5pt;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: none;
     }
     body > #invoicePreviewModal .review-items-table tbody td {
-        min-height: 0 !important;
-        padding: 2.8mm 3mm !important;
-        color: #000 !important;
-        background: #fff !important;
-        border-bottom: 0.5pt solid #c8c8c8 !important;
-        vertical-align: middle !important;
+        min-height: 0;
+        padding: 2.8mm 3mm;
+        color: #000;
+        background: #fff;
+        border-bottom: 0.5pt solid #c8c8c8;
+        vertical-align: middle;
     }
     body > #invoicePreviewModal .review-items-table tbody tr { break-inside: avoid; page-break-inside: avoid; }
     body > #invoicePreviewModal .review-items-table .currency-value,
-    body > #invoicePreviewModal .review-items-table .numeric-value { direction: ltr !important; text-align: end !important; unicode-bidi: plaintext; }
+    body > #invoicePreviewModal .review-items-table .numeric-value { direction: ltr; text-align: end; unicode-bidi: plaintext; }
     body > #invoicePreviewModal .review-total-row {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        gap: 8mm !important;
-        width: 88mm !important;
-        margin: 5mm 0 0 auto !important;
-        padding: 4mm 0 !important;
-        color: #000 !important;
-        background: #fff !important;
-        border-top: 1.2pt solid #000 !important;
-        border-bottom: 0.6pt solid #888 !important;
-        font-size: 9pt !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8mm;
+        width: 88mm;
+        margin: 5mm 0 0 auto;
+        padding: 4mm 0;
+        color: #000;
+        background: #fff;
+        border-top: 1.2pt solid #000;
+        border-bottom: 0.6pt solid #888;
+        font-size: 9pt;
         break-inside: avoid;
         page-break-inside: avoid;
     }
-    body > #invoicePreviewModal .review-total-row .currency-value { color: #000 !important; font-size: 14pt !important; font-weight: 700 !important; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .create-order-page *,
-    .create-order-page *::before,
-    .create-order-page *::after,
-    .modal *,
-    .modal *::before,
-    .modal *::after {
-        scroll-behavior: auto !important;
-        transition-duration: 0.01ms !important;
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-    }
+    body > #invoicePreviewModal .review-total-row .currency-value { color: #000; font-size: 14pt; font-weight: 700; }
 }
 
 body:has(.create-order-page) .toast-success {

@@ -22,6 +22,7 @@ The deployment owner supplies all production secrets and infrastructure values. 
 - A secret-management mechanism for database credentials and approved operational accounts.
 - A separate staging database and staging hostname before production cutover.
 - A current backup, restore destination, and an owner for recovery decisions.
+- Composer 2 for the release build that generates the optimized PHP autoloader.
 
 The current views load Bootstrap and, on the Create Order page, Google Fonts from CDNs. A restricted network must either permit those exact origins with an appropriate CSP or replace them with reviewed, version-pinned local assets before deployment.
 
@@ -41,6 +42,16 @@ The application reads process/server environment variables; it does not load `.e
 The application fails closed with a generic configuration error when a required value is missing. Verify the production process actually exposes the variables to PHP, not only to an unrelated shell.
 
 The tracked `.htaccess` contains a root/blank-password fallback for local XAMPP review only. Do not use it as production configuration. Production must inject the values through the Apache/PHP service environment and must use a non-root account with a non-empty password.
+
+### Composer and application bootstrap
+
+From the repository root, run the release build command:
+
+```powershell
+composer install --no-dev --optimize-autoloader
+```
+
+The application does not require third-party Composer packages. `backend/bootstrap.php` loads `vendor/autoload.php` when the generated metadata is present, then loads the existing procedural config/helpers. Local XAMPP may use the verified fallback when Composer is unavailable; staging and production should generate the autoloader as part of the release build. Do not commit `vendor/` or add PSR-4 mappings for the current global function files.
 
 ## 4. Apache and PHP configuration
 
@@ -217,7 +228,7 @@ There is no dedicated health endpoint in the current architecture. Use the login
 - There is no automated migration runner or dedicated health endpoint.
 - Current pages depend on reviewed external Bootstrap/Google Fonts CDN assets unless the deployment owner self-hosts them.
 - Login rate limiting is implemented in the database-backed application path; edge-wide abuse monitoring and alerting still belong at the deployment boundary.
-- Composer is intentionally not part of the release because the current application has no Composer dependencies or autoloading.
+- Composer is a release-build tool for the dependency-free transitional autoload foundation; no third-party runtime package is currently required.
 
 ## 11. Password-reset activation gates
 

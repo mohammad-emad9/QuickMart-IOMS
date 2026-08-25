@@ -1,11 +1,9 @@
 <?php
-/**
- * QuickMart IOMS - CSRF Token API
- * GET: Return the session-bound token for an authenticated browser session
+/*
+ * GET: Return session-bound CSRF token for authenticated requests.
  */
 
-require_once __DIR__ . '/../../core/config.php';
-require_once __DIR__ . '/../../core/helpers.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
 header('Content-Type: application/json; charset=UTF-8');
 header('X-Content-Type-Options: nosniff');

@@ -1,13 +1,9 @@
--- =============================================
--- QuickMart IOMS Seed Data Script
--- Run this AFTER schema.sql
--- =============================================
+-- QuickMart seed data for local testing.
 USE quickmart_db;
--- =============================================
--- 1. Staff Sample Data
+
+-- Staff sample data
 -- Seed accounts are for disposable local-demo use only. Rotate all seed
 -- passwords before any shared, hosted, or production use.
--- =============================================
 INSERT INTO Staff (
         Staff_ID,
         Full_Name,
@@ -40,9 +36,8 @@ VALUES (
         '0509876543',
         'Staff'
     );
--- =============================================
--- 2. Products Sample Data
--- =============================================
+
+-- Products sample data
 INSERT INTO Products (
         Product_ID,
         Name,
@@ -142,9 +137,8 @@ VALUES (
         'Low Stock',
         10
     );
--- =============================================
--- 3. Orders Sample Data
--- =============================================
+
+-- Orders sample data
 INSERT INTO Orders (
         Order_ID,
         Staff_ID,
@@ -187,20 +181,15 @@ VALUES (
         'Sell',
         'Noura Al-Salem'
     );
--- =============================================
--- 4. Order Details Sample Data
--- =============================================
+
+-- Order Details sample data
 INSERT INTO Order_Details (Order_ID, Product_ID, Ordered_Qty, Sold_Price)
-VALUES -- Order 1: Khalid bought iPhone and AirPods
+VALUES
     ('ORD001', 'PRD001', 1, 4999.00),
     ('ORD001', 'PRD005', 2, 999.00),
-    -- Order 2: Fatima bought MacBook
     ('ORD002', 'PRD003', 1, 8999.00),
-    -- Order 3: Purchase from supplier
     ('ORD003', 'PRD001', 20, 4500.00),
     ('ORD003', 'PRD005', 30, 850.00),
-    -- Order 4: Omar bought Samsung phone and headphones
     ('ORD004', 'PRD002', 1, 3999.00),
     ('ORD004', 'PRD006', 1, 1499.00),
-    -- Order 5: Noura bought iPad
     ('ORD005', 'PRD007', 1, 5499.00);

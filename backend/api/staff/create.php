@@ -1,13 +1,11 @@
 <?php
-/**
- * QuickMart IOMS - Create Staff API
- * POST: Create a staff member (Admin only)
+/*
+ * POST: Create a staff member (Admin only).
  */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../../application/staff/staff-service.php';
 
-// Only accept POST requests.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     errorResponse('Method not allowed', 405);
 }

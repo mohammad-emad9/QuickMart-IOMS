@@ -1,7 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Transaction Retry Helpers
- * Retry classification and bounded backoff for transaction contention
+/*
+ * Database transaction retry and backoff helpers.
  */
 
 /**

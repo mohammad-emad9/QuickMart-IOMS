@@ -1,6 +1,5 @@
 <?php
-/**
- * QuickMart IOMS - Authenticated session probe.
+/*
  * GET: Revalidate the server-side session and return safe UI identity data.
  */
 

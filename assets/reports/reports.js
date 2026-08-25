@@ -1,4 +1,4 @@
-/* QuickMart Operations Ledger - Reports */
+/* Reports metrics and analytics views. */
 
 (function () {
     'use strict';
@@ -169,11 +169,7 @@
     }
 
     function getSessionRole() {
-        try {
-            return sessionStorage.getItem('userRole') || '';
-        } catch (error) {
-            return '';
-        }
+        return typeof getServerSessionRole === 'function' ? getServerSessionRole() : '';
     }
 
     function isAdminSession() {
@@ -649,6 +645,16 @@
     }
 
     async function loadReports() {
+        if (typeof getServerSessionUser === 'function' && !getServerSessionUser()) {
+            const authenticated = await checkSession();
+            if (!authenticated) {
+                if (getSessionProbeState() === 'unavailable') {
+                    setErrorState(new ReportsApiError(0, 'Your session could not be verified. Please retry.'));
+                }
+                return null;
+            }
+        }
+
         if (!isAdminSession()) {
             setRestrictedState();
             return null;
@@ -798,12 +804,18 @@
         }
     }
 
-    function initReports() {
-        if (typeof loadUserInfo === 'function') {
-            loadUserInfo();
-        }
+    async function initReports() {
         setupReportInteractions();
 
+        const authenticated = await checkSession();
+        if (!authenticated) {
+            if (getSessionProbeState() === 'unavailable') {
+                setReportState('danger', 'Your session could not be verified. Please retry.', true);
+            }
+            return;
+        }
+
+        loadUserInfo();
         if (!isAdminSession()) {
             setRestrictedState();
             return;

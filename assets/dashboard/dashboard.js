@@ -1,4 +1,4 @@
-/* QuickMart IOMS - Dashboard */
+/* Dashboard views and activity metrics. */
 
 (function () {
     'use strict';
@@ -195,7 +195,7 @@
     }
 
     function getRoleHint() {
-        const role = sessionStorage.getItem('userRole');
+        const role = typeof getServerSessionRole === 'function' ? getServerSessionRole() : '';
         return role === 'Admin' || role === 'Manager' || role === 'Staff' ? role : null;
     }
 
@@ -893,6 +893,10 @@
     const fetchReport = createResourceFetcher('report');
 
     function retryDashboardData() {
+        if (typeof getServerSessionUser === 'function' && !getServerSessionUser()) {
+            return checkSession().then((authenticated) => authenticated ? loadDashboardData(true) : null);
+        }
+
         const activeRequest = dashboardState.dashboardPromise;
         if (!activeRequest) {
             return loadDashboardData(true);
@@ -1055,13 +1059,20 @@
         }
     }
 
-    function initDashboard() {
-        if (typeof loadUserInfo === 'function') {
-            loadUserInfo();
-        }
+    async function initDashboard() {
         setupDashboardInteractions();
         updateDateTime();
         window.setInterval(updateDateTime, 1000);
+
+        const authenticated = await checkSession();
+        if (!authenticated) {
+            if (getSessionProbeState() === 'unavailable') {
+                setDashboardState('danger', 'Your session could not be verified. Please retry.', true);
+            }
+            return;
+        }
+
+        loadUserInfo();
         loadDashboardData();
     }
 

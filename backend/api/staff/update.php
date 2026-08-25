@@ -1,24 +1,20 @@
 <?php
-/**
- * QuickMart IOMS - Update Staff API
- * POST: Update staff member details (Admin only)
+/*
+ * POST: Update staff member details (Admin only).
  */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../../application/staff/staff-service.php';
 
-// Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     errorResponse('Method not allowed', 405);
 }
 
 requireApiRole('Admin');
 
-// Get input data
 $input = getJsonInput();
 validateAllowedInputFields($input, ['staff_id', 'full_name', 'email', 'phone_number', 'role', 'password']);
 
-// Validate required field
 if (!array_key_exists('staff_id', $input)) {
     errorResponse('Staff ID is required.', 422);
 }
@@ -49,7 +45,6 @@ try {
         $updates['role'] = validateStaffRoleValue($input['role']);
     }
 
-    // If new password provided, update it
     if (array_key_exists('password', $input)) {
         $updates['password'] = validateStaffPassword($input['password']);
     }

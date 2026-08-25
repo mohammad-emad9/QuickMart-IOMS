@@ -1,4 +1,4 @@
-/* QuickMart Operations Ledger — Orders */
+/* Orders list and detail modal styles. */
 
 .orders-page {
     background: var(--qm-canvas);
@@ -413,16 +413,20 @@
     .orders-table tbody tr:not(.table-state-row) { margin-bottom: 0.7rem; padding: 0.4rem 0; background: var(--qm-surface); border: 1px solid var(--qm-border); border-radius: var(--qm-radius-card); box-shadow: var(--qm-shadow-sm); }
     .orders-table tbody tr:not(.table-state-row):hover { background: var(--qm-surface); }
     .orders-table tbody tr:last-child { margin-bottom: 0; }
-    .orders-table td, .orders-table th { display: grid; grid-template-columns: minmax(7rem, 38%) minmax(0, 1fr); gap: 0.75rem; align-items: center; min-height: 48px; padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--qm-border); text-align: start !important; }
+    .orders-page .orders-table td,
+    .orders-page .orders-table th { display: grid; grid-template-columns: minmax(7rem, 38%) minmax(0, 1fr); gap: 0.75rem; align-items: center; min-height: 48px; padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--qm-border); text-align: start; }
     .orders-table td::before { content: attr(data-label); color: var(--qm-ink-600); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
     .orders-table td:first-child, .orders-table th:first-child { padding-inline: 0.8rem; }
     .orders-table td:last-child { padding-inline: 0.8rem; border-bottom: 0; }
     .orders-table td:last-child::before { align-self: center; }
     .orders-table .actions-column { width: auto; }
     .orders-table .party-cell { max-width: none; }
-    .orders-table .numeric-cell, .orders-table .money-cell, .orders-table .identifier-cell { text-align: start !important; }
+    .orders-page .orders-table .numeric-cell,
+    .orders-page .orders-table .money-cell,
+    .orders-page .orders-table .identifier-cell { text-align: start; }
     .orders-table .order-view-link { justify-self: start; }
-    .table-state-row, .table-state-row td { display: block !important; padding: 0 !important; border: 0 !important; }
+    .orders-page .table-state-row,
+    .orders-page .table-state-row td { display: block; padding: 0; border: 0; }
     .table-state-row td::before { content: none; }
     .table-state { min-height: 170px; }
     .order-type-options, .review-grid { grid-template-columns: 1fr; }
@@ -505,23 +509,20 @@
     .orders-page .qm-shell-nav,
     .orders-page .qm-shell-contextbar,
     .orders-page .toast-container,
-    .orders-page .modal-backdrop { display: none !important; }
-    .orders-page .main-content { margin: 0 !important; padding: 0 !important; }
+    .orders-page .modal-backdrop { display: none; }
+    .orders-page .main-content { margin: 0; padding: 0; }
     .orders-page__container { max-width: none; padding: 0; }
     .orders-page:not(.orders-print-invoice) .orders-hero,
-    .orders-page:not(.orders-print-invoice) .orders-summary { display: none !important; }
+    .orders-page:not(.orders-print-invoice) .orders-summary { display: none; }
     .orders-panel { border: 0; box-shadow: none; }
     .orders-panel__header { padding-inline: 0; }
-    .orders-table th, .orders-table td { border-color: #cbd5e1 !important; }
+    .orders-page .orders-table th,
+    .orders-page .orders-table td { border-color: #cbd5e1; }
     .orders-print-invoice .orders-hero,
     .orders-print-invoice .orders-summary,
-    .orders-print-invoice .orders-panel { display: none !important; }
-    .orders-print-invoice #successModal.show { display: block !important; position: static !important; overflow: visible !important; }
-    .orders-print-invoice #successModal.show .modal-dialog { max-width: none; margin: 0; transform: none !important; }
+    .orders-print-invoice .orders-panel { display: none; }
+    .orders-print-invoice #successModal.show { display: block; position: static; overflow: visible; }
+    .orders-print-invoice #successModal.show .modal-dialog { max-width: none; margin: 0; transform: none; }
     .orders-print-invoice #successModal.show .modal-content { border: 0; box-shadow: none; }
-    .orders-print-invoice #successModal.show .modal-footer { display: none !important; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .orders-page *, .orders-page *::before, .orders-page *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+    .orders-print-invoice #successModal.show .modal-footer { display: none; }
 }

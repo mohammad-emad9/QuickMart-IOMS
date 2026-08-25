@@ -1,8 +1,7 @@
 <?php
 /**
- * QuickMart IOMS - Authentication Guard
- * Include this file at the top of every protected page
- * Redirects to login if user is not authenticated
+ * Authentication guard for protected page views.
+ * Redirects unauthenticated requests to the login page.
  */
 
 require_once __DIR__ . '/config.php';
@@ -125,7 +124,6 @@ function requireAuth()
     if (!isAuthenticated() || !refreshProtectedPageSession()) {
         clearProtectedPageSession();
 
-        // Redirect to login page
         header('Location: ../../assets/login-signup/login.html');
         exit;
     }
@@ -169,6 +167,5 @@ function renderForbiddenPage()
     );
 }
 
-// Auto-check authentication when this file is included
-// Comment out the line below if you want to manually call requireAuth()
+// Automatically enforce authentication when included by a view.
 requireAuth();

@@ -1,13 +1,11 @@
 <?php
-/**
- * QuickMart IOMS - Application Configuration
+/*
+ * Application configuration.
+ * Values come from the process environment; .env files are not loaded.
  */
 
 /**
  * Read an application value from the process environment.
- *
- * The project intentionally does not load a .env file. Configure these
- * values through Apache SetEnv, the Windows environment, or the PHP runtime.
  */
 function quickmartEnv($key, $default = null, $trim = true)
 {
@@ -63,7 +61,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Set timezone
 date_default_timezone_set('Asia/Riyadh');
 
 // Same-origin is the default. A specific origin may be configured for an
@@ -100,17 +97,14 @@ if ($requestOrigin !== '') {
     }
 }
 
-// Handle preflight OPTIONS request
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// Application constants
 define('APP_NAME', 'QuickMart IOMS');
 define('APP_VERSION', '1.0.0');
 
-// Status constants for products
 define('STATUS_NORMAL', 'Normal');
 define('STATUS_LOW_STOCK', 'Low Stock');
 define('STATUS_OUT_OF_STOCK', 'Out of Stock');

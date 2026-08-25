@@ -1,13 +1,11 @@
 <?php
-/**
- * QuickMart IOMS - Get Staff API
- * GET: Retrieve single staff member by ID
+/*
+ * GET: Retrieve single staff member by ID.
  */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../../application/staff/staff-service.php';
 
-// Only accept GET requests
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     errorResponse('Method not allowed', 405);
 }
@@ -15,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 $staffId = requireApiAuth();
 $role = $_SESSION['user_role'] ?? null;
 
-// Validate staff ID
 if (!array_key_exists('id', $_GET)) {
     errorResponse('Staff ID is required.', 422);
 }

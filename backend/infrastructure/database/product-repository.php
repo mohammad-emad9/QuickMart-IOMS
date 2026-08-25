@@ -1,7 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Product Repository
- * Product persistence operations
+/*
+ * Product repository operations.
  */
 
 /**

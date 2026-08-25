@@ -1,20 +1,17 @@
 <?php
-/**
- * QuickMart IOMS - Delete Product API
- * DELETE/POST: Remove product
+/*
+ * DELETE/POST: Remove product (Admin only).
  */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../../application/products/product-service.php';
 
-// Accept DELETE or POST
 if (!in_array($_SERVER['REQUEST_METHOD'], ['DELETE', 'POST'])) {
     errorResponse('Method not allowed', 405);
 }
 
 requireApiRole('Admin');
 
-// Get product ID from query string or body
 $productId = null;
 
 if (isset($_GET['id'])) {

@@ -1,7 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Authentication Service
- * Authentication application operations
+/*
+ * Authentication service operations.
  */
 
 require_once __DIR__ . '/../../infrastructure/database/auth-repository.php';

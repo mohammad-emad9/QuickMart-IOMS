@@ -1,4 +1,4 @@
-/* QuickMart Operations Ledger — Products & Inventory */
+/* Products catalog and inventory styles. */
 
 .products-page {
     min-width: 0;
@@ -531,7 +531,7 @@
 
 .products-selection-column,
 .products-selection-cell {
-    text-align: center !important;
+    text-align: center;
 }
 
 .checkbox-hit-area {
@@ -547,11 +547,11 @@
 .products-page #selectAllProducts,
 .products-page .product-checkbox {
     position: relative;
-    width: 20px !important;
-    height: 20px !important;
-    min-width: 20px !important;
-    min-height: 20px !important;
-    margin: 0 !important;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    margin: 0;
     appearance: none;
     cursor: pointer;
     background: var(--qm-surface);
@@ -803,9 +803,9 @@
     gap: 8px;
 }
 
-.products-state-cell {
-    padding: 0 !important;
-    text-align: center !important;
+.products-page .products-state-cell {
+    padding: 0;
+    text-align: center;
 }
 
 .products-state {
@@ -895,11 +895,11 @@
     line-height: 1.5;
 }
 
-.products-modal-header {
+.products-page .products-modal-header {
     align-items: flex-start;
-    padding: 20px 22px 17px !important;
+    padding: 20px 22px 17px;
     background: var(--qm-surface);
-    border-bottom: 1px solid var(--qm-border) !important;
+    border-bottom: 1px solid var(--qm-border);
 }
 
 .products-modal-header-danger {
@@ -967,7 +967,7 @@
 }
 
 .products-page .modal-body {
-    padding: 22px !important;
+    padding: 22px;
 }
 
 .products-modal-description {
@@ -988,12 +988,12 @@
     line-height: 1.5;
 }
 
-.products-modal-footer {
+.products-page .products-modal-footer {
     justify-content: flex-start;
     gap: 8px;
-    padding: 15px 22px !important;
+    padding: 15px 22px;
     background: var(--qm-surface-subtle);
-    border-top: 1px solid var(--qm-border) !important;
+    border-top: 1px solid var(--qm-border);
 }
 
 .products-delete-body {
@@ -1056,14 +1056,14 @@
 
 .products-logout-modal {
     color: var(--qm-white);
-    background: var(--qm-ink-900) !important;
-    border-color: rgba(255, 253, 248, 0.16) !important;
+    background: var(--qm-ink-900);
+    border-color: rgba(255, 253, 248, 0.16);
 }
 
-.products-logout-body {
+.products-page .products-logout-body {
     display: grid;
     justify-items: center;
-    padding: 28px 24px 24px !important;
+    padding: 28px 24px 24px;
     text-align: center;
 }
 
@@ -1260,7 +1260,7 @@
         grid-template-columns: minmax(6.1rem, auto) minmax(0, 1fr);
         align-items: center;
         gap: 10px;
-        width: auto !important;
+        width: auto;
         min-height: 0;
         padding: 11px 12px;
         border-bottom: 1px solid var(--qm-border);
@@ -1335,13 +1335,13 @@
         flex: 1 1 0;
     }
 
-    .products-modal-header,
-    .products-modal-footer {
-        padding-inline: 16px !important;
+    .products-page .products-modal-header,
+    .products-page .products-modal-footer {
+        padding-inline: 16px;
     }
 
     .products-page .modal-body {
-        padding: 18px 16px !important;
+        padding: 18px 16px;
     }
 }
 
@@ -1395,7 +1395,7 @@
     .products-modal,
     .products-notice,
     .products-hero-meta {
-        display: none !important;
+        display: none;
     }
 
     .products-content {
@@ -1406,16 +1406,5 @@
     .products-panel {
         border: 0;
         box-shadow: none;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .products-page *,
-    .products-page *::before,
-    .products-page *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: 0.01ms !important;
     }
 }

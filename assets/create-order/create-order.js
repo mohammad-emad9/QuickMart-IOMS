@@ -1,8 +1,5 @@
 /**
- * QuickMart IOMS — UI-05 Create Order workflow.
- *
- * The browser owns draft state only. The API owns order IDs, prices, stock,
- * totals, and the persisted order result.
+ * Create-order workflow and invoice preview.
  */
 
 let availableProducts = [];
@@ -24,13 +21,19 @@ let reviewMode = 'draft';
 let lastCreatedOrder = null;
 const modalFocusReturn = new Map();
 
-document.addEventListener('DOMContentLoaded', function () {
-    loadUserInfo();
+document.addEventListener('DOMContentLoaded', async function () {
     setupCreateOrderEvents();
     updateOrderTypeLabel();
     renderOrderTable();
     renderProductAvailabilityState('loading');
     renderModalProducts([]);
+
+    const authenticated = await checkSession();
+    if (!authenticated) {
+        return;
+    }
+
+    loadUserInfo();
     loadProductsFromDatabase();
     requestRecentOrdersReload();
 });

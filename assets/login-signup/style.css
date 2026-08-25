@@ -1,4 +1,4 @@
-/* QuickMart Operations Ledger - Public authentication surface */
+/* Public authentication page styles. */
 
 :root {
     color-scheme: dark;
@@ -813,10 +813,10 @@ body.login-page {
     .login-page *,
     .login-page *::before,
     .login-page *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        scroll-behavior: auto;
+        transition-duration: 0.01ms;
     }
 }
 
@@ -893,6 +893,7 @@ body.login-page {
 }
 
 @media (prefers-reduced-motion: reduce) {
+    /* Override page animation/transition shorthands when motion is disabled. */
     .login-page * {
         animation: none !important;
         transition: none !important;

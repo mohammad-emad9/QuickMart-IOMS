@@ -1,6 +1,5 @@
 /**
- * QuickMart Operations Ledger - Profile and Account Settings
- * Current-user profile, order snapshot, and password flows.
+ * Profile management, order snapshot, and password update flow.
  */
 
 (function () {
@@ -234,13 +233,28 @@
     }
 
     function getCurrentStaffId() {
-        const staffId = sessionStorage.getItem("staffId");
+        const serverUser = typeof getServerSessionUser === 'function'
+            ? getServerSessionUser()
+            : null;
+        const staffId = serverUser?.staff_id;
 
         if (typeof staffId !== "string" || staffId.trim() === "") {
             return null;
         }
 
         return staffId.trim();
+    }
+
+    async function ensureServerSession() {
+        if (typeof getServerSessionUser !== 'function' || getServerSessionUser()) {
+            return true;
+        }
+
+        const authenticated = await checkSession();
+        if (!authenticated && getSessionProbeState() === 'unavailable') {
+            showProfileState("Your session could not be verified. Please retry.", "error", true);
+        }
+        return authenticated;
     }
 
     function renderProfile(staff) {
@@ -281,6 +295,10 @@
 
     async function loadUserProfile() {
         if (state.profileLoading) {
+            return;
+        }
+
+        if (!await ensureServerSession()) {
             return;
         }
 
@@ -334,6 +352,10 @@
 
     async function loadUserStats() {
         if (state.statsLoading) {
+            return;
+        }
+
+        if (!await ensureServerSession()) {
             return;
         }
 
@@ -534,7 +556,7 @@
         }
     }
 
-    function initializeProfilePage() {
+    async function initializeProfilePage() {
         const profileForm = getElement("editProfileForm");
         const passwordForm = getElement("changePasswordForm");
 
@@ -550,6 +572,15 @@
         getElement("profileRetryBtn")?.addEventListener("click", loadUserProfile);
         getElement("statsRetryBtn")?.addEventListener("click", loadUserStats);
 
+        const authenticated = await checkSession();
+        if (!authenticated) {
+            if (getSessionProbeState() === 'unavailable') {
+                showProfileState("Your session could not be verified. Please retry.", "error", true);
+            }
+            return;
+        }
+
+        loadUserInfo();
         loadUserProfile();
         loadUserStats();
     }

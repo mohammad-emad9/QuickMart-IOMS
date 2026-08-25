@@ -1,20 +1,17 @@
 <?php
-/**
- * QuickMart IOMS - Delete Staff API
- * DELETE/POST: Remove staff member (Admin only)
+/*
+ * DELETE/POST: Remove a staff account (Admin only).
  */
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../../application/staff/staff-service.php';
 
-// Accept DELETE or POST
 if (!in_array($_SERVER['REQUEST_METHOD'], ['DELETE', 'POST'])) {
     errorResponse('Method not allowed', 405);
 }
 
 requireApiRole('Admin');
 
-// Get staff ID from query string or body
 $staffId = null;
 
 if (isset($_GET['id'])) {

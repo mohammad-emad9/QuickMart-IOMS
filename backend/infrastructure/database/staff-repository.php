@@ -1,7 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Staff Repository
- * Staff persistence operations
+/*
+ * Staff repository operations.
  */
 
 /**

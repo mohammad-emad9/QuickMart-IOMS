@@ -1,0 +1,17 @@
+{
+    "name": "mohammad-emad-dev/quickmart-ioms",
+    "description": "QuickMart IOMS inventory and order management system",
+    "type": "project",
+    "require": {
+        "php": ">=8.0"
+    },
+    "autoload": {
+        "classmap": [
+            "backend/application/orders/order-service.php"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

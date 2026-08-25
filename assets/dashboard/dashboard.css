@@ -1,4 +1,4 @@
-/* QuickMart IOMS - Dashboard / Operations Ledger */
+/* Dashboard view styles. */
 
 html:has(body.dashboard-page) {
     overflow-x: hidden;
@@ -900,7 +900,7 @@ html:has(body.dashboard-page) {
 }
 
 .dashboard-modal-table {
-    min-width: 560px !important;
+    min-width: 560px;
 }
 
 .dashboard-modal-table thead th:first-child,
@@ -1019,6 +1019,7 @@ html:has(body.dashboard-page) {
 }
 
 @media (max-width: 991.98px) {
+    /* This page intentionally keeps the shared drawer off-canvas until opened. */
     .dashboard-page .qm-nav-drawer.navbar-collapse.collapse:not(.show) {
         display: none !important;
     }
@@ -1179,16 +1180,5 @@ html:has(body.dashboard-page) {
     .dashboard-page .dashboard-state,
     .dashboard-page .dashboard-restriction {
         break-inside: avoid;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .dashboard-page *,
-    .dashboard-page *::before,
-    .dashboard-page *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: 0.01ms !important;
     }
 }

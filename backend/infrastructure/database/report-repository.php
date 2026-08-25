@@ -1,7 +1,6 @@
 <?php
-/**
- * QuickMart IOMS - Report Repository
- * Read-only report persistence operations
+/*
+ * Report repository operations.
  */
 
 /**

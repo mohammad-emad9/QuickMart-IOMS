@@ -1,4 +1,4 @@
-/* QuickMart Operations Ledger - Staff Management */
+/* Staff management workspace styles. */
 
 .staff-page {
     min-height: calc(100vh - 72px);
@@ -963,15 +963,5 @@
     .staff-details-list__row {
         grid-template-columns: 1fr;
         gap: 0.25rem;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .staff-page *,
-    .staff-modal * {
-        scroll-behavior: auto !important;
-        transition-duration: 0.01ms !important;
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
     }
 }
