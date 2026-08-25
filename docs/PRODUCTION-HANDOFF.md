@@ -9,7 +9,7 @@ This document prepares the repository for a controlled staging and production ha
 
 ## 1. Release boundary
 
-The application is a PHP/MariaDB server-rendered system. It has no frontend build step, worker process, queue, external payment integration, or public password-reset delivery provider.
+The application is a PHP/MariaDB server-rendered system with a reproducible frontend asset build. It has no worker process, queue, external payment integration, or public password-reset delivery provider.
 
 The deployment owner supplies all production secrets and infrastructure values. Do not copy local XAMPP credentials, demo data, browser sessions, or `.htaccess` values into production.
 
@@ -23,8 +23,9 @@ The deployment owner supplies all production secrets and infrastructure values. 
 - A separate staging database and staging hostname before production cutover.
 - A current backup, restore destination, and an owner for recovery decisions.
 - Composer 2 for the release build that generates the optimized PHP autoloader.
+- Node.js/npm for the release build that generates the production CSS and JavaScript assets.
 
-The current views load Bootstrap and, on the Create Order page, Google Fonts from CDNs. A restricted network must either permit those exact origins with an appropriate CSP or replace them with reviewed, version-pinned local assets before deployment.
+Bootstrap 5.3.0, Poppins, and project CSS/JavaScript runtime assets are self-hosted. A restricted network does not need to permit CDN asset origins. Run the frontend build before serving a fresh checkout and review any future external asset before adding it.
 
 ## 3. Environment handoff
 
@@ -64,7 +65,7 @@ At minimum, the production server configuration must:
 3. Deny direct web access to `.git`, `.env*`, `database`, `docs`, backup files, `README.md`, and `STATUS.md`.
 4. Disable directory indexes.
 5. Add HSTS only after HTTPS is confirmed for every intended subdomain.
-6. Add a reviewed CSP that matches the current Bootstrap/Google Fonts CDN dependencies, or self-host those assets first.
+6. Add a reviewed CSP for the deployment. The current reviewed runtime assets are self-hosted, so Bootstrap and Google Fonts CDN origins are not required. Review any future external asset before allowing its origin.
 7. Keep application source and configuration read-only to the web user; grant write access only to a protected log directory if required.
 
 Example Apache hardening shape for an owner-managed virtual host; replace paths and hostnames before use:
@@ -214,7 +215,7 @@ There is no dedicated health endpoint in the current architecture. Use the login
 - [ ] `display_errors` is off; generic errors are returned to clients.
 - [ ] CORS is same-origin or one exact trusted origin; wildcard CORS is not used.
 - [ ] CSRF and server-side role/ownership checks are enabled.
-- [ ] Application login rate limiting is verified, `QUICKMART_RATE_LIMIT_SECRET` is supplied in production, and deployment-edge monitoring/alerting is configured after validating current CDN requirements.
+- [ ] Application login rate limiting is verified, `QUICKMART_RATE_LIMIT_SECRET` is supplied in production, and deployment-edge monitoring/alerting is configured after validating the current local-asset policy and any approved external origins.
 - [ ] Demo credentials/data are removed or replaced before production.
 - [ ] Backups are encrypted, access-controlled, tested, and retained.
 - [ ] The fixed application timezone (`Asia/Riyadh`) is confirmed with the business owner.
@@ -226,7 +227,7 @@ There is no dedicated health endpoint in the current architecture. Use the login
 - Public password-reset delivery is intentionally unavailable and remains HTTP 503.
 - The repository contains a local XAMPP `.htaccess` database fallback; it is documented as local-only and must not be used in production.
 - There is no automated migration runner or dedicated health endpoint.
-- Current pages depend on reviewed external Bootstrap/Google Fonts CDN assets unless the deployment owner self-hosts them.
+- Runtime Bootstrap 5.3.0, Poppins, and project CSS/JavaScript assets are self-hosted. A fresh checkout must run `npm ci` and `npm run build` before serving the application; future external assets require an explicit review and CSP decision.
 - Login rate limiting is implemented in the database-backed application path; edge-wide abuse monitoring and alerting still belong at the deployment boundary.
 - Composer is a release-build tool for the dependency-free transitional autoload foundation; no third-party runtime package is currently required.
 
