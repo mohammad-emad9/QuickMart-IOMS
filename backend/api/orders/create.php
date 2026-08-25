@@ -35,7 +35,7 @@ if (array_key_exists('party_name', $input) && $input['party_name'] !== null) {
         errorResponse('Party name is invalid.', 422);
     }
 
-    $partyName = sanitize((string) $input['party_name']);
+    $partyName = validateBoundedText((string) $input['party_name'], 'Party name', 100, true);
 }
 $items = $input['items'];
 

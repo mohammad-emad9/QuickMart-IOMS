@@ -138,9 +138,35 @@ function requireAdmin()
 {
     requireAuth();
     if (!isAdmin()) {
-        http_response_code(403);
-        die('<h1>403 Forbidden</h1><p>You do not have permission to access this page.</p><a href="dashboard.php">Back to Dashboard</a>');
+        renderForbiddenPage();
     }
+}
+
+/**
+ * Render a shared, styled HTML authorization state for page requests. API
+ * callers use helpers.php and keep their JSON error envelope instead.
+ */
+function renderAuthorizationPage($statusCode, $title, $message, $actionHref, $actionLabel)
+{
+    http_response_code((int) $statusCode);
+    header('Content-Type: text/html; charset=utf-8');
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: DENY');
+    header('Referrer-Policy: same-origin');
+
+    require __DIR__ . '/../views/partials/access-state.php';
+    exit;
+}
+
+function renderForbiddenPage()
+{
+    renderAuthorizationPage(
+        403,
+        'Access restricted',
+        'Your account does not have permission to open this workspace.',
+        'dashboard.php',
+        'Return to Dashboard'
+    );
 }
 
 // Auto-check authentication when this file is included

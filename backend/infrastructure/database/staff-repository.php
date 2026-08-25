@@ -100,6 +100,58 @@ function findOtherStaffByEmail(PDO $pdo, $email, $staffId)
 }
 
 /**
+ * Find any staff member that owns an email address.
+ *
+ * This is used after an INSERT duplicate-key race to distinguish a unique
+ * email conflict from an extremely unlikely Staff_ID collision.
+ *
+ * @return array|false
+ */
+function findStaffByEmail(PDO $pdo, $email)
+{
+    // FOR UPDATE makes the duplicate-email check a current read inside the
+    // creation transaction, including when another insert just committed.
+    $statement = $pdo->prepare("SELECT Staff_ID FROM Staff WHERE Email = ? FOR UPDATE");
+    $statement->execute([$email]);
+
+    return $statement->fetch();
+}
+
+/**
+ * Insert a staff account using only database-owned authentication defaults.
+ * Auth_Revision is intentionally omitted so its DEFAULT 1 remains authoritative.
+ */
+function insertStaffRecord(
+    PDO $pdo,
+    $staffId,
+    $fullName,
+    $email,
+    $phoneNumber,
+    $role,
+    $passwordHash
+)
+{
+    $statement = $pdo->prepare(
+        "INSERT INTO Staff (
+            Staff_ID,
+            Full_Name,
+            Email,
+            Password,
+            Phone_Number,
+            Role
+        ) VALUES (?, ?, ?, ?, ?, ?)"
+    );
+    $statement->execute([
+        $staffId,
+        $fullName,
+        $email,
+        $passwordHash,
+        $phoneNumber,
+        $role
+    ]);
+}
+
+/**
  * Update only the allowlisted public profile fields.
  */
 function updateStaffProfileFields(PDO $pdo, $staffId, array $updates)

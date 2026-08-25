@@ -22,17 +22,17 @@ if (!isset($input['product_id']) || empty($input['product_id'])) {
     errorResponse('Product ID is required');
 }
 
-$productId = sanitize($input['product_id']);
+$productId = validateIdentifier($input['product_id'], 'Product ID');
 
 try {
     $updates = [];
 
     if (isset($input['name']) && !empty($input['name'])) {
-        $updates['name'] = sanitize($input['name']);
+        $updates['name'] = validateBoundedText($input['name'], 'Product name', 100);
     }
 
     if (isset($input['category']) && !empty($input['category'])) {
-        $updates['category'] = sanitize($input['category']);
+        $updates['category'] = validateBoundedText($input['category'], 'Category', 50);
     }
 
     if (isset($input['quantity'])) {

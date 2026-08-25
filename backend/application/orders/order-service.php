@@ -112,6 +112,24 @@ function validateOrderCreationItems(array $items)
 }
 
 /**
+ * Marker exception for a concurrent Order_ID insert race.
+ */
+class OrderIdConflictException extends RuntimeException
+{
+}
+
+/**
+ * Recognize the MariaDB duplicate-key error for the order header insert.
+ */
+function isOrderIdDuplicateKeyViolation(PDOException $exception)
+{
+    $errorInfo = $exception->errorInfo;
+
+    return ($errorInfo[0] ?? $exception->getCode()) === '23000'
+        && (int) ($errorInfo[1] ?? 0) === 1062;
+}
+
+/**
  * Retrieve the order list while enforcing Admin/Staff ownership rules.
  *
  * @return array
@@ -179,7 +197,8 @@ function createOrder(PDO $pdo, $staffId, $orderType, $partyName, array $items)
         try {
             return createOrderAttempt($pdo, $staffId, $orderType, $partyName, $items);
         } catch (Throwable $e) {
-            if ($attempt === $maxAttempts || !isRetryableTransactionFailure($e)) {
+            $isOrderIdConflict = $e instanceof OrderIdConflictException;
+            if ($attempt === $maxAttempts || (!$isOrderIdConflict && !isRetryableTransactionFailure($e))) {
                 throw $e;
             }
 
@@ -203,7 +222,15 @@ function createOrderAttempt(PDO $pdo, $staffId, $orderType, $partyName, array $i
         }
 
         $orderId = generateOrderId($pdo);
-        insertOrderHeader($pdo, $orderId, $staffId, $orderType, $partyName);
+        try {
+            insertOrderHeader($pdo, $orderId, $staffId, $orderType, $partyName);
+        } catch (PDOException $e) {
+            if (isOrderIdDuplicateKeyViolation($e)) {
+                throw new OrderIdConflictException('Order identifier was allocated concurrently.', 0, $e);
+            }
+
+            throw $e;
+        }
 
         $totalAmount = 0;
         $processedItems = [];

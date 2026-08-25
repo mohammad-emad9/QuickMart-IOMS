@@ -19,7 +19,7 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
     errorResponse('Product ID is required');
 }
 
-$productId = sanitize($_GET['id']);
+$productId = validateIdentifier($_GET['id'], 'Product ID');
 
 try {
     $product = getProductById($pdo, $productId);

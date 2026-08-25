@@ -16,7 +16,7 @@ The interface is built around the QuickMart Operations Ledger direction: a calm,
 - Dashboard inventory health, recent orders, order details, and report summaries.
 - CSRF protection, password hashing, prepared SQL statements, foreign-key integrity, and session revalidation.
 
-There is intentionally no Staff Create API. The existing staff-management contract supports listing, viewing, updating, deleting, profile updates, and password changes.
+Admin-only staff creation is available through the Staff Create API. The staff-management contract also supports listing, viewing, updating, deleting, profile updates, and password changes.
 
 ## Technology stack
 
@@ -52,7 +52,7 @@ QuickMart-IOMS-main/
 ├── database/
 │   ├── schema.sql              # Current baseline schema
 │   ├── data.sql                # Optional disposable demo data
-│   └── migrations/             # Incremental migrations 001 through 005
+│   └── migrations/             # Incremental migrations 001 through 006
 ├── .env.example               # Environment variable names only
 ├── index.php                  # Application entry point
 └── README.md
@@ -89,9 +89,10 @@ QUICKMART_DB_NAME
 QUICKMART_DB_USER
 QUICKMART_DB_PASSWORD
 QUICKMART_ALLOWED_ORIGIN
+QUICKMART_RATE_LIMIT_SECRET
 ```
 
-Never commit a real password or other secret. `QUICKMART_ALLOWED_ORIGIN` may remain empty for a same-origin local deployment.
+`QUICKMART_RATE_LIMIT_SECRET` is optional for local development and should be a high-entropy deployment secret in production. It protects the one-way login limiter keys from offline correlation. Never commit a real password or other secret. `QUICKMART_ALLOWED_ORIGIN` may remain empty for a same-origin local deployment.
 
 ### 3. Create the database
 
@@ -109,9 +110,25 @@ SOURCE /path/to/QuickMart-IOMS-main/database/data.sql;
 
 The demo data is for local testing only. Rotate or replace seeded credentials before using the application in any shared environment.
 
-For an existing database that predates the current baseline, review and apply migrations `001` through `005` in order using the project’s migration process. Do not apply migrations blindly to a production database.
+For an existing database that predates the current baseline, review and apply migrations `001` through `006` in order using the project’s migration process. Migration `006` creates the persistent login-attempt limiter table. Do not apply migrations blindly to a production database.
 
-### 4. Start the application
+### 4. Backup and restore
+
+Create a logical backup before applying migrations or deploying. Use a least-privilege database account for shared or production environments and keep the dump outside the repository:
+
+```powershell
+mysqldump -u <database_user> -p quickmart_db > quickmart_db_backup.sql
+```
+
+Restore only to a verified target, preferably a disposable database first:
+
+```powershell
+mysql -u <database_user> -p quickmart_db < quickmart_db_backup.sql
+```
+
+Pause writes during a production restore, verify foreign keys and row counts afterward, and never commit backup files or database credentials. The tracked `.htaccess` database fallback is for local XAMPP review only; production deployments must provide the `QUICKMART_*` values through server environment configuration.
+
+### 5. Start the application
 
 Start Apache and MariaDB from the XAMPP Control Panel, then open:
 
@@ -127,6 +144,8 @@ http://localhost/QuickMart-IOMS-main/backend/views/dashboard.php
 ```
 
 Default account credentials are intentionally not documented. Use disposable local seed data or provision accounts through an approved administrative process.
+
+For the complete staging and production handoff runbook, see [docs/PRODUCTION-HANDOFF.md](docs/PRODUCTION-HANDOFF.md).
 
 ## Roles and access
 
@@ -151,6 +170,7 @@ All API responses use the project’s JSON response helpers and the existing `{ 
 | `POST` | `backend/api/auth/login.php` | Authenticate a staff member. |
 | `POST` | `backend/api/auth/logout.php` | End the current session. |
 | `GET` | `backend/api/auth/csrf.php` | Return the authenticated session CSRF token. |
+| `GET` | `backend/api/auth/session.php` | Revalidate the server-side session and return safe UI identity data. |
 | `POST` | `backend/api/auth/forgot_password.php` | Intentionally disabled with HTTP 503 until secure delivery is available. |
 
 ### Products
@@ -177,6 +197,7 @@ All API responses use the project’s JSON response helpers and the existing `{ 
 | --- | --- | --- |
 | `GET` | `backend/api/staff/list.php` | Admin-only staff list. |
 | `GET` | `backend/api/staff/get.php?id=...` | Read a permitted staff record. |
+| `POST` | `backend/api/staff/create.php` | Admin-only creation of a staff account with an initial password. |
 | `POST` | `backend/api/staff/update.php` | Admin-only staff update. |
 | `POST` | `backend/api/staff/delete.php` | Admin-only staff deletion with order-history protection. |
 | `POST` | `backend/api/staff/update-profile.php` | Update the authenticated user’s profile. |
@@ -195,9 +216,10 @@ The current schema includes:
 - `Staff` with canonical roles and `Auth_Revision` for future session invalidation.
 - `Products` with stock, price, threshold, and status constraints.
 - `Orders` and `Order_Details` with restricted history-preserving foreign keys.
+- `Login_Rate_Limits` with bounded, one-way identifier/client buckets for concurrent login throttling.
 - `Password_Reset_Tokens` storing only case-sensitive SHA-256 token hashes, with expiry, use, revocation, and cleanup indexes.
 
-The public password-reset request remains disabled because no secure email or token-delivery provider is configured. The internal token lifecycle must not be treated as a user-facing recovery flow until delivery and global session invalidation requirements are completed.
+The public password-reset request remains disabled because no secure email or token-delivery provider is configured. The internal token lifecycle must not be treated as a user-facing recovery flow until delivery and global session invalidation requirements are completed. Login attempts are limited to five valid-shaped attempts per identifier/client bucket in a 15-minute window; the sixth receives HTTP 429 with `Retry-After`, and a successful login clears the bucket.
 
 ## Security notes
 
@@ -207,8 +229,15 @@ The public password-reset request remains disabled because no secure email or to
 - CSRF validation protects authenticated mutations.
 - Session cookies use the project’s secure session settings, and protected requests revalidate the current staff record and role.
 - `Auth_Revision` invalidates stale sessions after password-sensitive changes without deleting arbitrary PHP session files.
+- The authenticated session probe is server-authoritative; sessionStorage is only a UI cache and never grants access.
+- HTML authorization failures use a styled shared page, while API authorization failures remain JSON.
+- Login rate-limit keys use normalized identifiers plus `REMOTE_ADDR`; forwarded proxy headers are not trusted by default.
 - Orders use transactions and row locking for stock changes.
 - Foreign keys preserve order history and protect referenced products and staff records.
+
+## Dependency management decision
+
+Composer is intentionally not used in the current architecture. The application uses native PHP, PDO, and the existing server-side files with no Composer package or autoload requirement. A misleading empty `composer.json` would not improve deployment; add one only when an approved runtime dependency and matching autoload convention are introduced.
 
 ## Development checks
 

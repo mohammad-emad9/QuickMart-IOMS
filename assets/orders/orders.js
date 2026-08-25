@@ -10,15 +10,28 @@ let allOrdersCache = [];
 let currentOrderTypeFilter = null;
 let currentOrderSearch = '';
 let productsLoadInFlight = null;
+let productsLoadError = null;
 let ordersLoadInFlight = null;
 let ordersReloadQueued = false;
 let ordersRequestVersion = 0;
 let createOrderInFlight = false;
 let rowCounter = 0;
+let lastModalTrigger = null;
+
+const orderIconPaths = Object.freeze({
+    check: ['m5 12 4 4L19 6'],
+    eye: ['M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z', 'M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z'],
+    refresh: ['M20 11a8 8 0 1 0 1 4', 'M20 5v6h-6'],
+    spinner: ['M12 3a9 9 0 1 0 9 9'],
+    plus: ['M12 5v14', 'M5 12h14'],
+    trash: ['M5 7h14', 'M10 11v6', 'M14 11v6', 'M8 7l1-3h6l1 3', 'M7 7l1 14h8l1-14'],
+    search: ['M11 17.5a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13Z', 'm16 16 4 4']
+});
 
 document.addEventListener('DOMContentLoaded', function () {
     loadUserInfo();
     setupOrderPageEvents();
+    setupOrderModalAccessibility();
     updateOrderTypeLabel();
     loadProductsFromDatabase();
     requestOrdersReload();
@@ -31,45 +44,83 @@ function setupOrderPageEvents() {
     document.getElementById('applyFiltersBtn')?.addEventListener('click', requestOrdersReload);
     document.getElementById('clearFiltersBtn')?.addEventListener('click', clearOrderFilters);
 
-    document.getElementById('searchOrders')?.addEventListener('input', debounce(function () {
-        currentOrderSearch = this.value.trim().toLowerCase();
+    const orderSearch = document.getElementById('searchOrders');
+    orderSearch?.addEventListener('input', createPageDebounce(function (event) {
+        currentOrderSearch = event.target.value.trim().toLowerCase();
         renderOrdersTable(getVisibleOrders());
-    }, 250));
+    }, 220));
 
-    document.querySelectorAll('input[name="orderType"]').forEach(radio => {
-        radio.addEventListener('change', updateOrderTypeLabel);
+    ['dateFromFilter', 'dateToFilter', 'staffFilter'].forEach(id => {
+        document.getElementById(id)?.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                requestOrdersReload();
+            }
+        });
     });
 
-    document.getElementById('productSearch')?.addEventListener('input', debounce(handleProductSearch, 250));
-    document.getElementById('productSearch')?.addEventListener('focus', handleProductSearch);
+    document.querySelectorAll('input[name="orderType"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            updateOrderTypeLabel();
+            renderOrderTable();
+            if (document.getElementById('selectProductModal')?.classList.contains('show')) renderModalProducts(availableProducts);
+        });
+    });
+
+    const productSearch = document.getElementById('productSearch');
+    productSearch?.addEventListener('input', createPageDebounce(handleProductSearch, 220));
+    productSearch?.addEventListener('focus', handleProductSearch);
+    productSearch?.addEventListener('keydown', handleProductSearchKeyboard);
     document.getElementById('addItemBtn')?.addEventListener('click', () => openModal('selectProductModal'));
     document.getElementById('selectProductModal')?.addEventListener('show.bs.modal', loadModalProducts);
-    document.getElementById('modalProductSearch')?.addEventListener('input', debounce(filterModalProducts, 250));
+    document.getElementById('modalProductSearch')?.addEventListener('input', createPageDebounce(filterModalProducts, 220));
     document.getElementById('confirmAddProductsBtn')?.addEventListener('click', addSelectedProducts);
     document.getElementById('createOrderBtn')?.addEventListener('click', showOrderReview);
     document.getElementById('confirmOrderBtn')?.addEventListener('click', submitOrderToServer);
-    document.getElementById('backToEditBtn')?.addEventListener('click', () => {
-        bootstrap.Modal.getInstance(document.getElementById('orderReviewModal'))?.hide();
-        openModal('createOrderModal');
-    });
-    document.getElementById('newOrderBtn')?.addEventListener('click', () => {
-        bootstrap.Modal.getInstance(document.getElementById('successModal'))?.hide();
-        resetOrderForm();
-        openModal('createOrderModal');
-    });
+    document.getElementById('backToEditBtn')?.addEventListener('click', returnToOrderEditor);
+    document.getElementById('newOrderBtn')?.addEventListener('click', startAnotherOrder);
+    document.getElementById('printInvoiceBtn')?.addEventListener('click', printOrderInvoice);
 
     document.addEventListener('click', function (event) {
         const suggestions = document.getElementById('productSuggestions');
         const searchInput = document.getElementById('productSearch');
         if (suggestions && !suggestions.contains(event.target) && event.target !== searchInput) {
-            suggestions.classList.remove('show');
+            setSuggestionsOpen(false);
         }
+    });
+}
+
+function setupOrderModalAccessibility() {
+    const configs = [
+        ['createOrderModal', 'customerName'],
+        ['selectProductModal', 'modalProductSearch'],
+        ['orderReviewModal', 'confirmOrderBtn'],
+        ['successModal', 'printInvoiceBtn']
+    ];
+
+    configs.forEach(([modalId, focusId]) => {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.addEventListener('show.bs.modal', () => {
+            if (!modal.contains(document.activeElement)) lastModalTrigger = document.activeElement;
+        });
+        modal.addEventListener('shown.bs.modal', () => {
+            document.getElementById(focusId)?.focus();
+        });
+        modal.addEventListener('hidden.bs.modal', () => {
+            window.setTimeout(() => {
+                if (lastModalTrigger && document.contains(lastModalTrigger) && !lastModalTrigger.disabled) {
+                    lastModalTrigger.focus();
+                }
+            }, 0);
+        });
     });
 }
 
 function openModal(id) {
     const element = document.getElementById(id);
     if (element && typeof bootstrap !== 'undefined') {
+        lastModalTrigger = document.activeElement;
         bootstrap.Modal.getOrCreateInstance(element).show();
     }
 }
@@ -98,6 +149,7 @@ function createOrderApiError(status, serverMessage) {
 function getOrderApiErrorMessage(error, fallback) {
     if (error && error.status === 401) return 'Your session has expired. Please sign in again.';
     if (error && error.status === 403) return 'You are not allowed to perform this order action.';
+    if (error && error.status === 404) return 'The requested order record was not found.';
     if (error && error.status === 409) return 'The order conflicted with another update. Please retry.';
     if (error && error.status === 422) return error.serverMessage || 'Please review the order fields and try again.';
     if (error && error.status >= 500) return 'The order service is temporarily unavailable. Please retry.';
@@ -108,6 +160,7 @@ function getOrderApiErrorMessage(error, fallback) {
 function loadProductsFromDatabase() {
     if (productsLoadInFlight) return productsLoadInFlight;
 
+    productsLoadError = null;
     productsLoadInFlight = (async function () {
         try {
             const response = await apiFetch('products/list.php');
@@ -117,6 +170,7 @@ function loadProductsFromDatabase() {
             return availableProducts;
         } catch (error) {
             availableProducts = [];
+            productsLoadError = error;
             showToast(getOrderApiErrorMessage(error, 'Unable to load products.'), 'error');
             return [];
         } finally {
@@ -153,7 +207,8 @@ async function loadAllOrders(requestVersion) {
     }
 
     const query = buildOrderListQuery();
-    setOrdersTableState('loading', 'Loading orders...');
+    setOrdersTableState('loading', 'Loading orders…');
+    updateOrderStats(null);
 
     const request = (async function () {
         try {
@@ -166,8 +221,8 @@ async function loadAllOrders(requestVersion) {
             updateOrderStats(allOrdersCache);
         } catch (error) {
             if (requestVersion !== ordersRequestVersion) return;
-            setOrdersTableState('error', getOrderApiErrorMessage(error, 'Unable to load orders.'), true);
-            updateOrderStats([]);
+            setOrdersTableState(getOrdersStateType(error), getOrderApiErrorMessage(error, 'Unable to load orders.'), true);
+            updateOrderStats(null);
         }
     })();
 
@@ -196,9 +251,7 @@ function buildOrderListQuery() {
 
     const isAdmin = sessionStorage.getItem('userRole') === 'Admin';
     const staffFilter = document.getElementById('staffFilter');
-    if (isAdmin && staffFilter && staffFilter.value.trim()) {
-        params.set('staff_id', staffFilter.value.trim());
-    }
+    if (isAdmin && staffFilter && staffFilter.value.trim()) params.set('staff_id', staffFilter.value.trim());
 
     const query = params.toString();
     return query ? `?${query}` : '';
@@ -226,18 +279,21 @@ function clearOrderFilters() {
 }
 
 function updateOrderFilterButtons() {
-    document.querySelectorAll('#filterAllBtn, #filterSellBtn, #filterPurchaseBtn').forEach(button => {
+    const buttons = document.querySelectorAll('#filterAllBtn, #filterSellBtn, #filterPurchaseBtn');
+    buttons.forEach(button => {
         button.classList.remove('active');
+        button.setAttribute('aria-pressed', 'false');
     });
-    const activeId = currentOrderTypeFilter === 'Sell' ? 'filterSellBtn' :
-        currentOrderTypeFilter === 'Purchase' ? 'filterPurchaseBtn' : 'filterAllBtn';
-    document.getElementById(activeId)?.classList.add('active');
+    const activeId = currentOrderTypeFilter === 'Sell' ? 'filterSellBtn' : currentOrderTypeFilter === 'Purchase' ? 'filterPurchaseBtn' : 'filterAllBtn';
+    const activeButton = document.getElementById(activeId);
+    activeButton?.classList.add('active');
+    activeButton?.setAttribute('aria-pressed', 'true');
 }
 
 function getVisibleOrders() {
     if (!currentOrderSearch) return allOrdersCache;
     return allOrdersCache.filter(order => {
-        const values = [order.Order_ID, order.Party_Name, order.Staff_Name, order.Order_Type];
+        const values = [order.Order_ID, order.Party_Name, order.Staff_Name, order.Staff_ID, order.Order_Type];
         return values.some(value => textValue(value, '').toLowerCase().includes(currentOrderSearch));
     });
 }
@@ -247,51 +303,54 @@ function renderOrdersTable(orders) {
     if (!tableBody) return;
 
     if (!orders.length) {
-        const message = currentOrderSearch || currentOrderTypeFilter || hasDateOrStaffFilter()
-            ? 'No orders match the selected filters.'
-            : 'No orders have been created yet.';
-        setOrdersTableState('empty', message);
+        const message = currentOrderSearch || currentOrderTypeFilter || hasDateOrStaffFilter() ? 'No orders match the selected filters.' : 'No orders have been created yet.';
+        setOrdersTableState('empty', message, false);
         return;
     }
 
     const fragment = document.createDocumentFragment();
     orders.forEach(order => fragment.appendChild(createOrderListRow(order)));
     tableBody.replaceChildren(fragment);
+    setOrdersResultSummary(`${orders.length} ${orders.length === 1 ? 'order' : 'orders'} shown`);
 }
 
 function createOrderListRow(order) {
     const row = document.createElement('tr');
-    appendOrderTextCell(row, order.Order_ID || '-', 'fw-bold text-primary');
-    appendOrderTextCell(row, order.Staff_Name || order.Staff_ID || '-', 'text-muted');
-    appendOrderTextCell(row, order.Party_Name || '-');
-    appendOrderTextCell(row, order.Item_Count ?? 0, 'text-center');
-    appendOrderTextCell(row, `$${formatCurrency(order.Total_Amount)}`, 'fw-bold text-success');
+    appendOrderTextCell(row, order.Order_ID || '-', 'identifier-cell', 'Order ID');
+    appendOrderTextCell(row, order.Staff_Name || order.Staff_ID || '-', 'muted-cell', 'Staff');
+    appendOrderTextCell(row, order.Party_Name || '-', 'party-cell', 'Customer / supplier');
+    appendOrderTextCell(row, order.Item_Count ?? 0, 'numeric-cell', 'Items');
+    appendOrderTextCell(row, `$${formatCurrency(order.Total_Amount)}`, 'money-cell amount-cell', 'Amount');
 
     const typeCell = document.createElement('td');
+    typeCell.dataset.label = 'Type';
     const typeBadge = document.createElement('span');
-    typeBadge.className = `badge ${order.Order_Type === 'Sell' ? 'bg-success' : 'bg-info'}`;
+    typeBadge.className = `order-type-badge ${order.Order_Type === 'Sell' ? 'order-type-sell' : 'order-type-purchase'}`;
     typeBadge.textContent = textValue(order.Order_Type, '-');
     typeCell.appendChild(typeBadge);
     row.appendChild(typeCell);
 
-    appendOrderTextCell(row, formatOrderDate(order.Order_Date), 'text-muted');
+    appendOrderTextCell(row, formatOrderDate(order.Order_Date), 'muted-cell', 'Date');
 
     const actionCell = document.createElement('td');
+    actionCell.dataset.label = 'Action';
     const detailsLink = document.createElement('a');
-    detailsLink.className = 'btn btn-sm btn-outline-primary';
+    detailsLink.className = 'order-view-link';
     detailsLink.href = `${viewPath('order-details.php')}?id=${encodeURIComponent(textValue(order.Order_ID, ''))}`;
     detailsLink.setAttribute('aria-label', `View order ${textValue(order.Order_ID, '')}`);
-    const icon = document.createElement('i');
-    icon.className = 'fas fa-eye';
-    detailsLink.appendChild(icon);
+    detailsLink.appendChild(createOrderIcon('eye'));
+    const viewText = document.createElement('span');
+    viewText.textContent = 'View';
+    detailsLink.appendChild(viewText);
     actionCell.appendChild(detailsLink);
     row.appendChild(actionCell);
     return row;
 }
 
-function appendOrderTextCell(row, value, className) {
+function appendOrderTextCell(row, value, className, label) {
     const cell = document.createElement('td');
     if (className) cell.className = className;
+    if (label) cell.dataset.label = label;
     cell.textContent = textValue(value, '-');
     row.appendChild(cell);
 }
@@ -301,38 +360,69 @@ function setOrdersTableState(type, message, retry) {
     if (!tableBody) return;
 
     const row = document.createElement('tr');
+    row.className = 'table-state-row';
     const cell = document.createElement('td');
     cell.colSpan = 8;
-    cell.className = `text-center py-5 ${type === 'error' ? 'text-danger' : 'text-muted'}`;
-    cell.textContent = message;
-    row.appendChild(cell);
+    const state = document.createElement('div');
+    state.className = `table-state table-state--${type}`;
+    state.setAttribute('role', type === 'loading' ? 'status' : 'alert');
+
+    if (type === 'loading') state.appendChild(createOrderIcon('spinner', 'state-spinner-icon'));
+    if (type === 'error' || type === 'stale' || type === 'unauthorized') state.appendChild(createOrderIcon('refresh'));
+
+    const title = document.createElement('strong');
+    title.textContent = type === 'empty' ? 'No matching records' : type === 'loading' ? 'Loading order records' : type === 'stale' ? 'Session needs attention' : type === 'unauthorized' ? 'Access restricted' : 'Order records unavailable';
+    state.appendChild(title);
+    const description = document.createElement('p');
+    description.textContent = message;
+    state.appendChild(description);
 
     if (retry) {
         const retryButton = document.createElement('button');
         retryButton.type = 'button';
-        retryButton.className = 'btn btn-sm btn-outline-primary d-block mx-auto mt-3';
-        retryButton.textContent = 'Retry';
+        retryButton.className = 'qm-button qm-button--quiet';
+        retryButton.appendChild(createOrderIcon('refresh'));
+        const retryText = document.createElement('span');
+        retryText.textContent = 'Retry';
+        retryButton.appendChild(retryText);
         retryButton.addEventListener('click', requestOrdersReload);
-        cell.appendChild(retryButton);
+        state.appendChild(retryButton);
     }
+
+    cell.appendChild(state);
+    row.appendChild(cell);
     tableBody.replaceChildren(row);
+    setOrdersResultSummary(type === 'loading' ? 'Loading order records' : message);
+}
+
+function getOrdersStateType(error) {
+    if (error && error.status === 401) return 'stale';
+    if (error && error.status === 403) return 'unauthorized';
+    if (error && error.status >= 500) return 'error';
+    return 'error';
+}
+
+function setOrdersResultSummary(message) {
+    const summary = document.getElementById('ordersResultSummary');
+    if (summary) summary.textContent = textValue(message, 'Order records');
 }
 
 function hasDateOrStaffFilter() {
-    return Boolean(
-        document.getElementById('dateFromFilter')?.value ||
-        document.getElementById('dateToFilter')?.value ||
-        document.getElementById('staffFilter')?.value.trim()
-    );
+    return Boolean(document.getElementById('dateFromFilter')?.value || document.getElementById('dateToFilter')?.value || document.getElementById('staffFilter')?.value.trim());
 }
 
 function updateOrderStats(orders) {
+    if (!Array.isArray(orders)) {
+        setText('totalOrdersCount', '—');
+        setText('sellOrdersCount', '—');
+        setText('purchaseOrdersCount', '—');
+        setText('totalRevenue', '—');
+        return;
+    }
     setText('totalOrdersCount', orders.length);
     setText('sellOrdersCount', orders.filter(order => order.Order_Type === 'Sell').length);
     setText('purchaseOrdersCount', orders.filter(order => order.Order_Type === 'Purchase').length);
-    const revenue = orders
-        .filter(order => order.Order_Type === 'Sell')
-        .reduce((total, order) => total + safeNumber(order.Total_Amount), 0);
+    const revenue = orders.filter(order => order.Order_Type === 'Sell').reduce((total, order) => total + safeNumber(order.Total_Amount), 0);
     setText('totalRevenue', formatCurrency(revenue));
 }
 
@@ -348,16 +438,34 @@ function handleProductSearch() {
 
     const term = input.value.trim().toLowerCase();
     if (!term) {
-        suggestions.classList.remove('show');
+        setSuggestionsOpen(false);
         suggestions.replaceChildren();
         return;
     }
 
-    const filtered = availableProducts.filter(product =>
-        product.name.toLowerCase().includes(term) || product.category.toLowerCase().includes(term)
-    );
+    const filtered = availableProducts.filter(product => product.name.toLowerCase().includes(term) || product.category.toLowerCase().includes(term) || product.id.toLowerCase().includes(term));
     renderProductSuggestions(filtered, term);
-    suggestions.classList.add('show');
+    setSuggestionsOpen(true);
+}
+
+function handleProductSearchKeyboard(event) {
+    const suggestions = document.getElementById('productSuggestions');
+    if (!suggestions || !suggestions.classList.contains('show')) return;
+    const options = [...suggestions.querySelectorAll('button.suggestion-item')];
+    if (event.key === 'ArrowDown' && options.length) {
+        event.preventDefault();
+        options[0].focus();
+    } else if (event.key === 'Escape') {
+        event.preventDefault();
+        setSuggestionsOpen(false);
+    }
+}
+
+function setSuggestionsOpen(isOpen) {
+    const suggestions = document.getElementById('productSuggestions');
+    const input = document.getElementById('productSearch');
+    suggestions?.classList.toggle('show', isOpen);
+    input?.setAttribute('aria-expanded', String(isOpen));
 }
 
 function renderProductSuggestions(products, term) {
@@ -368,6 +476,7 @@ function renderProductSuggestions(products, term) {
     if (!products.length) {
         const empty = document.createElement('div');
         empty.className = 'suggestion-item text-muted';
+        empty.setAttribute('role', 'option');
         empty.textContent = `No products found matching "${term}"`;
         suggestions.appendChild(empty);
         return;
@@ -377,16 +486,17 @@ function renderProductSuggestions(products, term) {
     products.forEach(product => {
         const item = document.createElement('button');
         item.type = 'button';
-        item.className = 'suggestion-item w-100 text-start border-0';
+        item.className = 'suggestion-item';
+        item.setAttribute('role', 'option');
         item.addEventListener('click', () => addProductToOrder(product.id));
 
         const details = document.createElement('span');
         const name = document.createElement('span');
-        name.className = 'product-name d-block';
+        name.className = 'product-name';
         name.textContent = product.name;
         const meta = document.createElement('span');
         meta.className = 'product-meta';
-        meta.textContent = `${product.category} • ${product.available} available`;
+        meta.textContent = `${product.category} · ${product.available} available`;
         details.append(name, meta);
 
         const price = document.createElement('span');
@@ -407,17 +517,16 @@ function addProductToOrder(productId) {
     }
 
     const existing = orderItems.find(item => item.id === productId);
-    if (existing) {
-        existing.quantity = clampQuantity(existing.quantity + 1, existing.available, isSellOrder());
-    } else {
+    if (existing) existing.quantity = clampQuantity(existing.quantity + 1, existing.available, isSellOrder());
+    else {
         rowCounter += 1;
         orderItems.push({ ...product, rowId: rowCounter, quantity: 1 });
     }
     renderOrderTable();
     const input = document.getElementById('productSearch');
-    const suggestions = document.getElementById('productSuggestions');
     if (input) input.value = '';
-    suggestions?.classList.remove('show');
+    setSuggestionsOpen(false);
+    input?.focus();
 }
 
 function renderOrderTable() {
@@ -437,28 +546,35 @@ function renderOrderTable() {
     orderItems.forEach(item => {
         const row = document.createElement('tr');
         row.id = `row-${item.rowId}`;
-        appendOrderTextCell(row, item.name, 'product-cell');
-        appendOrderTextCell(row, `${item.available} units`, 'available-cell');
-        appendOrderTextCell(row, `$${formatCurrency(item.price)}`, 'price-cell');
+        appendOrderTextCell(row, item.name, 'product-cell', 'Product');
+        appendOrderTextCell(row, `${item.available} units`, 'available-cell numeric-cell', 'Available');
+        appendOrderTextCell(row, `$${formatCurrency(item.price)}`, 'price-cell money-cell', 'Current price');
 
         const quantityCell = document.createElement('td');
+        quantityCell.dataset.label = 'Quantity';
         const quantityInput = document.createElement('input');
         quantityInput.type = 'number';
-        quantityInput.className = 'form-control form-control-sm qty-input';
+        quantityInput.className = 'form-control qty-input';
         quantityInput.min = '1';
         if (isSellOrder()) quantityInput.max = String(item.available);
         quantityInput.value = String(item.quantity);
+        quantityInput.setAttribute('aria-label', `Quantity for ${item.name}`);
         quantityInput.addEventListener('change', event => updateQuantity(item.rowId, event.target.value));
         quantityCell.appendChild(quantityInput);
         row.appendChild(quantityCell);
 
-        appendOrderTextCell(row, `$${formatCurrency(item.price * item.quantity)}`, 'total-cell');
+        appendOrderTextCell(row, `$${formatCurrency(item.price * item.quantity)}`, 'total-cell money-cell amount-cell', 'Line total');
 
         const actionCell = document.createElement('td');
+        actionCell.dataset.label = 'Action';
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
         removeButton.className = 'remove-btn';
-        removeButton.textContent = 'Remove';
+        removeButton.setAttribute('aria-label', `Remove ${item.name} from order`);
+        removeButton.appendChild(createOrderIcon('trash'));
+        const removeText = document.createElement('span');
+        removeText.textContent = 'Remove';
+        removeButton.appendChild(removeText);
         removeButton.addEventListener('click', () => removeFromOrder(item.rowId));
         actionCell.appendChild(removeButton);
         row.appendChild(actionCell);
@@ -486,7 +602,9 @@ function calculateEstimatedTotal() {
 }
 
 function showOrderReview() {
+    const form = document.getElementById('createOrderForm');
     const partyName = document.getElementById('customerName')?.value.trim() || '';
+    if (form && !form.reportValidity()) return;
     if (!partyName) {
         showToast('Please enter a customer or supplier name.', 'error');
         document.getElementById('customerName')?.focus();
@@ -494,12 +612,16 @@ function showOrderReview() {
     }
     if (!orderItems.length) {
         showToast('Please add at least one product to the order.', 'error');
+        document.getElementById('productSearch')?.focus();
         return;
     }
 
     const orderType = getOrderType();
     setText('reviewOrderType', orderType);
-    setText('reviewStaffName', 'Authenticated staff');
+    const reviewType = document.getElementById('reviewOrderType');
+    reviewType?.classList.toggle('order-type-sell', orderType === 'Sell');
+    reviewType?.classList.toggle('order-type-purchase', orderType === 'Purchase');
+    setText('reviewStaffName', sessionStorage.getItem('userRole') || 'Authenticated staff');
     setText('reviewPartyTitle', orderType === 'Sell' ? 'Customer' : 'Supplier');
     setText('reviewPartyName', partyName);
     setText('reviewItemCount', orderItems.length);
@@ -514,10 +636,10 @@ function renderReviewItems() {
     const fragment = document.createDocumentFragment();
     orderItems.forEach(item => {
         const row = document.createElement('tr');
-        appendOrderTextCell(row, item.name);
-        appendOrderTextCell(row, `x${item.quantity}`, 'text-center');
-        appendOrderTextCell(row, `$${formatCurrency(item.price)}`, 'text-end');
-        appendOrderTextCell(row, `$${formatCurrency(item.price * item.quantity)}`, 'text-end fw-bold');
+        appendOrderTextCell(row, item.name, '', 'Product');
+        appendOrderTextCell(row, `x${item.quantity}`, 'numeric-cell', 'Qty');
+        appendOrderTextCell(row, `$${formatCurrency(item.price)}`, 'money-cell', 'Unit price');
+        appendOrderTextCell(row, `$${formatCurrency(item.price * item.quantity)}`, 'money-cell amount-cell', 'Total');
         fragment.appendChild(row);
     });
     body.replaceChildren(fragment);
@@ -533,7 +655,7 @@ async function submitOrderToServer() {
 
     createOrderInFlight = true;
     const button = document.getElementById('confirmOrderBtn');
-    setButtonBusy(button, 'Processing...');
+    setButtonBusy(button, true);
 
     try {
         const response = await apiFetch('orders/create.php', {
@@ -547,9 +669,7 @@ async function submitOrderToServer() {
         });
         const data = await readOrderApiResponse(response);
         const created = data.data;
-        if (!created || !created.order_id || !Array.isArray(created.items)) {
-            throw new Error('The backend did not return the created order.');
-        }
+        if (!created || !created.order_id || !Array.isArray(created.items)) throw new Error('The backend did not return the created order.');
 
         bootstrap.Modal.getInstance(document.getElementById('orderReviewModal'))?.hide();
         populateOrderConfirmation(created);
@@ -562,13 +682,16 @@ async function submitOrderToServer() {
         openModal('orderReviewModal');
     } finally {
         createOrderInFlight = false;
-        setButtonBusy(button, 'Confirm Order');
+        setButtonBusy(button, false);
     }
 }
 
 function populateOrderConfirmation(created) {
-    setText('orderNumber', `#${created.order_id}`);
+    setText('orderNumber', created.order_id);
     setText('confirmOrderType', created.order_type);
+    const confirmationType = document.getElementById('confirmOrderType');
+    confirmationType?.classList.toggle('order-type-sell', created.order_type === 'Sell');
+    confirmationType?.classList.toggle('order-type-purchase', created.order_type === 'Purchase');
     setText('confirmStaffName', created.staff_id || '-');
     setText('confirmPartyTitle', created.order_type === 'Sell' ? 'Customer' : 'Supplier');
     setText('confirmPartyName', created.party_name || '-');
@@ -579,10 +702,10 @@ function populateOrderConfirmation(created) {
     const fragment = document.createDocumentFragment();
     created.items.forEach(item => {
         const row = document.createElement('tr');
-        appendOrderTextCell(row, item.product_name || item.product_id || '-');
-        appendOrderTextCell(row, item.quantity ?? '-', 'text-center');
-        appendOrderTextCell(row, `$${formatCurrency(item.price)}`, 'text-end');
-        appendOrderTextCell(row, `$${formatCurrency(item.line_total)}`, 'text-end fw-bold');
+        appendOrderTextCell(row, item.product_name || item.product_id || '-', '', 'Product');
+        appendOrderTextCell(row, item.quantity ?? '-', 'numeric-cell', 'Qty');
+        appendOrderTextCell(row, `$${formatCurrency(item.price)}`, 'money-cell', 'Unit price');
+        appendOrderTextCell(row, `$${formatCurrency(item.line_total)}`, 'money-cell amount-cell', 'Total');
         fragment.appendChild(row);
     });
     body.replaceChildren(fragment);
@@ -597,23 +720,23 @@ function resetOrderForm() {
     document.getElementById('sellOrder')?.click();
     renderOrderTable();
     updateOrderTypeLabel();
+    setSuggestionsOpen(false);
+    const productSearch = document.getElementById('productSearch');
+    if (productSearch) productSearch.value = '';
 }
 
-function loadModalProducts() {
+async function loadModalProducts() {
     selectedProducts = {};
     const search = document.getElementById('modalProductSearch');
     if (search) search.value = '';
+    if (!availableProducts.length && productsLoadInFlight) await productsLoadInFlight;
     renderModalProducts(availableProducts);
     updateSelectedCount();
 }
 
 function filterModalProducts() {
     const term = document.getElementById('modalProductSearch')?.value.trim().toLowerCase() || '';
-    const products = availableProducts.filter(product =>
-        product.name.toLowerCase().includes(term) ||
-        product.id.toLowerCase().includes(term) ||
-        product.category.toLowerCase().includes(term)
-    );
+    const products = availableProducts.filter(product => product.name.toLowerCase().includes(term) || product.id.toLowerCase().includes(term) || product.category.toLowerCase().includes(term));
     renderModalProducts(products);
 }
 
@@ -624,8 +747,35 @@ function renderModalProducts(products) {
         const row = document.createElement('tr');
         const cell = document.createElement('td');
         cell.colSpan = 5;
-        cell.className = 'text-center py-4 text-muted';
-        cell.textContent = availableProducts.length ? 'No products match this search.' : 'No products are available.';
+        const state = document.createElement('div');
+        state.className = 'table-state';
+        if (productsLoadError) {
+            state.appendChild(createOrderIcon('refresh'));
+            const title = document.createElement('strong');
+            title.textContent = 'Products unavailable';
+            state.appendChild(title);
+            const message = document.createElement('p');
+            message.textContent = getOrderApiErrorMessage(productsLoadError, 'Unable to load products.');
+            state.appendChild(message);
+            const retryButton = document.createElement('button');
+            retryButton.type = 'button';
+            retryButton.className = 'qm-button qm-button--quiet';
+            retryButton.textContent = 'Retry';
+            retryButton.addEventListener('click', async () => {
+                state.replaceChildren(createOrderIcon('spinner', 'state-spinner-icon'));
+                await loadProductsFromDatabase();
+                renderModalProducts(availableProducts);
+            });
+            state.appendChild(retryButton);
+        } else {
+            const title = document.createElement('strong');
+            title.textContent = availableProducts.length ? 'No matching products' : 'No products are available';
+            state.appendChild(title);
+            const message = document.createElement('p');
+            message.textContent = availableProducts.length ? 'Try a different name, ID, or category.' : 'The product service returned no selectable records.';
+            state.appendChild(message);
+        }
+        cell.appendChild(state);
         row.appendChild(cell);
         body.replaceChildren(row);
         return;
@@ -636,11 +786,14 @@ function renderModalProducts(products) {
         const selected = selectedProducts[product.id];
         const disabled = isSellOrder() && product.available < 1;
         const row = document.createElement('tr');
-        if (selected) row.classList.add('table-success');
-        if (disabled) row.classList.add('text-muted');
+        if (selected) row.classList.add('selected-row');
+        if (disabled) row.classList.add('unavailable-row');
 
         const checkboxCell = document.createElement('td');
-        checkboxCell.className = 'text-center';
+        checkboxCell.dataset.label = 'Select';
+        const checkboxLabel = document.createElement('label');
+        checkboxLabel.className = 'checkbox-hit-area';
+        checkboxLabel.setAttribute('aria-label', `Select ${product.name}`);
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.className = 'form-check-input product-checkbox';
@@ -648,10 +801,12 @@ function renderModalProducts(products) {
         checkbox.disabled = disabled;
         checkbox.dataset.id = product.id;
         checkbox.addEventListener('change', event => toggleProductSelection(event.target));
-        checkboxCell.appendChild(checkbox);
+        checkboxLabel.appendChild(checkbox);
+        checkboxCell.appendChild(checkboxLabel);
         row.appendChild(checkboxCell);
 
         const productCell = document.createElement('td');
+        productCell.dataset.label = 'Product';
         const name = document.createElement('strong');
         name.textContent = product.name;
         const id = document.createElement('small');
@@ -659,10 +814,9 @@ function renderModalProducts(products) {
         id.textContent = product.id;
         productCell.append(name, id);
         row.appendChild(productCell);
-
-        appendOrderTextCell(row, product.category);
-        appendOrderTextCell(row, product.available, 'text-center');
-        appendOrderTextCell(row, `$${formatCurrency(product.price)}`, 'text-end fw-bold');
+        appendOrderTextCell(row, product.category, '', 'Category');
+        appendOrderTextCell(row, product.available, 'numeric-cell', 'Available');
+        appendOrderTextCell(row, `$${formatCurrency(product.price)}`, 'money-cell', 'Price');
         fragment.appendChild(row);
     });
     body.replaceChildren(fragment);
@@ -671,19 +825,18 @@ function renderModalProducts(products) {
 function toggleProductSelection(checkbox) {
     const product = availableProducts.find(item => item.id === checkbox.dataset.id);
     if (!product) return;
-    if (checkbox.checked) {
-        selectedProducts[product.id] = { product, quantity: 1 };
-    } else {
-        delete selectedProducts[product.id];
-    }
-    checkbox.closest('tr')?.classList.toggle('table-success', checkbox.checked);
+    if (checkbox.checked) selectedProducts[product.id] = { product, quantity: 1 };
+    else delete selectedProducts[product.id];
+    checkbox.closest('tr')?.classList.toggle('selected-row', checkbox.checked);
     updateSelectedCount();
     updateSelectedPreview();
 }
 
 function updateSelectedCount() {
     const count = Object.keys(selectedProducts).length;
-    setText('selectedCount', `${count} product${count === 1 ? '' : 's'} selected`);
+    const label = `${count} product${count === 1 ? '' : 's'} selected`;
+    setText('selectedCount', label);
+    setText('selectedCountFooter', label);
     const button = document.getElementById('confirmAddProductsBtn');
     if (button) button.disabled = count === 0;
 }
@@ -698,25 +851,24 @@ function updateSelectedPreview() {
     selections.forEach(selection => {
         const product = selection.product;
         const wrapper = document.createElement('div');
-        wrapper.className = 'd-flex justify-content-between align-items-center mb-2 p-2 bg-white rounded';
+        wrapper.className = 'selected-product-row';
         const label = document.createElement('strong');
         label.textContent = product.name;
+        const controls = document.createElement('span');
+        controls.className = 'selected-product-row__controls';
+        const text = document.createElement('span');
+        text.textContent = 'Qty';
         const quantity = document.createElement('input');
         quantity.type = 'number';
-        quantity.className = 'form-control form-control-sm ms-2';
-        quantity.style.width = '80px';
+        quantity.className = 'form-control';
         quantity.min = '1';
         if (isSellOrder()) quantity.max = String(product.available);
         quantity.value = String(selection.quantity);
+        quantity.setAttribute('aria-label', `Quantity for ${product.name}`);
         quantity.addEventListener('change', event => {
             selection.quantity = clampQuantity(event.target.value, product.available, isSellOrder());
             event.target.value = String(selection.quantity);
         });
-        const controls = document.createElement('div');
-        controls.className = 'd-flex align-items-center';
-        const text = document.createElement('span');
-        text.className = 'small text-muted';
-        text.textContent = 'Qty:';
         controls.append(text, quantity);
         wrapper.append(label, controls);
         list.appendChild(wrapper);
@@ -732,9 +884,8 @@ function addSelectedProducts() {
     selections.forEach(selection => {
         const product = selection.product;
         const existing = orderItems.find(item => item.id === product.id);
-        if (existing) {
-            existing.quantity = clampQuantity(existing.quantity + selection.quantity, existing.available, isSellOrder());
-        } else {
+        if (existing) existing.quantity = clampQuantity(existing.quantity + selection.quantity, existing.available, isSellOrder());
+        else {
             rowCounter += 1;
             orderItems.push({ ...product, rowId: rowCounter, quantity: selection.quantity });
         }
@@ -759,10 +910,47 @@ function clampQuantity(value, available, limitToStock) {
     return quantity;
 }
 
-function setButtonBusy(button, label) {
+function setButtonBusy(button, isBusy) {
     if (!button) return;
-    button.disabled = label !== 'Confirm Order';
-    button.textContent = label;
+    button.disabled = isBusy;
+    button.setAttribute('aria-busy', String(isBusy));
+    button.replaceChildren(createOrderIcon(isBusy ? 'spinner' : 'check', isBusy ? 'button-spinner' : ''), document.createTextNode(isBusy ? 'Processing…' : 'Confirm order'));
+}
+
+function returnToOrderEditor() {
+    bootstrap.Modal.getInstance(document.getElementById('orderReviewModal'))?.hide();
+    window.setTimeout(() => openModal('createOrderModal'), 160);
+}
+
+function startAnotherOrder() {
+    bootstrap.Modal.getInstance(document.getElementById('successModal'))?.hide();
+    resetOrderForm();
+    window.setTimeout(() => openModal('createOrderModal'), 160);
+}
+
+function printOrderInvoice() {
+    document.body.classList.add('orders-print-invoice');
+    window.print();
+    window.setTimeout(() => document.body.classList.remove('orders-print-invoice'), 500);
+}
+
+function createOrderIcon(name, className) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '1.8');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.setAttribute('aria-hidden', 'true');
+    if (className) svg.setAttribute('class', `qm-icon ${className}`);
+    else svg.setAttribute('class', 'qm-icon');
+    (orderIconPaths[name] || orderIconPaths.check).forEach(pathData => {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', pathData);
+        svg.appendChild(path);
+    });
+    return svg;
 }
 
 function setText(id, value) {
@@ -788,16 +976,11 @@ function formatOrderDate(value) {
     if (!value) return '-';
     const date = new Date(String(value).replace(' ', 'T'));
     if (Number.isNaN(date.getTime())) return String(value);
-    return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    return date.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
-function debounce(callback, wait) {
+function createPageDebounce(callback, wait) {
+    if (typeof debounce === 'function') return debounce(callback, wait);
     let timeout;
     return function (...args) {
         clearTimeout(timeout);

@@ -18,18 +18,18 @@
 }
 
 .toast-success {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
+    background: var(--qm-teal);
+    color: var(--qm-white);
 }
 
 .toast-error {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
+    background: var(--qm-danger);
+    color: var(--qm-white);
 }
 
 .toast-info {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: white;
+    background: var(--qm-info);
+    color: var(--qm-white);
 }
 
 .toast-body {
@@ -43,14 +43,14 @@
 .form-select {
     border-radius: 8px;
     padding: 0.6rem 1rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--qm-border);
     transition: all 0.2s ease;
 }
 
 .form-control:focus,
 .form-select:focus {
-    border-color: var(--primary-color, #6366f1);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    border-color: var(--qm-amber);
+    box-shadow: 0 0 0 3px rgba(226, 173, 79, 0.22);
 }
 
 /* ===========================================
@@ -69,9 +69,9 @@ input[type="checkbox"].product-checkbox,
     margin: 0 !important;
     padding: 0 !important;
     /* Strong visible border */
-    border: 2px solid #6366f1 !important;
+    border: 2px solid var(--qm-border-strong) !important;
     border-radius: 4px !important;
-    background-color: #ffffff !important;
+    background-color: var(--qm-surface) !important;
     /* Override Bootstrap */
     appearance: none !important;
     -webkit-appearance: none !important;
@@ -91,9 +91,9 @@ input[type="checkbox"].form-check-input:hover,
 input[type="checkbox"].product-checkbox:hover,
 .product-checkbox:hover,
 #selectAllProducts:hover {
-    border-color: #4f46e5 !important;
-    background-color: #eef2ff !important;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+    border-color: var(--qm-amber) !important;
+    background-color: var(--qm-warning-soft) !important;
+    box-shadow: 0 0 0 3px rgba(226, 173, 79, 0.22) !important;
 }
 
 /* Checked state - MUST have colored background */
@@ -101,8 +101,8 @@ input[type="checkbox"].form-check-input:checked,
 input[type="checkbox"].product-checkbox:checked,
 .product-checkbox:checked,
 #selectAllProducts:checked {
-    background-color: #6366f1 !important;
-    border-color: #6366f1 !important;
+    background-color: var(--qm-amber) !important;
+    border-color: var(--qm-amber) !important;
     background-image: none !important;
 }
 
@@ -117,7 +117,7 @@ input[type="checkbox"].product-checkbox:checked::before,
     left: 5px !important;
     width: 5px !important;
     height: 10px !important;
-    border: solid white !important;
+    border: solid var(--qm-ink-deep) !important;
     border-width: 0 2px 2px 0 !important;
     transform: rotate(45deg) !important;
     display: block !important;
@@ -129,13 +129,13 @@ input[type="checkbox"].product-checkbox:focus,
 .product-checkbox:focus,
 #selectAllProducts:focus {
     outline: none !important;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3) !important;
-    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(226, 173, 79, 0.24) !important;
+    border-color: var(--qm-amber) !important;
 }
 
 .form-label {
     font-size: 0.85rem;
-    color: #475569;
+    color: var(--qm-text-muted);
     margin-bottom: 0.35rem;
     font-weight: 500;
 }
@@ -171,7 +171,7 @@ input[type="tel"] {
 }
 
 .modal-footer {
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid var(--qm-border);
     padding: 1rem 1.5rem;
 }
 
@@ -190,24 +190,24 @@ input[type="tel"] {
 
 .badge-normal,
 .status-completed {
-    background: #dcfce7;
-    color: #166534;
+    background: var(--qm-teal-soft);
+    color: var(--qm-teal);
 }
 
 .badge-low,
 .status-cancelled {
-    background: #fee2e2;
-    color: #991b1b;
+    background: var(--qm-danger-soft);
+    color: var(--qm-danger);
 }
 
 .status-pending {
-    background: #fef3c7;
-    color: #92400e;
+    background: var(--qm-warning-soft);
+    color: var(--qm-warning);
 }
 
 .status-confirmed {
-    background: #dbeafe;
-    color: #1e40af;
+    background: var(--qm-info-soft);
+    color: var(--qm-info);
 }
 
 /* ===========================================
@@ -227,25 +227,23 @@ input[type="tel"] {
 }
 
 .action-btn-edit {
-    background: #e0f2fe;
-    color: #0284c7;
+    background: var(--qm-info-soft);
+    color: var(--qm-info);
 }
 
 .action-btn-edit:hover {
-    background: #0284c7;
-    color: white;
-    transform: translateY(-2px);
+    background: var(--qm-info);
+    color: var(--qm-ink-deep);
 }
 
 .action-btn-delete {
-    background: #fee2e2;
-    color: #dc2626;
+    background: var(--qm-danger-soft);
+    color: var(--qm-danger);
 }
 
 .action-btn-delete:hover {
-    background: #dc2626;
-    color: white;
-    transform: translateY(-2px);
+    background: var(--qm-danger);
+    color: var(--qm-ink-deep);
 }
 
 /* ===========================================
@@ -280,7 +278,7 @@ input[type="tel"] {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(13, 25, 30, 0.88);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -290,8 +288,8 @@ input[type="tel"] {
 .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid #e2e8f0;
-    border-top-color: var(--primary-color, #6366f1);
+    border: 3px solid var(--qm-border);
+    border-top-color: var(--qm-amber);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
@@ -308,7 +306,7 @@ input[type="tel"] {
 .empty-state {
     text-align: center;
     padding: 4rem 2rem;
-    color: #94a3b8;
+    color: var(--qm-text-faint);
 }
 
 .empty-state i {
@@ -318,7 +316,7 @@ input[type="tel"] {
 }
 
 .empty-state h5 {
-    color: #64748b;
+    color: var(--qm-text-muted);
     margin-bottom: 0.5rem;
 }
 
@@ -369,34 +367,39 @@ input[type="tel"] {
    shared visual language and shell.
 =========================================== */
 :root {
-    --qm-ink-950: #10232c;
-    --qm-ink-900: #152d36;
-    --qm-ink-800: #1e3a43;
-    --qm-ink-700: #29464e;
-    --qm-canvas: #f5f3ec;
-    --qm-surface: #fffdf8;
-    --qm-surface-subtle: #edf2ef;
-    --qm-surface-strong: #e4ece8;
-    --qm-border: #d3deda;
-    --qm-border-strong: #b8c9c3;
-    --qm-text: #14262e;
-    --qm-text-muted: #52656b;
-    --qm-text-faint: #6f7f83;
-    --qm-white: #fffdf8;
-    --qm-amber: #d3962c;
-    --qm-amber-strong: #885a13;
-    --qm-teal: #0e6b53;
-    --qm-teal-soft: #e8f4ef;
-    --qm-warning: #8a5a12;
-    --qm-warning-soft: #fbf1dc;
-    --qm-danger: #9a3440;
-    --qm-danger-soft: #fbeaed;
-    --qm-info: #1f617c;
-    --qm-info-soft: #eaf3f7;
-    --qm-focus: #d3962c;
-    --qm-shadow-sm: 0 1px 2px rgba(16, 35, 44, 0.06);
-    --qm-shadow-md: 0 12px 30px rgba(16, 35, 44, 0.1);
-    --qm-shadow-lg: 0 24px 60px rgba(16, 35, 44, 0.18);
+    color-scheme: dark;
+    --qm-ink-950: #091419;
+    --qm-ink-900: #101f25;
+    --qm-ink-800: #172d35;
+    --qm-ink-700: #23404a;
+    --qm-ink-300: #8ca19d;
+    --qm-ink-600: #b2c3bf;
+    --qm-ink-deep: #091419;
+    --qm-canvas: #0d191e;
+    --qm-surface: #14252b;
+    --qm-surface-subtle: #1a3037;
+    --qm-surface-strong: #203a42;
+    --qm-border: #2d4851;
+    --qm-border-strong: #45616a;
+    --qm-text: #edf5f2;
+    --qm-text-muted: #b2c3bf;
+    --qm-text-faint: #8ca19d;
+    --qm-white: #f7fbf9;
+    --qm-amber: #e2ad4f;
+    --qm-amber-strong: #f1c66d;
+    --qm-amber-soft: #46351d;
+    --qm-teal: #42c29f;
+    --qm-teal-soft: #163b35;
+    --qm-warning: #e4b65d;
+    --qm-warning-soft: #3a2d18;
+    --qm-danger: #ef8791;
+    --qm-danger-soft: #3a2028;
+    --qm-info: #7fc5e2;
+    --qm-info-soft: #17323e;
+    --qm-focus: #f0bd5a;
+    --qm-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
+    --qm-shadow-md: 0 12px 30px rgba(0, 0, 0, 0.34);
+    --qm-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
     --qm-radius-control: 6px;
     --qm-radius-card: 10px;
     --qm-radius-modal: 14px;
@@ -409,6 +412,8 @@ input[type="tel"] {
     --qm-z-drawer-backdrop: 1025;
     --qm-z-shell: 1030;
     --qm-z-drawer: 1040;
+    --qm-radius-panel: 14px;
+    --qm-z-toast: 1100;
 
     /* Compatibility aliases used by existing page styles. */
     --primary-color: var(--qm-amber-strong);
@@ -421,6 +426,94 @@ input[type="tel"] {
     --text-primary: var(--qm-text);
     --text-secondary: var(--qm-text-muted);
     --text-muted: var(--qm-text-faint);
+}
+
+.qm-access-body {
+    min-height: 100vh;
+    margin: 0;
+    background: var(--qm-canvas);
+    color: var(--qm-text);
+}
+
+.qm-access-page {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: var(--qm-page-gutter);
+}
+
+.qm-access-card {
+    width: min(100%, 540px);
+    padding: clamp(2rem, 5vw, 3.5rem);
+    border: 1px solid var(--qm-border);
+    border-radius: var(--qm-radius-modal);
+    background: var(--qm-surface);
+    box-shadow: var(--qm-shadow-lg);
+    text-align: center;
+}
+
+.qm-access-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin-block-end: 1rem;
+    border: 1px solid var(--qm-warning);
+    border-radius: 50%;
+    color: var(--qm-warning);
+    background: var(--qm-warning-soft);
+}
+
+.qm-access-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.qm-access-code {
+    margin: 0 0 0.5rem;
+    color: var(--qm-amber-strong);
+    font: 700 0.8rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    letter-spacing: 0.08em;
+}
+
+.qm-access-card h1 {
+    margin: 0;
+    color: var(--qm-text);
+    font-size: clamp(1.35rem, 3vw, 1.8rem);
+    line-height: 1.3;
+}
+
+.qm-access-card > p:not(.qm-access-code) {
+    margin: 0.9rem 0 1.5rem;
+    color: var(--qm-text-muted);
+    line-height: 1.7;
+}
+
+.qm-access-action {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.7rem 1.1rem;
+    border: 1px solid var(--qm-amber);
+    border-radius: var(--qm-radius-control);
+    background: var(--qm-amber);
+    color: var(--qm-ink-950);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color var(--qm-transition-fast), border-color var(--qm-transition-fast), color var(--qm-transition-fast);
+}
+
+.qm-access-action:hover,
+.qm-access-action:focus-visible {
+    border-color: var(--qm-amber-strong);
+    background: var(--qm-amber-strong);
+    color: var(--qm-ink-950);
+}
+
+.qm-access-action:focus-visible {
+    outline: 3px solid var(--qm-focus);
+    outline-offset: 3px;
 }
 
 *,
@@ -443,6 +536,11 @@ body {
     font-size: 1rem;
     line-height: 1.55;
     text-rendering: optimizeLegibility;
+}
+
+/* Keep English copy and its punctuation readable inside the RTL-first shell. */
+:where(h1, h2, h3, h4, h5, h6, p) {
+    unicode-bidi: plaintext;
 }
 
 body.qm-drawer-open {
@@ -478,7 +576,9 @@ a:hover {
     z-index: var(--qm-z-shell);
     display: block;
     width: var(--qm-nav-width);
-    min-height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
     padding: 0;
     background: var(--qm-ink-950) !important;
     border: 0;
@@ -490,6 +590,7 @@ a:hover {
     flex-direction: column;
     width: 100%;
     height: 100%;
+    min-height: 0;
     padding: 24px 16px 16px;
 }
 
@@ -574,6 +675,7 @@ a:hover {
     flex-direction: column;
     align-items: stretch;
     min-height: 0;
+    overflow: hidden;
 }
 
 .qm-nav-section-label {
@@ -587,10 +689,13 @@ a:hover {
 
 .qm-nav-list.navbar-nav {
     display: flex;
+    flex: 1 1 auto;
     flex-direction: column;
     gap: 4px;
     min-height: 0;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
     padding: 0;
     margin: 0;
     list-style: none;
@@ -648,8 +753,12 @@ a:hover {
 }
 
 .qm-nav-footer {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
     margin-top: auto;
     padding-top: 16px;
+    background: var(--qm-ink-950);
     border-top: 1px solid rgba(255, 253, 248, 0.12);
 }
 
@@ -712,6 +821,10 @@ a:hover {
     border: 1px solid rgba(255, 253, 248, 0.16);
     border-radius: var(--qm-radius-card);
     box-shadow: var(--qm-shadow-lg);
+}
+
+.qm-nav-footer .dropdown-menu {
+    margin-block-end: 8px !important;
 }
 
 .qm-shell-nav .dropdown-item {
@@ -1005,6 +1118,7 @@ a:hover {
         width: 100%;
         min-height: var(--qm-header-height);
         height: var(--qm-header-height);
+        overflow: visible;
     }
 
     .qm-shell-frame {
@@ -1030,7 +1144,7 @@ a:hover {
         height: 100dvh !important;
         max-height: 100dvh;
         padding: 88px 16px 16px;
-        overflow-y: auto;
+        overflow: hidden;
         background: var(--qm-ink-950);
         box-shadow: -20px 0 50px rgba(16, 35, 44, 0.25);
         transform: translateX(110%);
@@ -1088,5 +1202,482 @@ a:hover {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
+    }
+}
+
+/* ===========================================
+   UI-10 dark mode unification
+   Loaded after page styles so legacy selectors keep their behavior while
+   every application surface resolves to the same ink/charcoal system.
+=========================================== */
+:root {
+    --bs-body-bg: var(--qm-canvas);
+    --bs-body-color: var(--qm-text);
+    --bs-secondary-color: var(--qm-text-muted);
+    --bs-tertiary-bg: var(--qm-surface-subtle);
+    --bs-border-color: var(--qm-border);
+}
+
+html,
+body,
+body:has(.main-content) {
+    color-scheme: dark;
+    background: var(--qm-canvas);
+    color: var(--qm-text);
+}
+
+body:has(.main-content) .main-content {
+    background: var(--qm-canvas) !important;
+    color: var(--qm-text);
+}
+
+body:has(.main-content) :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--qm-text);
+}
+
+body:has(.main-content) :is(p, small, .text-muted, .form-text) {
+    color: var(--qm-text-muted);
+}
+
+/* Shared app surfaces. */
+body:has(.main-content) :is(.card, .modal-content, .dashboard-section,
+    .dashboard-kpi-card, .products-toolbar, .products-panel, .orders-panel,
+    .report-panel, .metric-card, .staff-card, .staff-state-card,
+    .staff-directory-panel, .profile-identity-card, .profile-panel,
+    .create-order-shell, .flow-section, .recent-orders-section,
+    .invoice-box) {
+    color: var(--qm-text);
+    background-color: var(--qm-surface) !important;
+    background-image: none !important;
+    border-color: var(--qm-border) !important;
+    box-shadow: var(--qm-shadow-sm);
+}
+
+body:has(.main-content) :is(.dashboard-kpi-section, .products-kpi-section) {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none;
+}
+
+body:has(.main-content) :is(.table-responsive, .table-scroll, .products-table-wrap,
+    .orders-table-wrap, .dashboard-table-wrap, .dashboard-modal-table-wrap) {
+    background: var(--qm-surface);
+    border-color: var(--qm-border);
+}
+
+body:has(.main-content) :is(table, .table) {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--qm-text);
+    --bs-table-border-color: var(--qm-border);
+    color: var(--qm-text);
+    background-color: transparent;
+}
+
+body:has(.main-content) :is(table thead, .table thead) {
+    color: var(--qm-text-muted);
+    background: var(--qm-surface-subtle);
+}
+
+body:has(.main-content) :is(table th, table td, .table th, .table td) {
+    color: inherit;
+    border-color: var(--qm-border);
+}
+
+body:has(.main-content) :is(table tbody tr:hover, .table tbody tr:hover) {
+    --bs-table-hover-bg: var(--qm-surface-subtle);
+    background: var(--qm-surface-subtle);
+}
+
+/* Form controls remain dark even where a page uses a legacy selector. */
+body:has(.main-content) .main-content[class] :is(input, select, textarea) {
+    color: var(--qm-text) !important;
+    background-color: var(--qm-surface) !important;
+    border-color: var(--qm-border-strong) !important;
+    caret-color: var(--qm-amber);
+}
+
+body:has(.main-content) .main-content[class] :is(input, select, textarea)::placeholder {
+    color: var(--qm-text-faint) !important;
+    opacity: 1;
+}
+
+body:has(.main-content) .main-content[class] :is(input, select, textarea):focus {
+    color: var(--qm-text) !important;
+    background-color: var(--qm-surface) !important;
+    border-color: var(--qm-amber) !important;
+    box-shadow: 0 0 0 3px rgba(226, 173, 79, 0.22) !important;
+}
+
+body:has(.main-content) .main-content[class] :is(input, select, textarea):disabled,
+body:has(.main-content) .main-content[class] :is(input, select, textarea)[readonly] {
+    color: var(--qm-text-faint) !important;
+    background-color: var(--qm-surface-subtle) !important;
+    border-color: var(--qm-border) !important;
+}
+
+body:has(.main-content) .modal-content :is(input, select, textarea) {
+    color: var(--qm-text) !important;
+    background-color: var(--qm-surface) !important;
+    border-color: var(--qm-border-strong) !important;
+}
+
+body:has(.main-content) .modal-content :is(input, select, textarea)::placeholder {
+    color: var(--qm-text-faint) !important;
+}
+
+body:has(.main-content) .modal-content :is(input, select, textarea):focus {
+    background-color: var(--qm-surface) !important;
+    border-color: var(--qm-amber) !important;
+    box-shadow: 0 0 0 3px rgba(226, 173, 79, 0.22) !important;
+}
+
+body:has(.main-content) .main-content[class] label {
+    color: var(--qm-text-muted);
+}
+
+body:has(.main-content) .form-check-input,
+body:has(.main-content) .product-checkbox,
+body:has(.main-content) #selectAllProducts {
+    background-color: var(--qm-surface) !important;
+    border-color: var(--qm-border-strong) !important;
+}
+
+body:has(.main-content) .form-check-input:checked,
+body:has(.main-content) .product-checkbox:checked,
+body:has(.main-content) #selectAllProducts:checked {
+    background-color: var(--qm-amber) !important;
+    border-color: var(--qm-amber) !important;
+}
+
+body:has(.main-content) select option {
+    color: var(--qm-text);
+    background: var(--qm-surface);
+}
+
+/* Buttons, menus, dialogs, alerts, and transient states. */
+body:has(.main-content) :is(.btn-secondary, .btn-outline-secondary,
+    .btn-light, .btn-outline-light) {
+    color: var(--qm-text) !important;
+    background: var(--qm-surface) !important;
+    border-color: var(--qm-border-strong) !important;
+}
+
+body:has(.main-content) :is(.btn-secondary, .btn-outline-secondary,
+    .btn-light, .btn-outline-light):hover,
+body:has(.main-content) :is(.btn-secondary, .btn-outline-secondary,
+    .btn-light, .btn-outline-light):focus-visible {
+    color: var(--qm-text) !important;
+    background: var(--qm-surface-strong) !important;
+    border-color: var(--qm-amber) !important;
+}
+
+body:has(.main-content) .btn-primary {
+    color: var(--qm-ink-deep) !important;
+    background: var(--qm-amber) !important;
+    border-color: var(--qm-amber) !important;
+}
+
+body:has(.main-content) .btn-primary:hover,
+body:has(.main-content) .btn-primary:focus-visible {
+    color: var(--qm-ink-deep) !important;
+    background: var(--qm-amber-strong) !important;
+    border-color: var(--qm-amber-strong) !important;
+}
+
+body:has(.main-content) :is(.dropdown-menu, .offcanvas, .popover) {
+    color: var(--qm-text);
+    background: var(--qm-ink-900);
+    border-color: var(--qm-border-strong);
+    box-shadow: var(--qm-shadow-lg);
+}
+
+body:has(.main-content) .dropdown-item {
+    color: var(--qm-text-muted);
+}
+
+body:has(.main-content) .dropdown-item:hover,
+body:has(.main-content) .dropdown-item:focus-visible {
+    color: var(--qm-text);
+    background: var(--qm-surface-strong);
+}
+
+body:has(.main-content) .modal-backdrop {
+    background: var(--qm-ink-deep);
+}
+
+body:has(.main-content) .modal-content {
+    border-radius: var(--qm-radius-modal);
+    box-shadow: var(--qm-shadow-lg);
+}
+
+body:has(.main-content) :is(.modal-header, .modal-footer) {
+    border-color: var(--qm-border) !important;
+    background: var(--qm-surface) !important;
+}
+
+body:has(.main-content) .alert {
+    color: var(--qm-text);
+    background: var(--qm-surface-subtle);
+    border-color: var(--qm-border);
+}
+
+body:has(.main-content) .loading-overlay {
+    background: rgba(13, 25, 30, 0.88);
+}
+
+body:has(.main-content) .empty-state {
+    color: var(--qm-text-faint);
+}
+
+body:has(.main-content) .empty-state h5 {
+    color: var(--qm-text-muted);
+}
+
+body:has(.main-content) .btn-close {
+    filter: invert(1) grayscale(1) brightness(1.8);
+    opacity: 0.82;
+}
+
+body:has(.main-content) .btn-close:hover,
+body:has(.main-content) .btn-close:focus-visible {
+    opacity: 1;
+}
+
+/* Deliberately dark accent surfaces used by the ledger. */
+body:has(.main-content) :is(.orders-hero, .reports-hero, .order-modal__header,
+    .invoice-header, .order-summary-panel, .aside-card-primary,
+    .details-total-card, .products-logout-modal, .orders-page .toast,
+    .order-details-page .toast) {
+    color: var(--qm-white);
+    background: var(--qm-ink-deep) !important;
+    border-color: var(--qm-border-strong) !important;
+}
+
+body:has(.main-content) :is(.orders-hero h1, .reports-hero h1,
+    .invoice-header h1, .invoice-header__reference, .order-summary-panel h2,
+    .aside-card-primary h2, .aside-card-primary p, .details-total-card strong) {
+    color: var(--qm-white);
+}
+
+body:has(.main-content) .invoice-header__reference,
+body:has(.main-content) .invoice-header .eyebrow,
+body:has(.main-content) .order-modal__header .modal-kicker {
+    color: #f3d28a;
+}
+
+body:has(.main-content) .order-modal__header--review {
+    background: #302617 !important;
+}
+
+body:has(.main-content) .order-modal__header--success {
+    background: #123a31 !important;
+}
+
+body:has(.main-content) :is(.orders-hero__lede, .orders-hero__meta,
+    .orders-hero__hint, .modal-subtitle, .invoice-header__note,
+    .invoice-header__type-label, .workflow-step small) {
+    color: rgba(247, 251, 249, 0.72);
+}
+
+body:has(.main-content) :is(.order-summary-panel .section-kicker,
+    .order-summary-panel .summary-note, .summary-total-label,
+    .aside-card-primary .aside-eyebrow, .workflow-step strong) {
+    color: rgba(247, 251, 249, 0.78);
+}
+
+body:has(.main-content) :is(.order-summary-panel .summary-total-value,
+    .aside-card-primary .aside-eyebrow) {
+    color: #f3d28a;
+}
+
+body:has(.main-content) :is(.orders-page .orders-metric__value,
+    .reports-page .metric-card__value) {
+    color: var(--qm-text);
+}
+
+body:has(.main-content) :is(.orders-page .qm-button--primary,
+    .reports-page .reports-button--primary) {
+    color: var(--qm-ink-deep);
+}
+
+body:has(.main-content) :is(.products-table tbody tr:hover,
+    .orders-table tbody tr:not(.table-state-row):hover,
+    .staff-card:hover, .profile-button--secondary:hover) {
+    background: var(--qm-surface-strong) !important;
+}
+
+body:has(.main-content) :is(.products-page .products-table-wrap,
+    .orders-page .orders-filter-rail, .create-order-page .workflow-status-panel,
+    .create-order-page .empty-order-message, .order-details-page .details-note-card,
+    .reports-page .trend-visual) {
+    background: var(--qm-surface-subtle) !important;
+    border-color: var(--qm-border) !important;
+}
+
+body:has(.main-content) :is(.products-page .products-form-alert,
+    .staff-inline-message, .profile-form-message) {
+    background: var(--qm-danger-soft) !important;
+    border-color: var(--qm-danger) !important;
+    color: var(--qm-danger) !important;
+}
+
+body:has(.main-content) :is(.products-page .products-form-alert--success,
+    .staff-inline-message--info, .profile-form-message--success) {
+    background: var(--qm-teal-soft) !important;
+    border-color: var(--qm-teal) !important;
+    color: var(--qm-teal) !important;
+}
+
+body:has(.main-content) :is(.staff-inline-message--warning,
+    .profile-form-message--warning, .profile-security-note) {
+    background: var(--qm-warning-soft) !important;
+    border-color: var(--qm-warning) !important;
+    color: var(--qm-warning) !important;
+}
+
+body:has(.main-content) :is(.staff-inline-message--info,
+    .profile-form-message--info) {
+    background: var(--qm-info-soft) !important;
+    border-color: var(--qm-info) !important;
+    color: var(--qm-info) !important;
+}
+
+body:has(.main-content) :is(.profile-field input, .staff-field input,
+    .staff-field select, .create-order-page .field-control,
+    .orders-page .field-block input, .orders-page .product-search-bar input,
+    .orders-page .selected-products-preview input,
+    .orders-page .order-items-table .qty-input) {
+    background: var(--qm-surface) !important;
+    color: var(--qm-text) !important;
+}
+
+body:has(.main-content) :is(.profile-field input:focus, .staff-field input:focus,
+    .staff-field select:focus, .create-order-page .field-control:focus) {
+    background: var(--qm-surface) !important;
+}
+
+body:has(.main-content) :is(.order-type-option, .products-notice,
+    .profile-hero__note, .profile-stat-card, .staff-context-strip,
+    .staff-empty-state, .dashboard-order-meta-card) {
+    background: var(--qm-surface-subtle) !important;
+    border-color: var(--qm-border) !important;
+}
+
+body:has(.main-content) :is(.order-type-option:hover, .order-type-option:focus-within) {
+    background: var(--qm-surface-strong) !important;
+}
+
+body:has(.main-content) :is(.status-badge, .order-type-badge, .order-type,
+    .staff-role-badge, .profile-role-badge) {
+    border-color: currentColor;
+}
+
+body:has(.main-content) :is(.badge-normal, .status-completed,
+    .staff-role-badge--staff, .order-type-sell, .order-type--sell) {
+    color: var(--qm-teal) !important;
+    background: var(--qm-teal-soft) !important;
+}
+
+body:has(.main-content) :is(.badge-low, .status-pending,
+    .staff-role-badge--admin) {
+    color: var(--qm-warning) !important;
+    background: var(--qm-warning-soft) !important;
+}
+
+body:has(.main-content) :is(.badge-out-of-stock, .status-cancelled,
+    .staff-role-badge--unknown) {
+    color: var(--qm-danger) !important;
+    background: var(--qm-danger-soft) !important;
+}
+
+body:has(.main-content) :is(.status-confirmed, .staff-role-badge--manager,
+    .order-type-purchase, .order-type--purchase) {
+    color: var(--qm-info) !important;
+    background: var(--qm-info-soft) !important;
+}
+
+body:has(.main-content) :is(.chart-state, .table-state, .dashboard-inline-state) {
+    color: var(--qm-text-faint);
+}
+
+body:has(.main-content) :is(.category-bar__track, .trend-column__bars) {
+    background: var(--qm-surface-strong);
+    border-color: var(--qm-border-strong);
+}
+
+body:has(.main-content) :is(.profile-modal__content, .staff-modal__content,
+    .order-details-page .modal-content) {
+    color: var(--qm-text);
+    background: var(--qm-surface) !important;
+    border-color: var(--qm-border-strong) !important;
+}
+
+body:has(.main-content) .qm-shell-nav.navbar,
+body:has(.main-content) .qm-nav-drawer.navbar-collapse {
+    color: var(--qm-white);
+    background: var(--qm-ink-deep) !important;
+}
+
+body:has(.main-content) .qm-shell-nav .dropdown-menu {
+    background: var(--qm-ink-900) !important;
+}
+
+body:has(.main-content) .qm-brand-sub,
+body:has(.main-content) .qm-nav-section-label,
+body:has(.main-content) .qm-nav-link,
+body:has(.main-content) .qm-user-role {
+    color: var(--qm-text-muted);
+}
+
+body:has(.main-content) .qm-nav-link:hover,
+body:has(.main-content) .qm-nav-link:focus-visible,
+body:has(.main-content) .qm-nav-link.active,
+body:has(.main-content) .qm-user-button:hover,
+body:has(.main-content) .qm-user-button:focus-visible {
+    color: var(--qm-white);
+    background: var(--qm-ink-800);
+}
+
+body:has(.main-content) .qm-shell-contextbar {
+    color: var(--qm-text-muted);
+}
+
+body:has(.main-content) .qm-shell-contextbar :is(.qm-shell-breadcrumbs,
+    .qm-shell-context-note) {
+    color: var(--qm-text-muted);
+}
+
+body:has(.main-content) .qm-shell-breadcrumbs [aria-current="page"] {
+    color: var(--qm-text);
+}
+
+body:has(.main-content) :is(a, button, input, select, textarea, summary):focus-visible {
+    outline-color: var(--qm-focus) !important;
+    box-shadow: 0 0 0 1px var(--qm-ink-deep) !important;
+}
+
+@media print {
+    /* Paper is intentionally high contrast; screen remains dark by default. */
+    body:has(.main-content),
+    body:has(.main-content) .main-content {
+        color: #10232c !important;
+        background: #fff !important;
+    }
+
+    body:has(.main-content) :is(.invoice-header, .details-total-card) {
+        color: #10232c !important;
+        background: #fff !important;
+        border-color: #10232c !important;
+    }
+
+    body:has(.main-content) :is(.invoice-header h1, .invoice-header__reference,
+        .details-total-card strong) {
+        color: #10232c !important;
+    }
+
+    body:has(.main-content) :is(.invoice-table th, .reports-table th) {
+        color: #10232c !important;
+        background: #f5f3ec !important;
+        border-color: #d3deda !important;
     }
 }

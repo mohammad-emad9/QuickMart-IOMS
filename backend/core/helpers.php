@@ -348,6 +348,28 @@ function validateStaffString($value, $fieldName, $maxLength, $allowBlank = false
 }
 
 /**
+ * Validate bounded text fields whose values are stored and later rendered as
+ * data. This intentionally does not HTML-encode the stored value.
+ */
+function validateBoundedText($value, $fieldName, $maxLength, $allowBlank = false)
+{
+    if (!is_string($value)) {
+        errorResponse($fieldName . ' must be a string.', 422);
+    }
+
+    $normalized = trim($value);
+    if (!$allowBlank && ($normalized === '' || preg_match('/\S/u', $normalized) !== 1)) {
+        errorResponse($fieldName . ' must not be blank.', 422);
+    }
+
+    if (quickmartStringLength($normalized) > $maxLength) {
+        errorResponse($fieldName . ' must be ' . $maxLength . ' characters or fewer.', 422);
+    }
+
+    return $normalized;
+}
+
+/**
  * Validate a Staff full name against Staff.Full_Name VARCHAR(100).
  */
 function validateStaffName($value)
@@ -487,9 +509,40 @@ function requireAuth()
 }
 
 /**
- * Sanitize string input
+ * Normalize a scalar input string without changing the value's output
+ * context. Validation belongs at the API boundary; encoding belongs at the
+ * output boundary.
+ */
+function normalizeInputString($value)
+{
+    if (!is_scalar($value) || is_bool($value)) {
+        return '';
+    }
+
+    return trim((string) $value);
+}
+
+/**
+ * Escape text for an HTML text node or a quoted HTML attribute.
+ */
+function escapeHtml($value)
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
+/**
+ * Escape a value that will be placed in a quoted HTML attribute.
+ */
+function escapeAttr($value)
+{
+    return escapeHtml($value);
+}
+
+/**
+ * Legacy compatibility alias. This is an output encoder, not validation.
+ * New request handling must use explicit validators or normalizeInputString.
  */
 function sanitize($string)
 {
-    return htmlspecialchars(trim($string), ENT_QUOTES, 'UTF-8');
+    return escapeHtml(normalizeInputString($string));
 }

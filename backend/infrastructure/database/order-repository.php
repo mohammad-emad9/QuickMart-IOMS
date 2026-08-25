@@ -132,17 +132,66 @@ function findStaffForOrderCreation(PDO $pdo, $staffId)
  */
 function generateOrderId(PDO $pdo)
 {
-    $statement = $pdo->prepare("SELECT Order_ID FROM Orders ORDER BY Order_ID DESC LIMIT 1 FOR UPDATE");
+    // Keep the legacy three-digit format through ORD999, then continue with
+    // unpadded decimal suffixes. Invalid identifiers fail closed instead of
+    // being ignored and risking a duplicate generated identifier.
+    $validOrderIdPattern = '^ORD(00[1-9]|0[1-9][0-9]|[1-9][0-9]{2,})$';
+    $invalidStatement = $pdo->prepare("\n        SELECT Order_ID\n        FROM Orders\n        WHERE BINARY Order_ID NOT REGEXP ?\n        LIMIT 1\n        FOR UPDATE\n    ");
+    $invalidStatement->execute([$validOrderIdPattern]);
+    if ($invalidStatement->fetchColumn() !== false) {
+        throw new RuntimeException('Orders contains an invalid order identifier.');
+    }
+
+    // Lock the current numeric maximum for the duration of the surrounding
+    // transaction. The duplicate-key retry in the service covers an empty
+    // table, where there is no existing row that can be locked.
+    $statement = $pdo->prepare("\n        SELECT Order_ID\n        FROM Orders\n        ORDER BY CAST(SUBSTRING(Order_ID, 4) AS UNSIGNED) DESC, Order_ID DESC\n        LIMIT 1\n        FOR UPDATE\n    ");
     $statement->execute();
     $lastId = $statement->fetchColumn();
 
-    if ($lastId) {
-        $number = intval(substr($lastId, strlen('ORD'))) + 1;
-    } else {
-        $number = 1;
+    if ($lastId === false) {
+        return 'ORD001';
     }
 
-    return 'ORD' . str_pad($number, 3, '0', STR_PAD_LEFT);
+    $lastSuffix = substr((string) $lastId, 3);
+    if (!preg_match('/\A[0-9]+\z/D', $lastSuffix)) {
+        throw new RuntimeException('Orders contains an invalid order identifier.');
+    }
+
+    $nextSuffix = incrementOrderSuffix($lastSuffix);
+    if (strlen($nextSuffix) > 17) {
+        throw new RuntimeException('Order identifier range is exhausted.');
+    }
+
+    return 'ORD' . (strlen($nextSuffix) < 3
+        ? str_pad($nextSuffix, 3, '0', STR_PAD_LEFT)
+        : $nextSuffix);
+}
+
+/**
+ * Increment a decimal string without relying on the PHP integer size.
+ */
+function incrementOrderSuffix($suffix)
+{
+    $digits = str_split($suffix);
+    $carry = 1;
+
+    for ($index = count($digits) - 1; $index >= 0; $index--) {
+        if ($digits[$index] === '9') {
+            $digits[$index] = '0';
+            continue;
+        }
+
+        $digits[$index] = (string) ((int) $digits[$index] + 1);
+        $carry = 0;
+        break;
+    }
+
+    if ($carry === 1) {
+        array_unshift($digits, '1');
+    }
+
+    return ltrim(implode('', $digits), '0') ?: '1';
 }
 
 /**

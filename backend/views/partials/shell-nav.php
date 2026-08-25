@@ -63,7 +63,7 @@
             </ul>
 
             <div class="qm-nav-footer">
-                <div class="dropdown qm-user-menu">
+                <div class="dropdown dropup qm-user-menu">
                     <a class="nav-link dropdown-toggle qm-user-button" href="#" id="userDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="qm-user-avatar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg></span>

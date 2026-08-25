@@ -10,171 +10,75 @@ require_once __DIR__ . '/../core/auth_check.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="QuickMart IOMS - Order Details">
     <title>QuickMart IOMS - Order Details</title>
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="../../assets/icons/icon-512.png">
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font: Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <!-- Dashboard Styles (shared) -->
-    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css">
-    <!-- Order Details Styles -->
-    <link rel="stylesheet" href="../../assets/order-details/order-details.css">
-    <!-- Common Shared Styles -->
-    <link rel="stylesheet" href="../../assets/common.css">
+    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css?v=ui10">
+    <link rel="stylesheet" href="../../assets/order-details/order-details.css?v=print01">
+    <link rel="stylesheet" href="../../assets/common.css?v=ui12">
 </head>
 
-<body>
+<body class="order-details-page">
     <?php require __DIR__ . '/partials/shell-nav.php'; ?>
 
-    <!-- Main Content Area -->
     <main class="main-content">
-        <div class="container-fluid px-4 py-4">
-            <!-- Back Navigation (Hidden on Print) -->
-            <div class="mb-3 no-print">
-                <a href="orders.php" class="text-decoration-none text-muted back-link">
-                    <i class="fas fa-arrow-left me-1"></i> Back to Orders
+        <div class="order-details-page__container">
+            <header class="details-toolbar no-print">
+                <a href="orders.php" class="details-back-link back-link" id="backToOrdersLink">
+                    <svg class="qm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 5 12l7 7M5 12h14" /></svg>
+                    <span>Back to orders</span>
                 </a>
+                <button type="button" class="qm-button qm-button--quiet" id="printDetailsBtn">
+                    <svg class="qm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z" /></svg>
+                    <span>Print details</span>
+                </button>
+            </header>
+
+            <div id="orderDetailsState" class="order-details-state order-details-state--loading" role="status" aria-live="polite">
+                <span class="state-spinner" aria-hidden="true"></span>
+                <div><strong>Loading order details</strong><span>Connecting to the order service…</span></div>
             </div>
 
-            <div id="orderDetailsState" class="alert alert-info" role="status">Loading order details...</div>
-
-            <!-- Invoice Box -->
-            <div class="invoice-box shadow-sm" id="invoiceBox">
-
-                <!-- Invoice Header -->
-                <div class="invoice-header">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="invoice-title mb-2">
-                                <i class="fas fa-file-invoice text-primary me-2"></i>
-                                ORDER DETAILS - #<span id="orderID"></span>
-                            </div>
-                            <div class="text-muted small">
-                                <div>Order Date: <span class="fw-bold text-dark" id="orderDate">-</span></div>
-                                <div>Staff: <span id="staffName">-</span></div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                            <div class="mb-2">
-                                Type: <span class="order-type-badge" id="orderType">-</span>
-                            </div>
-                        </div>
+            <article class="invoice-box" id="invoiceBox" aria-busy="true" hidden>
+                <header class="invoice-header">
+                    <div class="invoice-header__identity">
+                        <p class="invoice-print-brand">QuickMart IOMS</p>
+                        <p class="eyebrow"><span class="eyebrow__mark" aria-hidden="true"></span> Operations ledger</p>
+                        <h1 class="invoice-title"><span class="invoice-title__screen">Order details</span><span class="invoice-title__print">Invoice</span> <span class="invoice-header__reference" dir="ltr">#<span class="identifier-value" id="orderID">—</span></span></h1>
+                        <p class="invoice-header__note">Read-only record sourced from the backend order service.</p>
                     </div>
-                </div>
+                    <div class="invoice-header__type"><span class="invoice-header__type-label">Order direction</span><span class="order-type-badge" id="orderType">—</span></div>
+                </header>
 
-                <!-- Customer / Supplier Info -->
-                <div class="row mb-4">
-                    <div class="col-md-8">
-                        <h6 class="section-label">Customer / Supplier</h6>
-                        <h5 class="fw-bold mb-1" id="customerName">-</h5>
+                <section class="invoice-meta" aria-label="Order information">
+                    <div class="invoice-meta__item"><span>Order date</span><strong id="orderDate">—</strong></div>
+                    <div class="invoice-meta__item"><span>Staff</span><strong id="staffName">—</strong></div>
+                    <div class="invoice-meta__item invoice-meta__item--party"><span>Customer / supplier</span><strong id="customerName">—</strong></div>
+                </section>
+
+                <section class="invoice-items" aria-labelledby="orderItemsTitle">
+                    <div class="invoice-section-heading"><div><p class="section-kicker section-label">Line items</p><h2 id="orderItemsTitle">Products in this order</h2></div><span class="items-count"><span class="numeric-value" id="itemCount">—</span> items</span></div>
+                    <div class="details-table-wrap">
+                        <table class="invoice-table"><caption class="visually-hidden">Products and stored prices in this order</caption><thead><tr><th scope="col">Product</th><th scope="col" class="numeric-column">Quantity</th><th scope="col" class="numeric-column">Stored unit price</th><th scope="col" class="numeric-column">Line total</th></tr></thead><tbody id="orderItemsBody"><tr class="details-table-state"><td colspan="4">Loading order items…</td></tr></tbody></table>
                     </div>
-                </div>
+                </section>
 
-                <!-- Order Items Section -->
-                <h6 class="section-label mb-3">
-                    <i class="fas fa-list me-1"></i> Order Items
-                </h6>
-                <div class="table-responsive mb-4">
-                    <table class="table table-bordered align-middle invoice-table">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th class="text-center">Qty</th>
-                                <th class="text-end">Unit Price</th>
-                                <th class="text-end">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="orderItemsBody">
-                            <tr>
-                                <td colspan="4" class="text-center text-muted py-4">Loading order items...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <section class="invoice-bottom-grid">
+                    <div class="details-note-card notes-box"><span class="details-note-card__icon" aria-hidden="true"><svg class="qm-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 10v6M12 7h.01" /></svg></span><div><h2>Read-only record</h2><p>The backend does not provide edit, duplicate, delete, payment, tax, discount, or delivery fields for this order.</p></div></div>
+                    <div class="details-total-card summary-box"><div><span>Backend total</span><small>Calculated from stored line prices</small></div><strong class="money-value grand-total" id="grandTotalAmount">0.00</strong></div>
+                </section>
 
-                <!-- Notes & Summary Row -->
-                <div class="row">
-                    <!-- Read-only information -->
-                    <div class="col-lg-6 mb-4 mb-lg-0">
-                        <div class="notes-box">
-                            <h6 class="fw-bold small mb-2">
-                                <i class="fas fa-info-circle me-1"></i> ORDER INFORMATION
-                            </h6>
-                            <p class="text-muted small mb-3">This order is read-only. The backend does not provide edit, duplicate, delete, payment, tax, discount, or delivery fields.</p>
-
-                            <div class="d-flex flex-wrap gap-2 no-print">
-                                <button class="btn btn-outline-dark btn-sm" onclick="window.print()">
-                                    <i class="fas fa-print me-1"></i> Print Details
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Financial Summary -->
-                    <div class="col-lg-6">
-                        <div class="summary-box">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Items:</span>
-                                    <span class="fw-semibold" id="itemCount">0</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="h5 fw-bold mb-0">TOTAL AMOUNT:</span>
-                                    <span class="grand-total" id="grandTotalAmount">$0.00</span>
-                                </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Print Footer (Only visible on print) -->
-                <div class="print-footer">
-                    <hr>
-                    <div class="text-center text-muted small">
-                        <p class="mb-1">Thank you for your business!</p>
-                        <p class="mb-0">QuickMart IOMS | www.quickmart.com | support@quickmart.com</p>
-                    </div>
-                </div>
-
-            </div>
+                <footer class="print-footer"><hr><p>QuickMart Operations Ledger · Order record <span id="printOrderReference">—</span></p></footer>
+            </article>
         </div>
     </main>
 
-    <!-- Toast Container -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
 
     <!-- Logout Confirmation Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content"
-                style="background: linear-gradient(145deg, #1a1a2e, #16213e); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
-                <div class="modal-body text-center py-4">
-                    <div class="mb-3">
-                        <div
-                            style="width: 70px; height: 70px; margin: 0 auto; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #dc2626); display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-sign-out-alt fa-2x text-white"></i>
-                        </div>
-                    </div>
-                    <h5 class="text-white fw-bold mb-2">Logout</h5>
-                    <p class="text-muted mb-4">Are you sure you want to logout?</p>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger px-4" id="confirmLogoutBtn">
-                            <i class="fas fa-sign-out-alt me-2"></i>Logout
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content logout-modal"><div class="modal-body text-center"><span class="logout-modal__icon" aria-hidden="true"><svg class="qm-icon" viewBox="0 0 24 24"><path d="M10 4H5v16h5M14 8l4 4-4 4M18 12H8" /></svg></span><h2 id="logoutModalLabel">Sign out?</h2><p>Your current workspace session will end.</p><div class="logout-modal__actions"><button type="button" class="qm-button qm-button--quiet" data-bs-dismiss="modal">Cancel</button><button type="button" class="qm-button qm-button--danger" id="confirmLogoutBtn"><svg class="qm-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5v16h5M14 8l4 4-4 4M18 12H8" /></svg><span>Sign out</span></button></div></div></div></div></div>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Common Shared Scripts -->
     <script src="../../assets/common.js"></script>
-    <!-- Order Details Logic -->
     <script src="../../assets/order-details/order-details.js"></script>
 </body>
 

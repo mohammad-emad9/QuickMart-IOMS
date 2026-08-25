@@ -25,8 +25,8 @@ require_once __DIR__ . '/../core/auth_check.php';
 
     <!-- Bootstrap remains the project's existing layout and modal dependency. -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css">
-    <link rel="stylesheet" href="../../assets/common.css">
+    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css?v=ui10">
+    <link rel="stylesheet" href="../../assets/common.css?v=ui12">
 </head>
 
 <body class="dashboard-page">

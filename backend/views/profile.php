@@ -1,5 +1,5 @@
 <?php
-// Authentication Guard - Redirect to login if not authenticated
+// Authentication Guard - Profile is available to every authenticated role.
 require_once __DIR__ . '/../core/auth_check.php';
 ?>
 <!DOCTYPE html>
@@ -8,224 +8,303 @@ require_once __DIR__ . '/../core/auth_check.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="QuickMart IOMS - User Profile">
+    <meta name="description" content="QuickMart IOMS - Profile and account settings">
     <title>QuickMart IOMS - Profile</title>
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="../../assets/icons/icon-512.png">
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font: Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <!-- Dashboard Styles (shared) -->
-    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css">
-    <!-- Profile Page Styles -->
-    <link rel="stylesheet" href="../../assets/profile/profile.css">
-    <!-- Common Shared Styles -->
-    <link rel="stylesheet" href="../../assets/common.css">
+    <link rel="stylesheet" href="../../assets/profile/profile.css?v=ui10">
+    <link rel="stylesheet" href="../../assets/common.css?v=ui12">
 </head>
 
 <body>
     <?php require __DIR__ . '/partials/shell-nav.php'; ?>
 
-    <!-- Main Content Area -->
-    <main class="main-content">
-        <div class="container-fluid px-4 py-4">
-            <div id="profileState" class="alert alert-info d-flex align-items-center justify-content-between"
-                role="status" aria-live="polite">
-                <span id="profileStateMessage">Loading profile...</span>
-                <button type="button" class="btn btn-sm btn-outline-info d-none" id="profileRetryBtn">Retry</button>
-            </div>
-            <div class="row">
-                <!-- Profile Info Card -->
-                <div class="col-lg-4 mb-4">
-                    <div class="card shadow-sm border-0 profile-card">
-                        <div class="card-body text-center p-4">
-                            <div class="profile-avatar mb-3">
-                                <i class="fas fa-user-circle"></i>
-                            </div>
-                            <h4 class="fw-bold mb-1" id="profileName">Loading...</h4>
-                            <p class="text-muted mb-3" id="profileRole">Staff</p>
-                            <div class="badge bg-success mb-3">
-                                <i class="fas fa-check-circle me-1"></i>Active
-                            </div>
-                            <hr>
-                            <div class="profile-info text-start">
-                                <div class="info-item">
-                                    <i class="fas fa-envelope text-primary"></i>
-                                    <span id="profileEmail">-</span>
-                                </div>
-                                <div class="info-item">
-                                    <i class="fas fa-phone text-primary"></i>
-                                    <span id="profilePhone">-</span>
-                                </div>
-                                <div class="info-item">
-                                    <i class="fas fa-id-badge text-primary"></i>
-                                    <span id="profileId">-</span>
-                                </div>
-                            </div>
-                        </div>
+    <main class="main-content profile-page">
+        <div class="profile-content">
+            <section id="profileState" class="profile-state profile-state--info" role="status" aria-live="polite"
+                aria-atomic="true">
+                <span class="profile-state__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 3a9 9 0 1 0 9 9" />
+                        <path d="M12 3v3" />
+                    </svg>
+                </span>
+                <span id="profileStateMessage" class="profile-state__message">Loading profile…</span>
+                <button type="button" class="profile-button profile-button--tertiary d-none" id="profileRetryBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M20 11a8 8 0 0 0-14.9-4M4 5v4h4M4 13a8 8 0 0 0 14.9 4M20 19v-4h-4" />
+                    </svg>
+                    <span>Retry</span>
+                </button>
+            </section>
+
+            <header class="profile-hero">
+                <div class="profile-hero__copy">
+                    <div class="profile-eyebrow">
+                        <span class="profile-eyebrow__mark" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+                            </svg>
+                        </span>
+                        <span>Account workspace</span>
                     </div>
+                    <h1>Profile and account settings</h1>
+                    <p>Keep your operational identity current and manage your sign-in security from one focused workspace.</p>
                 </div>
+                <div class="profile-hero__note">
+                    <span class="profile-hero__note-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3 5 6v5c0 4.5 2.9 8 7 10 4.1-2 7-5.5 7-10V6l-7-3Z" />
+                            <path d="m9.5 12 1.7 1.7 3.5-3.5" />
+                        </svg>
+                    </span>
+                    <span>Role access is controlled by the QuickMart administration team.</span>
+                </div>
+            </header>
 
-                <!-- Stats & Actions -->
-                <div class="col-lg-8">
-                    <!-- Stats Cards -->
-                    <div class="row mb-4">
-                        <div class="col-md-4 mb-3">
-                            <div class="card shadow-sm border-0 stat-card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="stat-icon bg-primary-soft">
-                                            <i class="fas fa-shopping-cart text-primary"></i>
-                                        </div>
-                                        <div class="ms-3">
-                                            <h3 class="mb-0 fw-bold" id="totalOrders">-</h3>
-                                            <small class="text-muted">Total Orders</small>
-                                        </div>
-                                    </div>
+            <div class="profile-layout">
+                <aside class="profile-identity-card" aria-labelledby="profileIdentityTitle">
+                    <div class="profile-identity-card__top">
+                        <div class="profile-avatar" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+                            </svg>
+                        </div>
+                        <div class="profile-identity-card__heading">
+                            <p class="profile-eyebrow">Your identity</p>
+                            <h2 id="profileIdentityTitle">Account profile</h2>
+                        </div>
+                    </div>
+                    <div class="profile-identity-card__name-block">
+                        <h3 id="profileName">—</h3>
+                        <span class="profile-role-badge" id="profileRole">—</span>
+                    </div>
+                    <div class="profile-info" aria-label="Account information">
+                        <div class="profile-info__row">
+                            <span class="profile-info__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 6h16v12H4zM4 7l8 6 8-6" />
+                                </svg>
+                            </span>
+                            <span class="profile-info__copy">
+                                <span class="profile-info__label">Email</span>
+                                <span id="profileEmail" class="profile-info__value profile-ltr" dir="ltr">—</span>
+                            </span>
+                        </div>
+                        <div class="profile-info__row">
+                            <span class="profile-info__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M7 4h3l1.2 4-2 1.6a14 14 0 0 0 5.2 5.2L16 13l4 1.2v3c0 1-.8 1.8-2 1.8C10.8 19 5 13.2 5 6c0-1 .8-2 2-2Z" />
+                                </svg>
+                            </span>
+                            <span class="profile-info__copy">
+                                <span class="profile-info__label">Phone</span>
+                                <span id="profilePhone" class="profile-info__value profile-ltr" dir="ltr">—</span>
+                            </span>
+                        </div>
+                        <div class="profile-info__row">
+                            <span class="profile-info__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 5h16v14H4zM8 9h8M8 13h5" />
+                                </svg>
+                            </span>
+                            <span class="profile-info__copy">
+                                <span class="profile-info__label">Staff ID</span>
+                                <span id="profileId" class="profile-info__value profile-ltr" dir="ltr">—</span>
+                            </span>
+                        </div>
+                    </div>
+                    <p class="profile-identity-card__note">Profile details are loaded from the authenticated staff record.</p>
+                </aside>
+
+                <div class="profile-workspace">
+                    <section class="profile-panel profile-stats-panel" aria-labelledby="profileStatsTitle">
+                        <div class="profile-panel__heading">
+                            <div>
+                                <p class="profile-eyebrow">Operational snapshot</p>
+                                <h2 id="profileStatsTitle">Your order activity</h2>
+                            </div>
+                            <span class="profile-panel__hint">Based on your existing order records.</span>
+                        </div>
+                        <div id="statsState" class="profile-state profile-state--info d-none" role="status" aria-live="polite"
+                            aria-atomic="true">
+                            <span id="statsStateMessage" class="profile-state__message">Loading order activity…</span>
+                            <button type="button" class="profile-button profile-button--tertiary d-none" id="statsRetryBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M20 11a8 8 0 0 0-14.9-4M4 5v4h4M4 13a8 8 0 0 0 14.9 4M20 19v-4h-4" />
+                                </svg>
+                                <span>Retry</span>
+                            </button>
+                        </div>
+                        <div class="profile-stat-grid">
+                            <article class="profile-stat-card">
+                                <span class="profile-stat-card__icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5 5h14v14H5zM8 9h8M8 13h6M8 17h4" />
+                                    </svg>
+                                </span>
+                                <span class="profile-stat-card__copy">
+                                    <strong id="totalOrders" class="profile-ltr" dir="ltr">—</strong>
+                                    <span>Total orders</span>
+                                </span>
+                            </article>
+                            <article class="profile-stat-card profile-stat-card--sell">
+                                <span class="profile-stat-card__icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5 12h13m-5-5 5 5-5 5" />
+                                    </svg>
+                                </span>
+                                <span class="profile-stat-card__copy">
+                                    <strong id="sellOrders" class="profile-ltr" dir="ltr">—</strong>
+                                    <span>Sell orders</span>
+                                </span>
+                            </article>
+                            <article class="profile-stat-card profile-stat-card--purchase">
+                                <span class="profile-stat-card__icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M19 12H6m5-5-5 5 5 5" />
+                                    </svg>
+                                </span>
+                                <span class="profile-stat-card__copy">
+                                    <strong id="purchaseOrders" class="profile-ltr" dir="ltr">—</strong>
+                                    <span>Purchase orders</span>
+                                </span>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section class="profile-panel" aria-labelledby="editProfileTitle">
+                        <div class="profile-panel__heading">
+                            <div>
+                                <p class="profile-eyebrow">Personal details</p>
+                                <h2 id="editProfileTitle">Edit profile</h2>
+                            </div>
+                            <span class="profile-panel__hint">Only your own profile fields can be changed here.</span>
+                        </div>
+                        <form id="editProfileForm" class="profile-form" autocomplete="off" novalidate>
+                            <div class="profile-form__grid">
+                                <div class="profile-field">
+                                    <label for="editName">Full name</label>
+                                    <input type="text" id="editName" required aria-required="true"
+                                        aria-describedby="editNameHint" autocomplete="off">
+                                    <span class="profile-field__hint" id="editNameHint">Use the name shown to colleagues in the operations ledger.</span>
+                                </div>
+                                <div class="profile-field">
+                                    <label for="editEmail">Email</label>
+                                    <input type="email" id="editEmail" required aria-required="true" autocomplete="off">
+                                </div>
+                                <div class="profile-field">
+                                    <label for="editPhone">Phone <span>(optional)</span></label>
+                                    <input type="tel" id="editPhone" inputmode="tel" autocomplete="off" dir="ltr">
+                                </div>
+                                <div class="profile-field">
+                                    <label for="editRole">Role</label>
+                                    <input type="text" id="editRole" readonly disabled aria-readonly="true"
+                                        aria-describedby="editRoleHint">
+                                    <span class="profile-field__hint" id="editRoleHint">Role access is managed by an administrator.</span>
                                 </div>
                             </div>
+                            <div id="profileFormMessage" class="profile-form-message d-none" role="alert" aria-live="polite"></div>
+                            <div class="profile-form__actions">
+                                <button type="submit" class="profile-button profile-button--primary">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M5 4h12l2 2v14H5zM8 4v6h8V4M8 20v-6h8v6" />
+                                    </svg>
+                                    <span>Save profile</span>
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section class="profile-panel profile-security-panel" aria-labelledby="changePasswordTitle">
+                        <div class="profile-panel__heading">
+                            <div>
+                                <p class="profile-eyebrow">Sign-in security</p>
+                                <h2 id="changePasswordTitle">Change password</h2>
+                            </div>
+                            <span class="profile-panel__hint">Password fields are used only for this secure request.</span>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card shadow-sm border-0 stat-card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="stat-icon bg-success-soft">
-                                            <i class="fas fa-arrow-down text-success"></i>
-                                        </div>
-                                        <div class="ms-3">
-                                            <h3 class="mb-0 fw-bold" id="sellOrders">-</h3>
-                                            <small class="text-muted">Sell Orders</small>
-                                        </div>
-                                    </div>
+                        <div class="profile-security-note">
+                            <span class="profile-security-note__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v9H5zM12 15v2" />
+                                </svg>
+                            </span>
+                            <span>Enter your current password to confirm the change. Your password is never displayed or saved in browser storage.</span>
+                        </div>
+                        <form id="changePasswordForm" class="profile-form" autocomplete="off" novalidate>
+                            <div class="profile-form__grid profile-form__grid--password">
+                                <div class="profile-field">
+                                    <label for="currentPassword">Current password</label>
+                                    <input type="password" id="currentPassword" required aria-required="true"
+                                        autocomplete="current-password">
+                                </div>
+                                <div class="profile-field">
+                                    <label for="newPassword">New password</label>
+                                    <input type="password" id="newPassword" required aria-required="true" minlength="6"
+                                        maxlength="255" autocomplete="new-password" aria-describedby="newPasswordHint">
+                                    <span class="profile-field__hint" id="newPasswordHint">Use the existing password policy.</span>
+                                </div>
+                                <div class="profile-field">
+                                    <label for="confirmPassword">Confirm password</label>
+                                    <input type="password" id="confirmPassword" required aria-required="true"
+                                        minlength="6" maxlength="255" autocomplete="new-password">
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card shadow-sm border-0 stat-card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="stat-icon bg-info-soft">
-                                            <i class="fas fa-arrow-up text-info"></i>
-                                        </div>
-                                        <div class="ms-3">
-                                            <h3 class="mb-0 fw-bold" id="purchaseOrders">-</h3>
-                                            <small class="text-muted">Purchase Orders</small>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div id="passwordMessage" class="profile-form-message d-none" role="alert" aria-live="polite"></div>
+                            <div class="profile-form__actions">
+                                <button type="submit" class="profile-button profile-button--security">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v9H5zM12 15v2" />
+                                    </svg>
+                                    <span>Update password</span>
+                                </button>
                             </div>
-                        </div>
-                    </div>
-                    <div id="statsState" class="alert alert-danger d-none d-flex align-items-center justify-content-between"
-                        role="alert" aria-live="polite">
-                        <span id="statsStateMessage"></span>
-                        <button type="button" class="btn btn-sm btn-outline-danger" id="statsRetryBtn">Retry</button>
-                    </div>
-
-                    <!-- Edit Profile Card -->
-                    <div class="card shadow-sm border-0 mb-4">
-                        <div class="card-header bg-white border-0 pt-4 px-4">
-                            <h5 class="fw-bold mb-0">
-                                <i class="fas fa-edit text-primary me-2"></i>Edit Profile
-                            </h5>
-                        </div>
-                        <div class="card-body p-4">
-                            <form id="editProfileForm" autocomplete="off">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">Full Name</label>
-                                        <input type="text" class="form-control" id="editName"
-                                            placeholder="Your full name">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">Email</label>
-                                        <input type="email" class="form-control" id="editEmail"
-                                            placeholder="your@email.com">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">Phone</label>
-                                        <input type="tel" class="form-control" id="editPhone"
-                                            placeholder="+1 234 567 8900" dir="ltr">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">Role</label>
-                                        <input type="text" class="form-control" id="editRole" readonly disabled>
-                                    </div>
-                                </div>
-                                <div class="mt-4">
-                                    <button type="submit" class="btn btn-primary px-4">
-                                        <i class="fas fa-save me-2"></i>Save Changes
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Change Password Card -->
-                    <div class="card shadow-sm border-0">
-                        <div class="card-header bg-white border-0 pt-4 px-4">
-                            <h5 class="fw-bold mb-0">
-                                <i class="fas fa-lock text-primary me-2"></i>Change Password
-                            </h5>
-                        </div>
-                        <div class="card-body p-4">
-                            <form id="changePasswordForm" autocomplete="off">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Current Password</label>
-                                        <input type="password" class="form-control" id="currentPassword"
-                                            placeholder="••••••••">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">New Password</label>
-                                        <input type="password" class="form-control" id="newPassword"
-                                            placeholder="••••••••">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Confirm Password</label>
-                                        <input type="password" class="form-control" id="confirmPassword"
-                                            placeholder="••••••••">
-                                    </div>
-                                </div>
-                                <div id="passwordMessage" class="alert d-none mt-3" role="alert" aria-live="polite"></div>
-                                <div class="mt-4">
-                                    <button type="submit" class="btn btn-warning px-4">
-                                        <i class="fas fa-key me-2"></i>Update Password
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                        </form>
+                    </section>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Toast Container -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
 
-    <!-- Logout Confirmation Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade profile-modal" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalTitle"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content"
-                style="background: linear-gradient(145deg, #1a1a2e, #16213e); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
-                <div class="modal-body text-center py-4">
-                    <div class="mb-3">
-                        <div
-                            style="width: 70px; height: 70px; margin: 0 auto; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #dc2626); display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-sign-out-alt fa-2x text-white"></i>
-                        </div>
+            <div class="modal-content profile-modal__content">
+                <div class="modal-body profile-logout">
+                    <div class="profile-logout__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m10 17 5-5-5-5M15 12H3M21 19V5a2 2 0 0 0-2-2h-5" />
+                        </svg>
                     </div>
-                    <h5 class="text-white fw-bold mb-2">Logout</h5>
-                    <p class="text-muted mb-4">Are you sure you want to logout?</p>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger px-4" id="confirmLogoutBtn">
-                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    <h2 id="logoutModalTitle">Sign out?</h2>
+                    <p>Your current session will end on this device.</p>
+                    <div class="profile-logout__actions">
+                        <button type="button" class="profile-button profile-button--secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="profile-button profile-button--danger" id="confirmLogoutBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m10 17 5-5-5-5M15 12H3M21 19V5a2 2 0 0 0-2-2h-5" />
+                            </svg>
+                            <span>Sign out</span>
                         </button>
                     </div>
                 </div>
@@ -233,11 +312,8 @@ require_once __DIR__ . '/../core/auth_check.php';
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Common Shared Scripts -->
     <script src="../../assets/common.js"></script>
-    <!-- Profile Logic -->
     <script src="../../assets/profile/profile.js"></script>
 </body>
 

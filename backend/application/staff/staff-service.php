@@ -43,6 +43,88 @@ function getStaffList(PDO $pdo)
 }
 
 /**
+ * Generate an opaque, bounded Staff_ID that is safe for concurrent inserts.
+ * The random suffix avoids MAX()+1 races while retaining the existing STF
+ * identifier prefix used by the application.
+ */
+function generateStaffId()
+{
+    return 'STF' . strtoupper(bin2hex(random_bytes(8)));
+}
+
+/**
+ * Create a staff account through the Admin-only staff-management flow.
+ *
+ * The operation runs inside the project's bounded transaction/retry helper.
+ * Duplicate email conflicts are identified by the committed email owner;
+ * otherwise a duplicate key is treated as a Staff_ID collision and retried.
+ *
+ * @return array
+ */
+function createStaffByAdmin(PDO $pdo, $fullName, $email, $phoneNumber, $role, $password)
+{
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+    if (!is_string($passwordHash)) {
+        throw new RuntimeException('Password hashing failed.');
+    }
+
+    $result = runAuthenticationRevisionTransaction($pdo, function () use (
+        $pdo,
+        $fullName,
+        $email,
+        $phoneNumber,
+        $role,
+        $passwordHash
+    ) {
+        $maxIdentifierAttempts = 8;
+
+        for ($attempt = 1; $attempt <= $maxIdentifierAttempts; $attempt++) {
+            $staffId = generateStaffId();
+
+            try {
+                insertStaffRecord(
+                    $pdo,
+                    $staffId,
+                    $fullName,
+                    $email,
+                    $phoneNumber,
+                    $role,
+                    $passwordHash
+                );
+
+                $staff = findPublicStaffProfile($pdo, $staffId);
+                if ($staff === false) {
+                    throw new RuntimeException('Created staff record could not be read.');
+                }
+
+                return [
+                    'status' => 'created',
+                    'staff' => [
+                        'staff_id' => $staff['Staff_ID'],
+                        'full_name' => $staff['Full_Name'],
+                        'email' => $staff['Email'],
+                        'phone_number' => $staff['Phone_Number'],
+                        'role' => $staff['Role']
+                    ]
+                ];
+            } catch (PDOException $exception) {
+                if (!isStaffDuplicateKeyViolation($exception)) {
+                    throw $exception;
+                }
+
+                if (findStaffByEmail($pdo, $email) !== false) {
+                    return ['status' => 'duplicate_email'];
+                }
+            }
+        }
+
+        throw new RuntimeException('Staff identifier allocation failed.');
+    });
+
+    return $result;
+}
+
+/**
  * Update the authenticated staff member's public profile.
  *
  * @return array

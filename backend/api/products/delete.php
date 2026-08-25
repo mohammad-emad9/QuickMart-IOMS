@@ -18,11 +18,11 @@ requireApiRole('Admin');
 $productId = null;
 
 if (isset($_GET['id'])) {
-    $productId = sanitize($_GET['id']);
+    $productId = validateIdentifier($_GET['id'], 'Product ID');
 } else {
     $input = getJsonInput();
     if (isset($input['product_id'])) {
-        $productId = sanitize($input['product_id']);
+        $productId = validateIdentifier($input['product_id'], 'Product ID');
     }
 }
 

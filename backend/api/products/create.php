@@ -20,8 +20,8 @@ $input = getJsonInput();
 // Validate required fields
 validateRequired($input, ['name', 'category', 'quantity', 'price']);
 
-$name = sanitize($input['name']);
-$category = sanitize($input['category']);
+$name = validateBoundedText($input['name'], 'Product name', 100);
+$category = validateBoundedText($input['category'], 'Category', 50);
 $quantity = validateIntegerValue($input['quantity'], 'Quantity', 0, MAX_PRODUCT_QUANTITY);
 $price = validateMoneyValue($input['price']);
 $threshold = isset($input['threshold'])

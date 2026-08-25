@@ -8,223 +8,323 @@ require_once __DIR__ . '/../core/auth_check.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="QuickMart IOMS - Products Management">
+    <meta name="description" content="QuickMart IOMS - Products and inventory management">
     <title>QuickMart IOMS - Products</title>
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="../../assets/icons/icon-512.png">
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font: Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <!-- Dashboard Styles (shared) -->
-    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css">
-    <!-- Products Page Styles -->
-    <link rel="stylesheet" href="../../assets/products/products.css">
-    <!-- Common Shared Styles -->
-    <link rel="stylesheet" href="../../assets/common.css">
+    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css?v=ui10">
+    <link rel="stylesheet" href="../../assets/products/products.css?v=ui10">
+    <link rel="stylesheet" href="../../assets/common.css?v=ui12">
 </head>
 
-<body>
+<body class="products-page">
     <?php require __DIR__ . '/partials/shell-nav.php'; ?>
 
-    <!-- Main Content Area -->
     <main class="main-content">
-        <div class="container-fluid px-4 py-4">
-            <!-- Page Header -->
-            <div class="page-header bg-white p-3 rounded shadow-sm mb-4">
-                <div class="d-flex flex-wrap justify-content-between align-items-center">
+        <div class="products-content">
+            <section class="products-hero" aria-labelledby="productsPageTitle">
+                <div class="products-hero-copy">
+                    <p class="products-eyebrow">
+                        <span class="products-eyebrow-mark" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" />
+                                <path d="m4.5 7.5 7.5 4 7.5-4M12 12v8.5" />
+                            </svg>
+                        </span>
+                        Inventory workspace
+                    </p>
+                    <h1 class="page-title" id="productsPageTitle">Products &amp; Inventory</h1>
+                    <p class="products-subtitle">
+                        Keep the catalog accurate, spot stock pressure early, and maintain a reliable operating record.
+                    </p>
+                </div>
+                <div class="products-hero-meta" aria-label="Catalog size">
+                    <span class="products-meta-label">Catalog size</span>
+                    <strong class="products-meta-value" id="productCount" aria-live="polite">Loading...</strong>
+                    <span class="products-meta-note">Live inventory register</span>
+                </div>
+            </section>
+
+            <section class="inventory-summary" aria-labelledby="inventorySummaryTitle">
+                <div class="products-section-heading">
                     <div>
-                        <h4 class="page-title mb-0 text-uppercase fw-bold">
-                            <i class="fas fa-boxes text-primary me-2"></i>Products Management
-                        </h4>
+                        <p class="products-section-kicker">Inventory pulse</p>
+                        <h2 class="products-section-title" id="inventorySummaryTitle">At-a-glance stock health</h2>
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="text-muted small" id="productCount">Loading...</span>
-                    </div>
+                    <span class="products-section-note">Backend-authoritative values</span>
                 </div>
+
+                <div class="inventory-summary-grid">
+                    <article class="inventory-summary-card inventory-summary-card-total">
+                        <div class="inventory-summary-topline">
+                            <span class="inventory-summary-label">Total products</span>
+                            <span class="inventory-summary-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" />
+                                    <path d="m4.5 7.5 7.5 4 7.5-4M12 12v8.5" />
+                                </svg>
+                            </span>
+                        </div>
+                        <strong class="inventory-summary-value" id="summaryProductCount" aria-live="polite">—</strong>
+                        <span class="inventory-summary-foot">Active catalog records</span>
+                    </article>
+
+                    <article class="inventory-summary-card inventory-summary-card-units">
+                        <div class="inventory-summary-topline">
+                            <span class="inventory-summary-label">Units in stock</span>
+                            <span class="inventory-summary-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 8h16v12H4zM7 8V5h10v3M8 12h8M8 16h5" />
+                                </svg>
+                            </span>
+                        </div>
+                        <strong class="inventory-summary-value numeric-value" id="inventoryUnitCount"
+                            aria-live="polite">—</strong>
+                        <span class="inventory-summary-foot">Across all product records</span>
+                    </article>
+
+                    <article class="inventory-summary-card inventory-summary-card-low">
+                        <div class="inventory-summary-topline">
+                            <span class="inventory-summary-label">Low stock</span>
+                            <span class="inventory-summary-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 3 21 20H3L12 3Z" />
+                                    <path d="M12 9v5M12 17h.01" />
+                                </svg>
+                            </span>
+                        </div>
+                        <strong class="inventory-summary-value numeric-value" id="lowStockCount" aria-live="polite">—</strong>
+                        <span class="inventory-summary-foot">Needs replenishment review</span>
+                    </article>
+
+                    <article class="inventory-summary-card inventory-summary-card-out">
+                        <div class="inventory-summary-topline">
+                            <span class="inventory-summary-label">Out of stock</span>
+                            <span class="inventory-summary-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" />
+                                    <path d="m9 9 6 6M15 9l-6 6" />
+                                </svg>
+                            </span>
+                        </div>
+                        <strong class="inventory-summary-value numeric-value" id="outOfStockCount"
+                            aria-live="polite">—</strong>
+                        <span class="inventory-summary-foot">Requires immediate attention</span>
+                    </article>
+                </div>
+            </section>
+
+            <div class="products-notice products-notice-readonly" id="accessNotice" role="status" aria-live="polite" hidden>
+                <span class="products-notice-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 3 20 6v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3Z" />
+                        <path d="M12 10v5M12 7.5h.01" />
+                    </svg>
+                </span>
+                <span class="products-notice-copy">
+                    <strong>Read-only access</strong>
+                    <span id="accessNoticeText">Your role can review inventory but cannot change product records.</span>
+                </span>
             </div>
 
-            <!-- Filters & Search Card -->
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-body py-3">
-                    <div class="row g-3 align-items-center">
-                        <!-- Search Box -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="input-group">
-                                <span class="input-group-text bg-white border-end-0">
-                                    <i class="fas fa-search text-muted"></i>
-                                </span>
-                                <input type="text" class="form-control border-start-0" id="searchInput"
-                                    placeholder="Search products by name or ID...">
-                            </div>
-                        </div>
-
-                        <!-- Category Filter -->
-                        <div class="col-lg-2 col-md-3 col-6">
-                            <select id="categoryFilter" class="form-select">
-                                <option value="All">All Categories</option>
-                                <option value="GPU">GPU</option>
-                                <option value="CPU">CPU</option>
-                                <option value="RAM">RAM</option>
-                                <option value="Storage">Storage</option>
-                                <option value="Power">Power</option>
-                                <option value="Cooling">Cooling</option>
-                                <option value="Cables">Cables</option>
-                            </select>
-                        </div>
-
-                        <!-- Stock Filter -->
-                        <div class="col-lg-2 col-md-3 col-6">
-                            <select id="stockFilter" class="form-select">
-                                <option value="All">All Stock</option>
-                                <option value="low">Low Stock Only</option>
-                                <option value="normal">In Stock Only</option>
-                            </select>
-                        </div>
-
-                        <!-- Sort By -->
-                        <div class="col-lg-2 col-md-6">
-                            <select id="sortFilter" class="form-select">
-                                <option value="name">Sort: A-Z</option>
-                                <option value="name-desc">Sort: Z-A</option>
-                                <option value="price-asc">Price: Low to High</option>
-                                <option value="price-desc">Price: High to Low</option>
-                                <option value="quantity-asc">Stock: Low to High</option>
-                                <option value="quantity-desc">Stock: High to Low</option>
-                            </select>
-                        </div>
-
-                        <!-- Add Product Button -->
-                        <div class="col-lg-2 col-md-6">
-                            <button class="btn btn-primary w-100 fw-bold" id="addProductBtn" data-admin-only>
-                                <i class="fas fa-plus me-1"></i> ADD NEW
-                            </button>
-                        </div>
+            <section class="products-toolbar" aria-labelledby="productsFiltersTitle">
+                <div class="products-section-heading products-toolbar-heading">
+                    <div>
+                        <p class="products-section-kicker">Catalog controls</p>
+                        <h2 class="products-section-title" id="productsFiltersTitle">Find the right record</h2>
                     </div>
-                </div>
-            </div>
-
-            <!-- Products Table Card -->
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle products-table mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="ps-3" style="width: 40px;">
-                                        <input type="checkbox" class="form-check-input" id="selectAllProducts" data-admin-only
-                                            title="Select All">
-                                    </th>
-                                    <th>ID</th>
-                                    <th>Product Name</th>
-                                    <th>Category</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th>Price</th>
-                                    <th>Status</th>
-                                    <th class="text-end pe-4" data-admin-only>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="productsTableBody">
-                                <!-- Products will be loaded dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <span class="products-section-note">Search, refine, then export the current register</span>
                 </div>
 
-                <!-- Table Footer -->
-                <div
-                    class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3 gap-2">
-                    <div class="d-flex align-items-center gap-3">
-                        <small class="text-muted" id="showingInfo">Showing 0 products</small>
+                <div class="products-filter-grid">
+                    <div class="filter-field filter-field-search">
+                        <label for="searchInput">Search products</label>
+                        <div class="products-search-control">
+                            <svg class="products-control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="10.8" cy="10.8" r="6.8" />
+                                <path d="m16 16 5 5" />
+                            </svg>
+                            <input type="search" class="form-control" id="searchInput"
+                                placeholder="Search by product name or ID" autocomplete="off">
+                        </div>
                     </div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-outline-primary" id="exportBtn">
-                            <i class="fas fa-file-export me-1"></i> Export CSV
+
+                    <div class="filter-field">
+                        <label for="categoryFilter">Category</label>
+                        <select id="categoryFilter" class="form-select">
+                            <option value="All">All categories</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="stockFilter">Stock status</label>
+                        <select id="stockFilter" class="form-select">
+                            <option value="All">All stock statuses</option>
+                            <option value="normal">Normal only</option>
+                            <option value="low">Low or out of stock</option>
+                            <option value="out-of-stock">Out of stock only</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="sortFilter">Sort by</label>
+                        <select id="sortFilter" class="form-select">
+                            <option value="name">Name: A–Z</option>
+                            <option value="name-desc">Name: Z–A</option>
+                            <option value="price-asc">Price: low to high</option>
+                            <option value="price-desc">Price: high to low</option>
+                            <option value="quantity-asc">Stock: low to high</option>
+                            <option value="quantity-desc">Stock: high to low</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field filter-field-action" data-admin-only>
+                        <span class="filter-field-label" aria-hidden="true">Record action</span>
+                        <button class="btn btn-primary products-primary-action" id="addProductBtn" type="button" data-admin-only>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" aria-hidden="true">
+                                <path d="M12 5v14M5 12h14" />
+                            </svg>
+                            <span>Add product</span>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" id="deleteSelectedBtn" data-admin-only disabled>
-                            <i class="fas fa-trash-alt me-1"></i> Delete Selected
+                    </div>
+                </div>
+            </section>
+
+            <section class="products-panel" aria-labelledby="productsListTitle">
+                <div class="products-panel-heading">
+                    <div>
+                        <p class="products-section-kicker">Inventory register</p>
+                        <h2 class="products-section-title" id="productsListTitle">Product catalog</h2>
+                    </div>
+                    <span class="products-panel-note" id="tableStateLabel">Ready to load</span>
+                </div>
+
+                <div class="products-table-wrap">
+                    <table class="products-table" aria-describedby="showingInfo">
+                        <thead>
+                            <tr>
+                                <th class="products-selection-column" scope="col">
+                                    <label class="checkbox-hit-area" for="selectAllProducts" data-admin-only>
+                                        <input type="checkbox" class="form-check-input" id="selectAllProducts"
+                                            data-admin-only aria-label="Select all visible products" title="Select all visible products">
+                                    </label>
+                                </th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Product name</th>
+                                <th scope="col">Category</th>
+                                <th scope="col" class="products-quantity-column">Quantity</th>
+                                <th scope="col" class="products-price-column">Price</th>
+                                <th scope="col">Status</th>
+                                <th scope="col" class="products-actions-column" data-admin-only>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="products-panel-footer">
+                    <p id="showingInfo" aria-live="polite">Showing 0 products</p>
+                    <div class="products-panel-actions">
+                        <button class="btn btn-outline-primary" id="exportBtn" type="button">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M12 3v12M7 10l5 5 5-5M4 20h16" />
+                            </svg>
+                            <span>Export CSV</span>
+                        </button>
+                        <button class="btn btn-outline-danger" id="deleteSelectedBtn" type="button" data-admin-only disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3" />
+                            </svg>
+                            <span>Delete selected</span>
                         </button>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     </main>
 
-    <!-- Add/Edit Product Modal -->
-    <div class="modal fade" id="productModal" data-admin-only tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <div class="modal fade" id="productModal" data-admin-only data-bs-keyboard="true" tabindex="-1"
+        aria-labelledby="modalTitle" aria-describedby="productModalDescription" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="modalTitle">
-                        <i class="fas fa-plus-circle me-2"></i>Add New Product
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                <div class="modal-header products-modal-header">
+                    <div>
+                        <p class="products-modal-kicker">Catalog record</p>
+                        <h2 class="modal-title" id="modalTitle">
+                            <svg class="products-modal-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M12 5v14M5 12h14" />
+                            </svg>
+                            <span>Add product</span>
+                        </h2>
+                    </div>
+                    <button type="button" class="products-modal-close" data-bs-dismiss="modal" aria-label="Close product form">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" aria-hidden="true">
+                            <path d="m6 6 12 12M18 6 6 18" />
+                        </svg>
+                    </button>
                 </div>
                 <form id="productForm">
                     <div class="modal-body">
+                        <p class="products-modal-description" id="productModalDescription">
+                            Enter the fields supported by the inventory service. Prices, quantities, thresholds, and status remain server-authoritative.
+                        </p>
+                        <div class="products-form-alert" id="productFormError" role="alert" hidden></div>
                         <input type="hidden" id="productId">
 
-                        <div class="mb-3">
-                            <label for="productName" class="form-label fw-semibold">Product Name</label>
-                            <input type="text" class="form-control" id="productName" placeholder="Enter product name"
-                                required>
-                        </div>
+                        <div class="products-form-grid">
+                            <div class="filter-field products-form-field-wide">
+                                <label for="productName">Product name</label>
+                                <input type="text" class="form-control" id="productName" placeholder="Enter product name"
+                                    autocomplete="off" maxlength="255" required>
+                            </div>
 
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label for="productCategory" class="form-label fw-semibold">Category</label>
+                            <div class="filter-field">
+                                <label for="productCategory">Category</label>
                                 <select id="productCategory" class="form-select" required>
-                                    <option value="">Select Category</option>
-                                    <option value="GPU">GPU</option>
-                                    <option value="CPU">CPU</option>
-                                    <option value="RAM">RAM</option>
-                                    <option value="Storage">Storage</option>
-                                    <option value="Power">Power</option>
-                                    <option value="Cooling">Cooling</option>
-                                    <option value="Cables">Cables</option>
+                                    <option value="">Select category</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label for="productPrice" class="form-label fw-semibold">Price ($)</label>
+
+                            <div class="filter-field">
+                                <label for="productPrice">Price</label>
                                 <input type="number" class="form-control" id="productPrice" placeholder="0.00"
-                                    step="0.01" min="0" required>
+                                    step="0.01" min="0" inputmode="decimal" required>
                             </div>
-                        </div>
 
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label for="productQuantity" class="form-label fw-semibold">Quantity in Stock</label>
+                            <div class="filter-field">
+                                <label for="productQuantity">Quantity in stock</label>
                                 <input type="number" class="form-control" id="productQuantity" placeholder="0" min="0"
-                                    required>
+                                    step="1" inputmode="numeric" required>
                             </div>
-                            <div class="col-md-6">
-                                <label for="lowStockThreshold" class="form-label fw-semibold">
-                                    Low Stock Threshold
-                                    <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip"
-                                        title="Alert will show when quantity falls below this value"></i>
-                                </label>
-                                <input type="number" class="form-control" id="lowStockThreshold" placeholder="20"
-                                    min="0">
-                            </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="productDescription" class="form-label fw-semibold">Description
-                                (Optional)</label>
-                            <textarea class="form-control" id="productDescription" rows="3"
-                                placeholder="Enter product description..."></textarea>
+                            <div class="filter-field">
+                                <label for="lowStockThreshold">Low-stock threshold</label>
+                                <input type="number" class="form-control" id="lowStockThreshold" placeholder="20" min="0"
+                                    step="1" inputmode="numeric" aria-describedby="thresholdHelp">
+                                <span class="products-field-help" id="thresholdHelp">A low-stock status is set by the backend when quantity reaches this threshold.</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="fas fa-times me-1"></i> Cancel
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-1"></i> Save Product
+                    <div class="modal-footer products-modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="saveProductBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M5 4h12l2 2v14H5zM8 4v6h8V4M8 20v-6h8v6" />
+                            </svg>
+                            <span>Save product</span>
                         </button>
                     </div>
                 </form>
@@ -232,49 +332,77 @@ require_once __DIR__ . '/../core/auth_check.php';
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" data-admin-only tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="deleteModal" data-admin-only data-bs-keyboard="true" tabindex="-1"
+        aria-labelledby="deleteModalTitle" aria-describedby="deleteModalDescription" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">
-                        <i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                <div class="modal-header products-modal-header products-modal-header-danger">
+                    <div>
+                        <p class="products-modal-kicker">Destructive action</p>
+                        <h2 class="modal-title" id="deleteModalTitle">
+                            <svg class="products-modal-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M12 3 21 20H3L12 3Z" />
+                                <path d="M12 9v5M12 17h.01" />
+                            </svg>
+                            <span>Delete product?</span>
+                        </h2>
+                    </div>
+                    <button type="button" class="products-modal-close" data-bs-dismiss="modal" aria-label="Close delete confirmation">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" aria-hidden="true">
+                            <path d="m6 6 12 12M18 6 6 18" />
+                        </svg>
+                    </button>
                 </div>
-                <div class="modal-body text-center py-4">
-                    <p class="mb-0">Are you sure you want to delete<br><strong id="deleteProductName"></strong>?</p>
+                <div class="modal-body products-delete-body">
+                    <div class="products-delete-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3" />
+                        </svg>
+                    </div>
+                    <p id="deleteModalDescription">This removes the selected record from the catalog. Confirm only if you are sure.</p>
+                    <strong class="products-delete-name" id="deleteProductName"></strong>
+                    <div class="products-form-alert" id="deleteModalError" role="alert" hidden></div>
                 </div>
-                <div class="modal-footer justify-content-center">
+                <div class="modal-footer products-modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3" />
+                        </svg>
+                        <span>Delete record</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification Container -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
 
-    <!-- Logout Confirmation Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalTitle" aria-describedby="logoutModalDescription"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content"
-                style="background: linear-gradient(145deg, #1a1a2e, #16213e); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
-                <div class="modal-body text-center py-4">
-                    <div class="mb-3">
-                        <div
-                            style="width: 70px; height: 70px; margin: 0 auto; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #dc2626); display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-sign-out-alt fa-2x text-white"></i>
-                        </div>
-                    </div>
-                    <h5 class="text-white fw-bold mb-2">Logout</h5>
-                    <p class="text-muted mb-4">Are you sure you want to logout?</p>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger px-4" id="confirmLogoutBtn">
-                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+            <div class="modal-content products-logout-modal">
+                <div class="modal-body products-logout-body">
+                    <span class="products-logout-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m10 17 5-5-5-5M15 12H3M21 19V5a2 2 0 0 0-2-2h-5" />
+                        </svg>
+                    </span>
+                    <h2 class="products-logout-title" id="logoutModalTitle">Log out?</h2>
+                    <p class="products-logout-copy" id="logoutModalDescription">Your current session will be closed.</p>
+                    <div class="products-logout-actions">
+                        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmLogoutBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m10 17 5-5-5-5M15 12H3M21 19V5a2 2 0 0 0-2-2h-5" />
+                            </svg>
+                            <span>Log out</span>
                         </button>
                     </div>
                 </div>
@@ -282,11 +410,8 @@ require_once __DIR__ . '/../core/auth_check.php';
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Common Shared Scripts -->
     <script src="../../assets/common.js"></script>
-    <!-- Products Page Logic -->
     <script src="../../assets/products/products.js"></script>
 </body>
 

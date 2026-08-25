@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../../application/auth/auth-service.php';
+require_once __DIR__ . '/../../application/auth/login-rate-limit-service.php';
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -25,11 +26,19 @@ $email = validateLoginIdentifier($input['email']);
 $password = validateStaffPassword($input['password'], 'Password', 1);
 
 try {
+    $rateLimit = reserveLoginAttempt($pdo, $email);
+    if (!$rateLimit['allowed']) {
+        header('Retry-After: ' . (string) $rateLimit['retry_after']);
+        errorResponse('Too many sign-in attempts. Please wait and try again.', 429);
+    }
+
     $user = authenticateStaff($pdo, $email, $password);
 
     if ($user === null) {
         errorResponse('Invalid email/staff ID or password', 401);
     }
+
+    clearLoginRateLimit($pdo, $rateLimit['rate_key']);
 
     // Prevent session fixation after successful authentication.
     session_regenerate_id(true);

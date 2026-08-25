@@ -340,7 +340,7 @@ html:has(body.dashboard-page) {
 }
 
 .dashboard-kpi-icon-ink {
-    color: var(--qm-ink-800);
+    color: var(--qm-text);
     background: var(--qm-surface-strong);
 }
 
@@ -513,7 +513,7 @@ html:has(body.dashboard-page) {
 }
 
 .dashboard-text-link:hover {
-    color: var(--qm-ink-950);
+    color: var(--qm-text);
 }
 
 .dashboard-text-button {
@@ -709,7 +709,7 @@ html:has(body.dashboard-page) {
 }
 
 .dashboard-page .dashboard-table td:first-child {
-    color: var(--qm-ink-800);
+    color: var(--qm-text);
     font-weight: 800;
 }
 
@@ -756,7 +756,7 @@ html:has(body.dashboard-page) {
 }
 
 .dashboard-table-action:hover {
-    color: var(--qm-ink-950);
+    color: var(--qm-text);
     background: var(--qm-surface-strong);
     border-color: var(--qm-border-strong);
 }
@@ -954,7 +954,7 @@ html:has(body.dashboard-page) {
 
 .dashboard-filter-button:hover,
 .dashboard-filter-button.active {
-    color: var(--qm-ink-950);
+    color: var(--qm-text);
     background: var(--qm-warning-soft);
     border-color: var(--qm-amber);
 }

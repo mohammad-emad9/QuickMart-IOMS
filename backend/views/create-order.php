@@ -8,360 +8,451 @@ require_once __DIR__ . '/../core/auth_check.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="QuickMart IOMS - Create New Order">
+    <meta name="description" content="QuickMart IOMS - Create a sell or purchase order">
     <title>QuickMart IOMS - Create Order</title>
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="../../assets/icons/icon-512.png">
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font: Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <!-- Dashboard Styles (shared) -->
-    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css">
-    <!-- Create Order Page Styles -->
-    <link rel="stylesheet" href="../../assets/create-order/create-order.css">
-    <!-- Common Shared Styles -->
-    <link rel="stylesheet" href="../../assets/common.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/dashboard/dashboard.css?v=ui10">
+    <link rel="stylesheet" href="../../assets/create-order/create-order.css?v=print01">
+    <link rel="stylesheet" href="../../assets/common.css?v=ui12">
 </head>
 
 <body>
     <?php require __DIR__ . '/partials/shell-nav.php'; ?>
 
-    <!-- Main Content Area -->
-    <main class="main-content">
-        <div class="container-fluid px-4 py-4">
-            <!-- Order Form Card -->
-            <div class="card shadow-lg border-0 order-card">
-                <div class="card-body p-4 p-lg-5">
-
-                    <!-- Page Title -->
-                    <div class="text-center mb-4">
-                        <h3 class="fw-bold text-dark">
-                            <i class="fas fa-file-invoice-dollar text-primary me-2"></i>CREATE NEW ORDER
-                        </h3>
-                        <p class="text-muted small">Fill in the details below to create a new order</p>
+    <main class="main-content create-order-page">
+        <div class="container-fluid create-order-container">
+            <section class="create-order-shell" id="createOrderModal" aria-labelledby="createOrderTitle">
+                <header class="page-intro">
+                    <div class="page-intro-copy">
+                        <p class="qm-eyebrow">Order intake</p>
+                        <h1 id="createOrderTitle">Create an order</h1>
+                        <p class="page-intro-lead">Build a clear order draft, review the backend pricing, then submit it once.</p>
                     </div>
-
-                    <!-- Order Type Section -->
-                    <div class="section-header">
-                        <i class="fas fa-exchange-alt me-2"></i>Order Type
+                    <div class="workflow-status-panel" aria-label="Order workspace status">
+                        <span class="status-panel-label">Draft workspace</span>
+                        <span class="status-panel-value" id="workflowStatus" role="status" aria-live="polite">Ready for products</span>
                     </div>
-                    <div class="order-type-container mb-4">
-                        <div class="btn-group w-100" role="group">
-                            <input type="radio" class="btn-check" name="orderType" id="sellOrder" value="sell" checked>
-                            <label class="btn btn-outline-success order-type-btn" for="sellOrder">
-                                <i class="fas fa-arrow-down me-2"></i>SELL ORDER
-                                <small class="d-block text-muted">Sell to Customer</small>
-                            </label>
+                </header>
 
-                            <input type="radio" class="btn-check" name="orderType" id="purchaseOrder" value="purchase">
-                            <label class="btn btn-outline-primary order-type-btn" for="purchaseOrder">
-                                <i class="fas fa-arrow-up me-2"></i>PURCHASE ORDER
-                                <small class="d-block text-muted">Buy from Supplier</small>
-                            </label>
-                        </div>
-                    </div>
+                <div class="workflow-alert" id="workflowAlert" role="alert" aria-live="assertive" hidden></div>
 
-                    <!-- Customer/Supplier Information Section -->
-                    <div class="section-header">
-                        <i class="fas fa-user me-2"></i><span id="customerLabel">Customer</span> Information
-                    </div>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-8">
-                            <label class="form-label fw-semibold">Name:</label>
-                            <input type="text" class="form-control" id="customerName" placeholder="Enter name">
-                        </div>
-                    </div>
+                <div class="workflow-grid">
+                    <form class="order-form" id="orderForm" novalidate>
+                        <section class="flow-section" aria-labelledby="orderTypeHeading">
+                            <div class="section-heading-row">
+                                <div>
+                                    <p class="section-kicker">01 / Direction</p>
+                                    <h2 id="orderTypeHeading">Choose the order type</h2>
+                                </div>
+                                <span class="section-index" aria-hidden="true">01</span>
+                            </div>
 
-                    <!-- Add Products Section -->
-                    <div class="section-header">
-                        <i class="fas fa-box me-2"></i>Add Products To Order
-                    </div>
+                            <fieldset class="order-type-fieldset">
+                                <legend class="visually-hidden">Order type</legend>
+                                <div class="order-type-grid">
+                                    <div class="order-type-option">
+                                        <input class="order-type-input" type="radio" name="orderType" id="sellOrder" value="sell" checked>
+                                        <label class="order-type-card" for="sellOrder">
+                                            <span class="order-type-icon order-type-icon-sell" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M12 4v16M7 9l5-5 5 5M5 20h14" />
+                                                </svg>
+                                            </span>
+                                            <span class="order-type-copy">
+                                                <span class="order-type-title">Sell order</span>
+                                                <span class="order-type-description">Release stock to a customer</span>
+                                            </span>
+                                            <span class="selection-mark" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="m5 12 4 4L19 6" />
+                                                </svg>
+                                            </span>
+                                        </label>
+                                    </div>
 
-                    <!-- Product Search -->
-                    <div class="product-search-container mb-3">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white">
-                                <i class="fas fa-search text-primary"></i>
-                            </span>
-                            <input type="text" class="form-control" id="productSearch"
-                                placeholder="Search products... (Type 'RTX' or 'SSD')">
-                            <button type="button" class="btn btn-dark" id="addItemBtn" data-bs-toggle="modal"
-                                data-bs-target="#selectProductModal">
-                                <i class="fas fa-plus me-1"></i> Add Item
+                                    <div class="order-type-option">
+                                        <input class="order-type-input" type="radio" name="orderType" id="purchaseOrder" value="purchase">
+                                        <label class="order-type-card" for="purchaseOrder">
+                                            <span class="order-type-icon order-type-icon-purchase" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M12 20V4m5 11-5 5-5-5M5 4h14" />
+                                                </svg>
+                                            </span>
+                                            <span class="order-type-copy">
+                                                <span class="order-type-title">Purchase order</span>
+                                                <span class="order-type-description">Receive stock from a supplier</span>
+                                            </span>
+                                            <span class="selection-mark" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="m5 12 4 4L19 6" />
+                                                </svg>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </section>
+
+                        <section class="flow-section" aria-labelledby="partyHeading">
+                            <div class="section-heading-row">
+                                <div>
+                                    <p class="section-kicker">02 / Party</p>
+                                    <h2 id="partyHeading">Add the <span id="customerLabel">Customer</span> information</h2>
+                                </div>
+                                <span class="section-index" aria-hidden="true">02</span>
+                            </div>
+                            <div class="field-block">
+                                <label class="field-label" for="customerName"><span id="customerLabelText">Customer or supplier</span> name <span class="required-mark" aria-hidden="true">*</span></label>
+                                <input class="form-control field-control" type="text" id="customerName" name="party_name" autocomplete="organization" maxlength="120"
+                                    placeholder="Enter a name for this order" aria-describedby="customerNameHelp customerNameError" required>
+                                <div class="field-help" id="customerNameHelp">Use the customer or supplier name that should appear on the order.</div>
+                                <div class="field-error" id="customerNameError" role="alert" hidden></div>
+                            </div>
+                        </section>
+
+                        <section class="flow-section" aria-labelledby="productsHeading">
+                            <div class="section-heading-row">
+                                <div>
+                                    <p class="section-kicker">03 / Products</p>
+                                    <h2 id="productsHeading">Select products</h2>
+                                </div>
+                                <span class="section-index" aria-hidden="true">03</span>
+                            </div>
+
+                            <div class="product-search-block">
+                                <label class="field-label" for="productSearch">Search the product catalog</label>
+                                <div class="product-search-row">
+                                    <div class="product-search-control">
+                                        <span class="input-leading-icon" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="11" cy="11" r="6.5" />
+                                                <path d="m16 16 4.5 4.5" />
+                                            </svg>
+                                        </span>
+                                        <input class="form-control field-control" type="search" id="productSearch" autocomplete="off"
+                                            placeholder="Search by name or category" role="combobox" aria-autocomplete="list"
+                                            aria-controls="productSuggestions" aria-expanded="false" aria-describedby="productAvailabilityState">
+                                    </div>
+                                    <button class="btn btn-secondary action-button" type="button" id="addItemBtn" data-bs-toggle="modal" data-bs-target="#selectProductModal">
+                                        <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M12 5v14M5 12h14" />
+                                        </svg>
+                                        <span>Add from catalog</span>
+                                    </button>
+                                </div>
+                                <div class="product-availability-state" id="productAvailabilityState" role="status" aria-live="polite">Loading product availability…</div>
+                                <div class="product-suggestions" id="productSuggestions" role="listbox" aria-label="Product suggestions" hidden></div>
+                            </div>
+
+                            <div class="catalog-note">
+                                <span class="note-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="9" />
+                                        <path d="M12 10v6M12 7h.01" />
+                                    </svg>
+                                </span>
+                                <span>Sell quantities are limited by the latest available stock. Purchase quantities are checked again by the backend when submitted.</span>
+                            </div>
+                        </section>
+
+                        <section class="flow-section cart-section" aria-labelledby="cartHeading">
+                            <div class="section-heading-row section-heading-row-tight">
+                                <div>
+                                    <p class="section-kicker">04 / Cart</p>
+                                    <h2 id="cartHeading">Review selected products</h2>
+                                </div>
+                                <span class="cart-count" id="cartItemCount" aria-live="polite">0 items</span>
+                            </div>
+
+                            <div class="order-table-frame">
+                                <table class="table order-table" id="orderTable" aria-describedby="orderItemsHelp">
+                                    <caption class="visually-hidden">Products selected for this order</caption>
+                                    <thead>
+                                <tr>
+                                            <th scope="col">Product</th>
+                                            <th scope="col">Available</th>
+                                            <th scope="col">Unit price</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Line total after confirmation</th>
+                                            <th scope="col"><span class="visually-hidden">Actions</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="orderTableBody"></tbody>
+                                </table>
+                                <div class="empty-order-message" id="emptyMessage" role="status">
+                                    <span class="empty-state-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M4 6h16v13H4zM8 6V4h8v2M8 11h8M8 15h5" />
+                                        </svg>
+                                    </span>
+                                    <strong>Your cart is ready for its first product</strong>
+                                    <span>Search the catalog above or open the full product list to begin.</span>
+                                </div>
+                            </div>
+                            <div class="field-error cart-error" id="orderItemsError" role="alert" hidden></div>
+                            <button class="add-product-link" type="button" id="addProductLink">
+                                <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M12 5v14M5 12h14" />
+                                </svg>
+                                <span>Add another product</span>
+                            </button>
+                            <p class="field-help" id="orderItemsHelp">Prices shown here come from the product API. The backend confirms stored prices, stock, and the final total when you submit.</p>
+                        </section>
+
+                        <section class="order-summary-panel" aria-labelledby="summaryHeading">
+                            <div>
+                                <p class="section-kicker">05 / Ready to review</p>
+                                <h2 id="summaryHeading">Order summary</h2>
+                                <p class="summary-note">The total stays pending until the backend confirms stored prices, stock, and the final amount.</p>
+                            </div>
+                            <div class="summary-total-block">
+                                <span class="summary-total-label">Backend total pending</span>
+                                <span class="summary-total-value currency-value" id="grandTotalDisplay">—</span>
+                            </div>
+                        </section>
+
+                        <div class="form-actions">
+                            <button class="btn btn-quiet action-button" type="button" id="cancelOrderBtn">
+                                <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M6 6l12 12M18 6 6 18" />
+                                </svg>
+                                <span>Cancel</span>
+                            </button>
+                            <button class="btn btn-primary action-button action-button-primary" type="submit" id="createOrderBtn">
+                                <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="m5 12 4 4L19 6" />
+                                </svg>
+                                <span id="createOrderBtnLabel">Review order</span>
                             </button>
                         </div>
-                        <!-- Product Suggestions Dropdown -->
-                        <div class="product-suggestions" id="productSuggestions"></div>
-                    </div>
+                    </form>
 
-                    <!-- Order Items Table -->
-                    <div class="table-responsive mb-4">
-                        <table class="table table-bordered align-middle order-table" id="orderTable">
-                            <thead class="table-light">
-                                <tr>
-                                    <th style="width: 30%">Product</th>
-                                    <th style="width: 15%">Available</th>
-                                    <th style="width: 15%">Current Price</th>
-                                    <th style="width: 15%">Qty</th>
-                                    <th style="width: 15%">Total</th>
-                                    <th style="width: 10%">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="orderTableBody">
-                                <!-- Order items will be added dynamically -->
-                            </tbody>
-                        </table>
-                        <div class="empty-order-message text-center py-4 text-muted" id="emptyMessage">
-                            <i class="fas fa-shopping-basket fa-2x mb-2 opacity-50"></i>
-                            <p class="mb-0">No products added yet. Search and add products above.</p>
+                    <aside class="workflow-aside" aria-label="Order workflow guide">
+                        <div class="aside-card aside-card-primary">
+                            <p class="aside-eyebrow">Quick guide</p>
+                            <h2>Keep the handoff clear</h2>
+                            <p>Complete each checkpoint before confirming. The final response from QuickMart remains the source of truth.</p>
+                            <ol class="workflow-steps">
+                                <li class="workflow-step is-active">
+                                    <span class="step-number">01</span>
+                                    <span><strong>Choose a direction</strong><small>Sell stock or receive stock.</small></span>
+                                </li>
+                                <li class="workflow-step">
+                                    <span class="step-number">02</span>
+                                    <span><strong>Add a party</strong><small>Record who the order is for.</small></span>
+                                </li>
+                                <li class="workflow-step">
+                                    <span class="step-number">03</span>
+                                    <span><strong>Review and confirm</strong><small>Submit only the quantities.</small></span>
+                                </li>
+                            </ol>
                         </div>
-                    </div>
-
-                    <!-- Add Another Product Link -->
-                    <div class="text-center mb-4 py-2 bg-light border rounded add-product-link" id="addProductLink"
-                        style="display: none;">
-                        <a href="#" class="text-decoration-none text-primary fw-semibold">
-                            <i class="fas fa-plus-circle me-1"></i> Add Another Product
-                        </a>
-                    </div>
-
-                    <!-- Order Summary Section -->
-                    <div class="section-header">
-                        <i class="fas fa-calculator me-2"></i>Order Summary
-                    </div>
-                    <div class="summary-totals bg-light p-4 rounded mb-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold fs-5">ESTIMATED TOTAL:</span>
-                            <span class="grand-total-display">$<span id="grandTotalDisplay">0.00</span></span>
+                        <div class="aside-card aside-card-note">
+                            <span class="aside-note-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" />
+                                </svg>
+                            </span>
+                            <div><strong>Stored values stay authoritative</strong><span>Unit prices, stock, order ID, and final totals are confirmed by the API.</span></div>
                         </div>
-                        <small class="text-muted d-block mt-2">The final total and stored prices come from the backend when the order is created.</small>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="d-flex flex-wrap justify-content-end gap-2 mt-5 pt-4 border-top">
-                        <button type="button" class="btn btn-outline-secondary px-4"
-                            onclick="window.location.href='dashboard.php'">
-                            <i class="fas fa-times me-1"></i> CANCEL
-                        </button>
-                        <button type="button" class="btn btn-dark px-4 fw-bold" id="createOrderBtn">
-                            <i class="fas fa-check me-1"></i> CREATE ORDER
-                        </button>
-                    </div>
-
+                    </aside>
                 </div>
-            </div>
+            </section>
 
-            <!-- Recent Orders Section -->
-            <section class="card shadow-sm border-0 mt-4">
-                <div class="card-header bg-transparent border-0 pt-4 d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0">
-                        <i class="fas fa-clock me-2 text-primary"></i>Recent Orders
-                    </h5>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-sm btn-outline-success" id="filterSellBtn">
-                            <i class="fas fa-arrow-down me-1"></i>Sell
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-info" id="filterPurchaseBtn">
-                            <i class="fas fa-arrow-up me-1"></i>Purchase
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary active" id="filterAllBtn">
-                            All
-                        </button>
+            <section class="recent-orders-section" aria-labelledby="recentOrdersHeading">
+                <div class="recent-orders-header">
+                    <div>
+                        <p class="qm-eyebrow">Activity</p>
+                        <h2 id="recentOrdersHeading">Recent orders</h2>
+                        <p>Keep the latest order trail close while you work.</p>
+                    </div>
+                    <div class="recent-order-filters" role="group" aria-label="Filter recent orders">
+                        <button class="filter-button is-active" type="button" id="filterAllBtn" aria-pressed="true">All</button>
+                        <button class="filter-button" type="button" id="filterSellBtn" aria-pressed="false">Sell</button>
+                        <button class="filter-button" type="button" id="filterPurchaseBtn" aria-pressed="false">Purchase</button>
                     </div>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Staff</th>
-                                    <th>Customer</th>
-                                    <th>Items</th>
-                                    <th>Amount</th>
-                                    <th>Type</th>
-                                    <th>Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recentOrdersTable">
-                                <!-- Orders will be loaded dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="recent-orders-table-frame">
+                    <table class="table recent-orders-table" aria-describedby="recentOrdersHeading">
+                        <caption class="visually-hidden">Recent orders</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Order ID</th>
+                                <th scope="col">Staff</th>
+                                <th scope="col">Customer / supplier</th>
+                                <th scope="col">Items</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Date</th>
+                                <th scope="col"><span class="visually-hidden">Action</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrdersTable">
+                            <tr><td colspan="8" class="table-state-cell">Loading recent orders…</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
         </div>
     </main>
 
-    <!-- Success Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body text-center py-5">
-                    <div class="success-icon mb-4">
-                        <i class="fas fa-check-circle text-success"></i>
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content success-modal-content">
+                <div class="modal-header modal-header-clean">
+                    <div>
+                        <p class="modal-eyebrow">Backend confirmation</p>
+                        <h2 class="modal-title" id="successModalTitle">Order created</h2>
                     </div>
-                    <h4 class="fw-bold mb-2">Order Created Successfully!</h4>
-                    <p class="text-muted mb-2">Order <strong id="orderNumber">#0000</strong> has been created.</p>
-                    <p class="fw-bold text-primary mb-4">Backend total: $<span id="orderTotal">0.00</span></p>
-                    <div class="d-flex justify-content-center gap-2">
-                        <button type="button" class="btn btn-outline-primary"
-                            onclick="window.location.href='create-order.php'">
-                            <i class="fas fa-plus me-1"></i> New Order
+                    <button type="button" class="modal-close-button" data-bs-dismiss="modal" aria-label="Close confirmation">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                    </button>
+                </div>
+                <div class="modal-body success-modal-body">
+                    <div class="success-mark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6" /></svg>
+                    </div>
+                    <p class="success-lead">The backend accepted this order.</p>
+                    <div class="confirmed-order-number">
+                        <span>Order number</span>
+                        <strong class="numeric-value" id="orderNumber">—</strong>
+                    </div>
+                    <div class="confirmed-summary-grid">
+                        <div><span>Order type</span><strong id="successOrderType">—</strong></div>
+                        <div><span>Party</span><strong id="successPartyName">—</strong></div>
+                        <div><span>Confirmed items</span><strong class="numeric-value" id="confirmItemsCount">—</strong></div>
+                        <div><span>Backend total</span><strong class="currency-value" id="orderTotal">—</strong></div>
+                    </div>
+                    <div class="confirmed-items-frame">
+                        <div class="confirmed-items-heading"><span>Confirmed lines</span><span class="muted-caption">Stored values</span></div>
+                        <div class="table-responsive">
+                            <table class="table confirmed-items-table">
+                                <thead><tr><th>Product</th><th>Qty</th><th>Unit price</th><th>Line total</th></tr></thead>
+                                <tbody id="confirmItemsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer-actions">
+                    <button type="button" class="btn btn-quiet action-button" id="newOrderBtn">
+                        <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                        <span>New order</span>
+                    </button>
+                    <div class="modal-action-cluster">
+                        <button type="button" class="btn btn-secondary action-button" id="successInvoiceBtn">
+                            <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l3 3v15H6zM9 12h6M9 16h6M9 8h3" /></svg>
+                            <span>Invoice preview</span>
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="window.location.href='dashboard.php'">
-                            <i class="fas fa-home me-1"></i> Go to Dashboard
-                        </button>
+                        <a class="btn btn-primary action-button" id="successOrdersBtn" href="orders.php">
+                            <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l3 3v15H6zM9 12h6M9 16h6M9 8h3" /></svg>
+                            <span>View orders</span>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
-
-    <!-- Select Product Modal -->
-    <div class="modal fade" id="selectProductModal" tabindex="-1" aria-labelledby="selectProductModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="selectProductModal" tabindex="-1" aria-labelledby="selectProductModalLabel" aria-describedby="selectProductModalHelp" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title" id="selectProductModalLabel">
-                        <i class="fas fa-boxes me-2"></i>Select Products
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Search in Modal -->
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
-                        <input type="text" class="form-control" id="modalProductSearch"
-                            placeholder="Search products...">
+            <div class="modal-content product-modal-content">
+                <div class="modal-header modal-header-dark">
+                    <div>
+                        <p class="modal-eyebrow">Catalog</p>
+                        <h2 class="modal-title" id="selectProductModalLabel">Select products</h2>
                     </div>
-                    <!-- Products Table -->
-                    <div class="table-responsive" style="max-height: 300px;">
-                        <table class="table table-hover table-sm">
-                            <thead class="table-light sticky-top">
-                                <tr>
-                                    <th style="width: 40px;"></th>
-                                    <th>Product</th>
-                                    <th>Category</th>
-                                    <th class="text-center">Available</th>
-                                    <th class="text-end">Price</th>
-                                </tr>
-                            </thead>
+                    <button type="button" class="modal-close-button modal-close-button-light" data-bs-dismiss="modal" aria-label="Close product catalog">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                    </button>
+                </div>
+                <div class="modal-body product-modal-body">
+                    <p class="modal-help" id="selectProductModalHelp">Select available products and set the quantity before adding them to this draft.</p>
+                    <label class="field-label" for="modalProductSearch">Search catalog</label>
+                    <div class="modal-search-control">
+                        <span class="input-leading-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg></span>
+                        <input class="form-control field-control" type="search" id="modalProductSearch" autocomplete="off" placeholder="Search by product, ID, or category">
+                    </div>
+                    <div class="modal-table-frame">
+                        <table class="table modal-products-table">
+                            <thead><tr><th scope="col">Select</th><th scope="col">Product</th><th scope="col">Category</th><th scope="col">Available</th><th scope="col">Unit price</th></tr></thead>
                             <tbody id="modalProductsBody">
-                                <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">
-                                        <i class="fas fa-spinner fa-spin me-2"></i>Loading products...
-                                    </td>
-                                </tr>
+                                <tr><td colspan="5" class="table-state-cell">Loading product availability…</td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <!-- Selected Products Preview -->
-                    <div class="mt-3 p-3 bg-light rounded border" id="selectedProductsPreview" style="display: none;">
-                        <h6 class="fw-bold mb-2"><i class="fas fa-check-circle text-success me-2"></i>Selected Products:
-                        </h6>
+                    <div class="selected-products-preview" id="selectedProductsPreview" hidden>
+                        <div class="selected-preview-heading"><span>Selected products</span><span class="muted-caption" id="selectedCount">0 products selected</span></div>
                         <div id="selectedProductsList"></div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <span class="me-auto text-muted" id="selectedCount">0 products selected</span>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="confirmAddProductsBtn" disabled>
-                        <i class="fas fa-plus me-1"></i>Add Selected Products
+                <div class="modal-footer modal-footer-actions">
+                    <button type="button" class="btn btn-quiet action-button" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary action-button" id="confirmAddProductsBtn" disabled>
+                        <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                        <span>Add selected</span>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Invoice Preview Modal (Review before confirming) -->
-    <div class="modal fade" id="invoicePreviewModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title">
-                        <i class="fas fa-file-invoice me-2"></i>Review Order Details
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <div class="modal fade" id="invoicePreviewModal" tabindex="-1" aria-labelledby="orderReviewModalTitle" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content review-modal-content" id="orderReviewModal">
+                <div class="print-invoice-header">
+                    <div class="print-invoice-header__identity">
+                        <p class="print-invoice-brand">QuickMart IOMS</p>
+                        <p class="print-invoice-kicker">Operations ledger</p>
+                        <h1>Invoice</h1>
+                    </div>
+                    <dl class="print-invoice-summary">
+                        <div><dt>Order number</dt><dd dir="ltr">#<span id="prevOrderNumber">—</span></dd></div>
+                        <div><dt>Staff</dt><dd dir="ltr" id="prevStaffId">—</dd></div>
+                    </dl>
                 </div>
-
-                <div class="modal-body p-0">
-                    <div class="p-4 bg-light">
-                        <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
-                            <div>
-                                <small class="text-muted d-block">BILL TO:</small>
-                                <span class="fw-bold fs-5" id="prevCustomerName">-</span>
-                            </div>
-                            <div class="text-end">
-                                <small class="text-muted d-block">DATE:</small>
-                                <span class="fw-bold" id="prevDate">-</span>
-                            </div>
-                        </div>
-
-                        <div class="table-responsive mb-3">
-                            <table class="table table-sm table-borderless mb-0">
-                                <thead class="text-secondary small border-bottom">
-                                    <tr>
-                                        <th>Item</th>
-                                        <th class="text-center">Qty</th>
-                                        <th class="text-end">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="prevItemsBody">
-                                </tbody>
+                <div class="modal-header modal-header-clean">
+                    <div>
+                        <p class="modal-eyebrow" id="reviewModeLabel">Final review</p>
+                        <h2 class="modal-title" id="orderReviewModalTitle">Review this order</h2>
+                    </div>
+                    <button type="button" class="modal-close-button" data-bs-dismiss="modal" aria-label="Close order review">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                    </button>
+                </div>
+                <div class="modal-body review-modal-body">
+                    <div class="review-status" id="reviewStatus" role="status" aria-live="assertive" hidden></div>
+                    <div class="review-meta-grid">
+                        <div><span>Party</span><strong id="prevCustomerName">—</strong></div>
+                        <div><span>Order type</span><strong id="prevOrderType">—</strong></div>
+                        <div><span>Prepared at</span><strong class="numeric-value" id="prevDate">—</strong></div>
+                    </div>
+                    <div class="review-items-frame" id="reviewItemsBody">
+                        <div class="review-items-heading"><span>Items</span><span class="muted-caption">Backend values on confirmation</span></div>
+                        <div class="table-responsive">
+                            <table class="table review-items-table">
+                                <thead><tr><th>Product</th><th>Qty</th><th>Unit price</th><th>Line total after confirmation</th></tr></thead>
+                                <tbody id="prevItemsBody"></tbody>
                             </table>
                         </div>
-
-                        <div class="bg-white p-3 rounded border border-dashed">
-                            <div class="d-flex justify-content-between border-top pt-2 mt-2">
-                                <span class="fw-bold text-dark">ESTIMATED TOTAL:</span>
-                                <span class="fw-bold text-primary fs-5">$<span id="prevGrandTotal">0.00</span></span>
-                            </div>
-                            <small class="text-muted d-block mt-2">Final total and stored prices are returned by the backend after confirmation.</small>
-                        </div>
                     </div>
+                    <div class="review-total-row"><span>Backend total</span><strong class="currency-value" id="prevGrandTotal">—</strong></div>
+                    <p class="review-authority-note" id="reviewAuthorityNote">The backend will confirm stored prices, stock, line totals, and the final total when the order is submitted.</p>
                 </div>
-
-                <div class="modal-footer justify-content-between bg-white">
-                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
-                        <i class="fas fa-edit me-1"></i> Edit / Modify
+                <div class="modal-footer modal-footer-actions">
+                    <button type="button" class="btn btn-quiet action-button" id="editOrderBtn" data-bs-dismiss="modal">
+                        <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5 4 4M5 19l3.5-.7L18 8.8a2.1 2.1 0 0 0-3-3L5.5 15.3z" /></svg>
+                        <span>Edit draft</span>
                     </button>
-
-                    <button type="button" class="btn btn-success px-4 fw-bold" id="confirmOrderBtn">
-                        <i class="fas fa-check-circle me-1"></i> Confirm & Process
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Logout Confirmation Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content"
-                style="background: linear-gradient(145deg, #1a1a2e, #16213e); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
-                <div class="modal-body text-center py-4">
-                    <div class="mb-3">
-                        <div
-                            style="width: 70px; height: 70px; margin: 0 auto; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #dc2626); display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-sign-out-alt fa-2x text-white"></i>
-                        </div>
-                    </div>
-                    <h5 class="text-white fw-bold mb-2">Logout</h5>
-                    <p class="text-muted mb-4">Are you sure you want to logout?</p>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger px-4" id="confirmLogoutBtn">
-                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    <div class="modal-action-cluster">
+                        <button type="button" class="btn btn-secondary action-button" id="printInvoiceBtn" hidden>
+                            <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v7H6z" /></svg>
+                            <span>Print</span>
+                        </button>
+                        <button type="button" class="btn btn-primary action-button" id="confirmOrderBtn">
+                            <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg>
+                            <span id="confirmOrderLabel">Confirm order</span>
                         </button>
                     </div>
                 </div>
@@ -369,11 +460,26 @@ require_once __DIR__ . '/../core/auth_check.php';
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content logout-modal-content">
+                <div class="modal-body logout-modal-body">
+                    <div class="logout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m10 17 5-5-5-5M15 12H3M21 19V5a2 2 0 0 0-2-2h-5" /></svg></div>
+                    <h2 id="logoutModalTitle">Sign out?</h2>
+                    <p>Your current session will be closed.</p>
+                    <div class="logout-actions">
+                        <button type="button" class="btn btn-quiet action-button" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger action-button" id="confirmLogoutBtn">Sign out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Common Shared Scripts -->
     <script src="../../assets/common.js"></script>
-    <!-- Create Order Logic -->
     <script src="../../assets/create-order/create-order.js"></script>
 </body>
 

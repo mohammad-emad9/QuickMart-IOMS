@@ -118,3 +118,13 @@ define('STATUS_OUT_OF_STOCK', 'Out of Stock');
 define('MAX_PRODUCT_QUANTITY', 1000000);
 define('MAX_ORDER_QUANTITY', 1000000);
 define('MAX_PRICE', 99999999.99);
+
+// Authentication hardening defaults. The limiter is intentionally bounded
+// and database-backed so it remains effective across PHP workers.
+define('LOGIN_RATE_LIMIT_MAX_ATTEMPTS', 5);
+define('LOGIN_RATE_LIMIT_WINDOW_SECONDS', 900);
+
+// Public recovery stays disabled until an approved delivery adapter and its
+// deployment gates are configured. The internal token lifecycle remains
+// available to controlled, non-public callers.
+define('PUBLIC_PASSWORD_RESET_ENABLED', false);

@@ -42,6 +42,7 @@ function applyRoleBasedUi(userRole) {
 }
 
 let csrfToken = null;
+let sessionProbePromise = null;
 
 async function getCsrfToken() {
     if (csrfToken) {
@@ -77,17 +78,67 @@ async function apiFetch(path, options = {}) {
     return fetch(apiPath(path), requestOptions);
 }
 
+function clearSessionHint() {
+    ["isLoggedIn", "staffId", "userName", "userEmail", "userRole"].forEach((key) => {
+        sessionStorage.removeItem(key);
+    });
+}
+
 /**
- * Check if user is logged in, redirect to login if not
- * @returns {boolean} True if logged in, false otherwise
+ * Revalidate the server-side session. sessionStorage is updated only as a
+ * UI hint after the protected probe succeeds; it is never an auth decision.
+ * @returns {Promise<boolean>} True only after server revalidation succeeds.
  */
-function checkSession() {
-    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
-    if (isLoggedIn !== "true") {
-        window.location.href = loginPath();
-        return false;
+async function checkSession(options = {}) {
+    const shouldRedirect = options.redirect !== false;
+
+    if (!sessionProbePromise) {
+        sessionProbePromise = fetch(apiPath("auth/session.php"), {
+            method: "GET",
+            credentials: "same-origin",
+            cache: "no-store",
+            headers: { Accept: "application/json" }
+        }).then(async (response) => {
+            let data = null;
+            try {
+                data = await response.json();
+            } catch (error) {
+                data = null;
+            }
+
+            const user = data?.data?.user;
+            const validUser = data?.success === true
+                && data?.data?.authenticated === true
+                && user
+                && typeof user.staff_id === "string"
+                && typeof user.full_name === "string"
+                && typeof user.email === "string"
+                && typeof user.role === "string";
+
+            if (response.ok && validUser) {
+                sessionStorage.setItem("isLoggedIn", "true");
+                sessionStorage.setItem("staffId", user.staff_id);
+                sessionStorage.setItem("userName", user.full_name);
+                sessionStorage.setItem("userEmail", user.email);
+                sessionStorage.setItem("userRole", user.role);
+                applyRoleBasedUi(user.role);
+                return true;
+            }
+
+            if (response.status === 401) {
+                clearSessionHint();
+                if (shouldRedirect) {
+                    window.location.assign(loginPath());
+                }
+            }
+
+            return false;
+        }).catch(() => false).finally(() => {
+            sessionProbePromise = null;
+        });
     }
-    return true;
+
+    return sessionProbePromise;
 }
 
 /**
@@ -456,6 +507,10 @@ document.addEventListener("DOMContentLoaded", function () {
     setupShellContextbar();
     setupShellNavigation();
     applyRoleBasedUi(sessionStorage.getItem("userRole") || "Staff");
+    if (!document.getElementById("loginForm")
+        && sessionStorage.getItem("isLoggedIn") !== "true") {
+        checkSession();
+    }
     // Setup logout handler on all pages
     setupLogoutHandler();
 });

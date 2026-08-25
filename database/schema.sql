@@ -8,6 +8,7 @@ USE quickmart_db;
 DROP TABLE IF EXISTS Order_Details;
 DROP TABLE IF EXISTS Orders;
 DROP TABLE IF EXISTS Products;
+DROP TABLE IF EXISTS Login_Rate_Limits;
 DROP TABLE IF EXISTS Password_Reset_Tokens;
 DROP TABLE IF EXISTS Staff;
 -- 2. Staff Table
@@ -24,7 +25,18 @@ CREATE TABLE Staff (
     CONSTRAINT chk_staff_role CHECK (BINARY Role IN ('Admin', 'Manager', 'Staff')),
     CONSTRAINT chk_staff_auth_revision CHECK (Auth_Revision >= 1)
 );
--- 3. Password Reset Tokens Table
+-- 3. Persistent login-attempt buckets. Only one-way rate keys are stored;
+-- raw identifiers, client addresses, and passwords are never persisted.
+CREATE TABLE Login_Rate_Limits (
+    Rate_Key CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    Window_Started_At DATETIME NOT NULL,
+    Attempt_Count SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    Last_Attempt_At DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (Rate_Key),
+    CONSTRAINT chk_login_rate_limits_attempt_count CHECK (Attempt_Count >= 0),
+    KEY idx_login_rate_limits_window (Window_Started_At)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- 4. Password Reset Tokens Table
 -- Store only a case-sensitive SHA-256 hexadecimal token hash. Raw reset tokens
 -- must remain in the future application flow and must never be persisted here.
 CREATE TABLE Password_Reset_Tokens (
