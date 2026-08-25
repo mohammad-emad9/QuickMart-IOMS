@@ -531,6 +531,10 @@ For broader changes, lint all affected PHP and JavaScript files and perform brow
   Reconcile the runtime database with an authoritative backup before treating
   the project as production-ready.
 
+## Author
+
+Mohammad Emad — [GitHub](https://github.com/mohammad-emad-dev)
+
 ## License
 
 No license file is currently included in the repository. Confirm licensing before redistributing or deploying the project outside its intended environment.
